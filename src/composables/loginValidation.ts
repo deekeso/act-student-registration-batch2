@@ -1,8 +1,4 @@
 import { reactive, computed } from 'vue'
-import mockData from '@/assets/mock-data.json'
-
-const { adminUsers } = mockData
-
 interface LoginState {
   username: string
   password: string
@@ -20,21 +16,15 @@ export function useLoginValidation() {
     return state.username.trim() && state.password.trim()
   })
 
-  // Validate credentials against adminUsers
+  // Validate credentials (non-empty fields are valid)
   const validateCredentials = () => {
     if (!isFormValid.value) {
       return { success: false, message: 'Please enter both username and password' }
     }
 
-    const admin = adminUsers.find(
-      (user) => user.username === state.username && user.password === state.password,
-    )
-
-    if (admin) {
-      return { success: true, message: 'Login successful', username: state.username }
-    } else {
-      return { success: false, message: 'Invalid username or password' }
-    }
+    // Placeholder: Any non-empty credentials are valid for testing
+    // Replace with API call in production
+    return { success: true, message: 'Login successful', username: state.username }
   }
 
   // Load credentials from localStorage
@@ -55,17 +45,11 @@ export function useLoginValidation() {
     localStorage.setItem('Password', state.password)
   }
 
-  // Check if credentials are stored in localStorage
-  const hasStoredCredentials = computed(() => {
-    return localStorage.getItem('Username') || localStorage.getItem('Password')
-  })
-
   return {
     state,
     isFormValid,
     validateCredentials,
     loadStoredCredentials,
     saveCredentials,
-    hasStoredCredentials,
   }
 }

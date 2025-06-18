@@ -1,9 +1,6 @@
-<script setup lang="ts">
-import {} from 'vue-router'
-import TheLogin from '@/components/TheLogin.vue'
-</script>
+<script setup lang="ts"></script>
 <template>
-  <TheLogin />
+  <router-view />
 </template>
 
 <style scoped></style>

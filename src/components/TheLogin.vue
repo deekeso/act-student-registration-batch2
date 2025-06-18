@@ -10,29 +10,26 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useLoginValidation } from '/src/composables/loginValidation.ts'
+import { useRouter } from 'vue-router'
 
 // Use the login validation composable
-const {
-  state,
-  isFormValid,
-  validateCredentials,
-  loadStoredCredentials,
-  saveCredentials,
-  //hasStoredCredentials,
-} = useLoginValidation()
+const { state, isFormValid, validateCredentials, loadStoredCredentials, saveCredentials } =
+  useLoginValidation()
+
+const router = useRouter()
 
 // Load saved credentials from localStorage on component mount
 onMounted(() => {
   loadStoredCredentials()
 })
+
 // Handle login action
 const handleLogin = () => {
   const result = validateCredentials()
   if (result.success) {
     saveCredentials()
     console.log(result.message, { username: state.username })
-    // Example: Navigate to dashboard
-    // router.push('/dashboard');
+    router.push('/dashboard')
   } else {
     console.log(result.message)
   }
