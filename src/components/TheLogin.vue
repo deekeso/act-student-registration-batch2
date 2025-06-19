@@ -29,9 +29,11 @@ onMounted(() => {
 // Handle login action
 const handleLogin = async () => {
   const result = authStore.validateCredentials() // Not async in store
+
   if (result.success) {
     authStore.saveCredentials() // Save to localStorage
     console.log(result.message, { username: authStore.username })
+
     // Loading
     loading.value = true
     try {
