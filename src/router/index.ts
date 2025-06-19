@@ -14,6 +14,11 @@ const router = createRouter({
       name: 'dashboard',
       component: () => import('@/views/TheDashboardView.vue'),
     },
+    {
+      path: '/programs/BSIT',
+      name: 'BSIT',
+      component: () => import('@/components/InfoTech.vue'),
+    },
   ],
 })
 
