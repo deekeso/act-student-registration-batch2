@@ -32,5 +32,10 @@ const navigateTo = (program: string) => {
   margin: 10px;
   width: 100%;
   height: 80px;
+  background-color: rgba(245, 245, 245, 0.466);
+}
+:deep(.el-button > span) {
+  font-weight: bold;
+  color: #fff;
 }
 </style>

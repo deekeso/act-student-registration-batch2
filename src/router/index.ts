@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import TheLogin from '@/components/TheLogin.vue'
+import TheLogin from '@/components/interface/TheLogin.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,7 +17,7 @@ const router = createRouter({
     {
       path: '/programs/BSIT',
       name: 'BSIT',
-      component: () => import('@/components/InfoTech.vue'),
+      component: () => import('@/views/InfoTechView.vue'),
     },
   ],
 })
