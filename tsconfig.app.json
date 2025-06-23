@@ -13,7 +13,10 @@
     "src/components/icons/IconTooling.vue",
     "src/views/AboutView.vue",
     "src/views/HomeView.vue",
-    "src/views/LoginView.vue"
+    "src/views/LoginView.vue",
+    "src/components/interface/InfoTech.vue",
+    "src/views/InfoTechView.vue",
+    ""
   ],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",

@@ -1,41 +1,67 @@
 <template>
-  <div class="programsList">
-    <el-button @click="navigateTo('BSIT')"
-      >Bachelor of Science in Information and Technology</el-button
-    >
-    <el-button>Bachelor in Computer Science</el-button>
-    <el-button>Bachelor of Science in Tourism</el-button>
-    <el-button>Bachelor of Science in Hotel and Restaurant Management</el-button>
-    <el-button>Bachelor of Science in Nursing</el-button>
-  </div>
+  <section>
+    <div class="add_bsitStudents">
+      <h1 class="course_title">BSIT Students</h1>
+      <AddButton @open="isDrawerOpen = true" />
+      <AddDrawer
+        v-model="isDrawerOpen"
+        title="Add Student"
+        :initial-data="form"
+        @submit="handleSubmit"
+        @cancel="handleCancel"
+      />
+    </div>
+    <ReusableTable :data="store.allStudents()" @edit="handleEdit" @delete="handleDelete" />
+  </section>
 </template>
 
-<script setup lang="ts">
-import { useRouter } from 'vue-router'
+<script lang="ts" setup>
+import { ref, onMounted } from 'vue'
+import ReusableTable from '/src/components/ui/ReusableTable.vue'
 
-const router = useRouter()
+import type { Student } from '/src/types/Students.ts'
+//import { students as studentList, students } from '/src/constants/index.ts'
 
-const navigateTo = (program: string) => {
-  if (program === 'BSIT') {
-    router.push('/programs/BSIT')
+import AddButton from '/src/components/ui/buttons/AddButton.vue'
+import AddDrawer from '/src/components/ui/drawer/AddDrawer.vue'
+
+import { useStudentActions } from '/src/composables/useStudentActions.ts'
+import { useStudentForm } from '/src/composables/useStudentForm.ts'
+import { useStudentStore } from '/src/stores/studentsStore.ts'
+
+const store = useStudentStore()
+const isDrawerOpen = ref(false)
+const { form } = useStudentForm()
+
+//const students = ref<Student[]>(studentList)
+
+const { handleEdit, handleDelete, handleCancel } = useStudentActions()
+
+const handleSubmit = async (data: Student) => {
+  try {
+    {
+      store.addStudent({ ...data, course: data.course })
+      console.log('Added Student:', data)
+    }
+    isDrawerOpen.value = false
+  } catch (error) {
+    console.error('Error in handleSubmit:', error)
   }
-  // Add more programs here later, e.g.:
-  // else if (program === 'BCS') {
-  //   router.push('/programs/BCS');
-  // }
 }
+
+onMounted(() => {
+  console.log('Store Students:', store.allStudents())
+})
 </script>
 
 <style scoped>
-.el-button {
+.add_bsitStudents {
   display: flex;
-  margin: 10px;
-  width: 100%;
-  height: 80px;
-  background-color: rgba(245, 245, 245, 0.466);
+  justify-content: space-between;
 }
-:deep(.el-button > span) {
+
+.course_title {
   font-weight: bold;
-  color: #fff;
+  color: whitesmoke;
 }
 </style>
