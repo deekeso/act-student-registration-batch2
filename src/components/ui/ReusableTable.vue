@@ -1,5 +1,6 @@
 <template>
-  <el-table :data="data" border style="width: 100%">
+  <el-table :data="data" style="width: 100%">
+    <el-table-column prop="id" label="id" />
     <el-table-column prop="firstName" label="First Name" />
     <el-table-column prop="middleInitial" label="Middle Initial" />
     <el-table-column prop="lastName" label="Last Name" />
@@ -20,7 +21,7 @@
 import { defineProps, defineEmits } from 'vue'
 import type { Student } from '@/types/Students'
 
-const { data } = defineProps<{
+defineProps<{
   data: Student[]
 }>()
 
@@ -29,3 +30,5 @@ defineEmits<{
   (e: 'delete', student: Student): void
 }>()
 </script>
+
+<style scoped></style>

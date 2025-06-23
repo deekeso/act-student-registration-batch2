@@ -1,14 +1,20 @@
 <template>
   <section>
-    <div class="add_bsitStudents">
-      <h1 class="course_title">BSIT Students</h1>
-      <AddButton @open="isDrawerOpen = true" />
+    <div class="add_Students">
+      <AddButton @open="isAddDrawerOpen = true" />
       <AddDrawer
-        v-model="isDrawerOpen"
+        v-model="isAddDrawerOpen"
         title="Add Student"
-        :initial-data="form"
         @submit="handleSubmit"
         @cancel="handleCancel"
+      />
+      <el-button @click="store.resetStudents">Reset Students</el-button>
+      <EditDrawer
+        v-model="isEditDrawerOpen"
+        title="Edit Student"
+        @submit="handleSubmit"
+        @cancel="handleCancel"
+        @delete="handleDelete"
       />
     </div>
     <ReusableTable :data="store.allStudents()" @edit="handleEdit" @delete="handleDelete" />
@@ -17,45 +23,76 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import ReusableTable from '/src/components/ui/ReusableTable.vue'
+import ReusableTable from '@/components/ui/ReusableTable.vue'
+import type { Students } from '@/types/Students'
+//import type { Student } from '@/types/Students.ts'
 
-import type { Student } from '/src/types/Students.ts'
-//import { students as studentList, students } from '/src/constants/index.ts'
+import AddButton from '@/components/ui/buttons/AddButton.vue'
+import AddDrawer from '@/components/ui/drawer/AddDrawer.vue'
+import EditDrawer from '@/components/ui/drawer/EditDrawer.vue'
 
-import AddButton from '/src/components/ui/buttons/AddButton.vue'
-import AddDrawer from '/src/components/ui/drawer/AddDrawer.vue'
-
-import { useStudentActions } from '/src/composables/useStudentActions.ts'
-import { useStudentForm } from '/src/composables/useStudentForm.ts'
-import { useStudentStore } from '/src/stores/studentsStore.ts'
+//import { useStudentActions } from '/src/composables/useStudentActions.ts'
+import { useStudentStore } from '@/stores/studentsStore.ts'
 
 const store = useStudentStore()
-const isDrawerOpen = ref(false)
-const { form } = useStudentForm()
+const isAddDrawerOpen = ref(false)
 
-//const students = ref<Student[]>(studentList)
+// To get all students:
+const isEditDrawerOpen = ref(false)
+const editingStudent = ref<Students | null>(null)
 
-const { handleEdit, handleDelete, handleCancel } = useStudentActions()
-
-const handleSubmit = async (data: Student) => {
-  try {
-    {
-      store.addStudent({ ...data, course: data.course })
-      console.log('Added Student:', data)
-    }
-    isDrawerOpen.value = false
-  } catch (error) {
-    console.error('Error in handleSubmit:', error)
-  }
+const handleEdit = (student: Students) => {
+  editingStudent.value = student
+  isEditDrawerOpen.value = true
 }
 
+const handleDelete = (student: Students) => {
+  store.deleteStudent(student)
+}
+
+const handleCancel = () => {
+  isEditDrawerOpen.value = false
+  editingStudent.value = null
+}
+
+const handleSubmit = (data: Students) => {
+  if (editingStudent.value) {
+    // Update student
+    store.updateStudent({ ...data, id: editingStudent.value.id })
+    isEditDrawerOpen.value = false
+    editingStudent.value = null
+  } else {
+    // Add student
+    store.addStudent({ ...data, age: Number(data.age) })
+    isAddDrawerOpen.value = false
+  }
+}
+// const { handleEdit, handleDelete, handleCancel, handleUpdate, isEditDrawerOpen, editingStudent } =
+//   useStudentActions()
+
+// const handleSubmit = async (data: Student) => {
+//   console.log(data)
+//   try {
+//     if (editingStudent.value) {
+//       await handleUpdate()
+//       console.log('Updated Student:', data)
+//     } else {
+//       store.addStudent({ ...data, age: Number(data.age) })
+//       console.log('Added Student:', data)
+//       isAddDrawerOpen.value = false
+//     }
+//   } catch (error) {
+//     console.error('Error in handleSubmit:', error)
+//   }
+// }
+
 onMounted(() => {
-  console.log('Store Students:', store.allStudents())
+  console.log('All Students:', store.allStudents())
 })
 </script>
 
 <style scoped>
-.add_bsitStudents {
+.add_Students {
   display: flex;
   justify-content: space-between;
 }

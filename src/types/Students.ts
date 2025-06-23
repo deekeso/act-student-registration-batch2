@@ -1,4 +1,5 @@
 export interface Students {
+  id: string
   firstName: string
   middleInitial: string
   lastName: string
@@ -9,6 +10,7 @@ export interface Students {
 }
 
 export interface Student {
+  id: string
   firstName: string
   middleInitial: string
   lastName: string
