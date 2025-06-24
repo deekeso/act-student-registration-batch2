@@ -1,14 +1,18 @@
 <template>
   <section>
+    <!-- Add Student Button -->
     <div class="add_Students">
       <AddButton @open="isAddDrawerOpen = true" />
+      <!-- Drawer for Adding a Student -->
       <AddDrawer
         v-model="isAddDrawerOpen"
         title="Add Student"
         @submit="handleSubmit"
         @cancel="handleCancel"
       />
+      <!-- Reset Students Button -->
       <el-button @click="store.resetStudents">Reset Students</el-button>
+      <!-- Drawer for Editing a Student -->
       <EditDrawer
         v-model="isEditDrawerOpen"
         title="Edit Student"
@@ -17,6 +21,7 @@
         @delete="handleDelete"
       />
     </div>
+    <!-- Table displaying all students -->
     <ReusableTable :data="store.allStudents()" @edit="handleEdit" @delete="handleDelete" />
   </section>
 </template>
@@ -24,68 +29,50 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import ReusableTable from '@/components/ui/ReusableTable.vue'
-import type { Students } from '@/types/Students'
-//import type { Student } from '@/types/Students.ts'
+import type { Student } from '@/types/Students'
 
 import AddButton from '@/components/ui/buttons/AddButton.vue'
 import AddDrawer from '@/components/ui/drawer/AddDrawer.vue'
 import EditDrawer from '@/components/ui/drawer/EditDrawer.vue'
 
-//import { useStudentActions } from '/src/composables/useStudentActions.ts'
 import { useStudentStore } from '@/stores/studentsStore.ts'
 
-const store = useStudentStore()
-const isAddDrawerOpen = ref(false)
+const store = useStudentStore() // Pinia store instance for students
+const isAddDrawerOpen = ref(false) // Add drawer visibility state
+const isEditDrawerOpen = ref(false) // Edit drawer visibility state
+const editingStudent = ref<Student | null>(null) // Holds the student currently being edited
 
-// To get all students:
-const isEditDrawerOpen = ref(false)
-const editingStudent = ref<Students | null>(null)
-
-const handleEdit = (student: Students) => {
+// Called when user clicks "Edit" in the table
+const handleEdit = (student: Student) => {
   editingStudent.value = student
   isEditDrawerOpen.value = true
 }
-
-const handleDelete = (student: Students) => {
+// Called when user clicks "Delete" in the table or drawer
+const handleDelete = (student: Student) => {
   store.deleteStudent(student)
 }
 
+// Called when user cancels add/edit drawer
 const handleCancel = () => {
   isEditDrawerOpen.value = false
   editingStudent.value = null
 }
 
-const handleSubmit = (data: Students) => {
+// Called when user submits add/edit form
+const handleSubmit = (data: Student) => {
   if (editingStudent.value) {
     // Update student
     store.updateStudent({ ...data, id: editingStudent.value.id })
-    isEditDrawerOpen.value = false
-    editingStudent.value = null
+    isEditDrawerOpen.value = false // Close edit drawer
+    editingStudent.value = null // Reset editing student
   } else {
     // Add student
     store.addStudent({ ...data, age: Number(data.age) })
-    isAddDrawerOpen.value = false
+    isAddDrawerOpen.value = false // Close add drawer
   }
 }
-// const { handleEdit, handleDelete, handleCancel, handleUpdate, isEditDrawerOpen, editingStudent } =
-//   useStudentActions()
 
-// const handleSubmit = async (data: Student) => {
-//   console.log(data)
-//   try {
-//     if (editingStudent.value) {
-//       await handleUpdate()
-//       console.log('Updated Student:', data)
-//     } else {
-//       store.addStudent({ ...data, age: Number(data.age) })
-//       console.log('Added Student:', data)
-//       isAddDrawerOpen.value = false
-//     }
-//   } catch (error) {
-//     console.error('Error in handleSubmit:', error)
-//   }
-// }
-
+// On mount, log all students (for debugging)
 onMounted(() => {
   console.log('All Students:', store.allStudents())
 })

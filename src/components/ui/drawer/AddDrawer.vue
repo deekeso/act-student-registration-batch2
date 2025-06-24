@@ -14,20 +14,20 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import ReusableDrawer from '/src/components/ui/drawer/ReusableDrawer.vue'
-import AddForm from '/src/components/ui/forms/AddForm.vue'
-import type { Students } from '/src/types/Students'
+import ReusableDrawer from '@/components/ui/drawer/ReusableDrawer.vue'
+import AddForm from '@/components/ui/forms/AddForm.vue'
+import type { Student } from '@/types/Students'
 
 const props = defineProps<{
   modelValue: boolean
   title?: string
-  initialData?: Partial<Students>
+  initialData?: Partial<Student>
   direction?: 'ltr' | 'rtl' | 'ttb' | 'btt'
 }>()
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
-  (e: 'submit', data: Students): void
+  (e: 'submit', data: Student): void
   (e: 'cancel'): void
 }>()
 
@@ -48,9 +48,9 @@ watch(isOpen, (newValue) => {
 })
 
 // Handle form submission
-const handleFormSubmit = (data: Students) => {
-  emit('submit', data)
-  isOpen.value = false
+const handleFormSubmit = (data: Student) => {
+  emit('submit', data) // Emit the data to the parent component
+  isOpen.value = false // Close the drawer
 }
 
 // Handle form cancellation
@@ -59,7 +59,7 @@ const handleFormCancel = () => {
   isOpen.value = false
 }
 
-// Handle drawer cancel (e.g., via close button)
+// Handle drawer cancel
 const handleCancel = () => {
   emit('cancel')
   isOpen.value = false

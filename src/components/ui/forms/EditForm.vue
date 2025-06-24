@@ -2,8 +2,6 @@
   <div>
     <el-form @submit.prevent :model="state" :rules="rules" ref="formRef" @validate="handleValidate">
       <el-card>
-        <!-- Hidden input for id -->
-        <!-- <el-input v-model="state.id" /> -->
         <div>
           <el-form-item label="Last Name" prop="lastName" required>
             <el-input
@@ -94,54 +92,60 @@
 import { ref, onMounted, watch } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { useStudentActions } from '@/composables/useStudentActions'
-import type { Students } from '@/types/Students'
+import type { Student } from '@/types/Students'
 import { courses } from '@/constants/index.ts'
 
 const emit = defineEmits<{
-  (e: 'submit', data: Students): void
+  (e: 'submit', data: Student): void
   (e: 'cancel'): void
-  (e: 'delete', data: Students): void
+  (e: 'delete', data: Student): void
 }>()
 
+// Define state for the form
 const formRef = ref<FormInstance | null>(null)
-//const formRef = ref(null)
 const { state, rules, submitForm, resetForm, editingStudent } = useStudentActions(formRef)
 
+// Called when the component is mounted
 onMounted(() => {
   console.log('onMounted: formRef.value =', formRef.value)
 })
 
+// Watch for changes in the formRef
 watch(formRef, (newVal) => {
   console.log('formRef changed:', newVal)
 })
 
+// Called when the form is validated
 const handleValidate = (prop: string, isValid: boolean, error: unknown) => {
   if (!isValid) {
     console.log(`Validation failed for ${prop}:`, error)
   }
 }
 
+// Called when user submits the form
 const handleSubmit = async () => {
   try {
     const result = await submitForm()
     if (result.success && result.data) {
-      emit('submit', result.data)
+      emit('submit', result.data) // Emit the data to the parent component
     } else {
-      console.error('Form submission failed:', result)
+      console.error('Form submission failed:', result) // Log the error
     }
   } catch (error) {
     console.error('Error submitting form:', error)
   }
 }
 
+// Called when user cancels the form
 const handleCancel = () => {
-  resetForm()
-  emit('cancel')
+  resetForm() // Reset the form
+  emit('cancel') // Emit the cancel event to the parent component
 }
 
+// Called when user deletes the student
 const handleDelete = () => {
   if (editingStudent.value) {
-    emit('delete', { ...editingStudent.value })
+    emit('delete', { ...editingStudent.value }) // Emit the data to the parent component
   }
 }
 </script>

@@ -7,8 +7,9 @@
     @cancel="handleCancel"
   >
     <template #default>
+      <!-- Pass editingStudent to EditForm -->
       <EditForm
-        :key="editingStudent?.id || 'edit-form'"
+        :editing-student="editingStudent"
         @submit="handleFormSubmit"
         @cancel="handleFormCancel"
         @delete="handleFormDelete"
@@ -21,28 +22,29 @@
 import { ref, watch } from 'vue'
 import ReusableDrawer from '@/components/ui/drawer/ReusableDrawer.vue'
 import EditForm from '@/components/ui/forms/EditForm.vue'
-import type { Students } from '@/types/Students'
+import type { Student } from '@/types/Students'
 
-import { useStudentActions } from '@/composables/useStudentActions.ts'
-
-const { editingStudent } = useStudentActions()
-
+// Define props for the drawer
 const props = defineProps<{
   modelValue: boolean
   title?: string
   direction?: 'ltr' | 'rtl' | 'ttb' | 'btt'
+  editingStudent?: Student
 }>()
 
+// Define emits for the drawer
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
-  (e: 'submit', data: Students): void
+  (e: 'submit', data: Student): void
   (e: 'cancel'): void
-  (e: 'delete', data: Students): void
+  (e: 'delete', data: Student): void
 }>()
 
-const isOpen = ref(props.modelValue)
-const title = ref(props.title ?? 'Edit Student')
+// Define state for the drawer
+const isOpen = ref(props.modelValue) // Drawer visibility state
+const title = ref(props.title ?? 'Edit Student') // Drawer title
 
+// Watch for changes in the modelValue prop
 watch(
   () => props.modelValue,
   (newValue) => {
@@ -54,24 +56,28 @@ watch(isOpen, (newValue) => {
   emit('update:modelValue', newValue)
 })
 
-const handleFormSubmit = (data: Students) => {
-  emit('submit', data)
-  isOpen.value = false
+// Called when user submits the form
+const handleFormSubmit = (data: Student) => {
+  emit('submit', data) // Emit the data to the parent component
+  isOpen.value = false // Close the drawer
 }
 
+// Called when user cancels the form
 const handleFormCancel = () => {
-  emit('cancel')
-  isOpen.value = false
+  emit('cancel') // Emit the cancel event to the parent component
+  isOpen.value = false // Close the drawer
 }
 
-const handleFormDelete = (data: Students) => {
-  emit('delete', data)
-  isOpen.value = false
+// Called when user deletes the student
+const handleFormDelete = (data: Student) => {
+  emit('delete', data) // Emit the data to the parent component
+  isOpen.value = false // Close the drawer
 }
 
+// Called when user cancels the drawer
 const handleCancel = () => {
-  emit('cancel')
-  isOpen.value = false
+  emit('cancel') // Emit the cancel event to the parent component
+  isOpen.value = false // Close the drawer
 }
 </script>
 

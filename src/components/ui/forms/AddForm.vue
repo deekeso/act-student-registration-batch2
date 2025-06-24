@@ -83,47 +83,49 @@
 </template>
 
 <script setup lang="ts">
-import type { Students } from '@/types/Students'
+import type { Student } from '@/types/Students'
 import { courses } from '@/constants/index'
 import { useStudentActions } from '@/composables/useStudentActions'
 import { ref } from 'vue'
 import type { FormInstance } from 'element-plus'
 
 const props = defineProps<{
-  initialData?: Partial<Students>
+  initialData?: Partial<Student>
 }>()
 
 const emit = defineEmits<{
-  (e: 'submit', data: Students): void
+  (e: 'submit', data: Student): void
   (e: 'cancel'): void
 }>()
 
+// Define state for the form
 const formRef = ref<FormInstance | null>(null)
 const { state, rules, submitForm, resetForm } = useStudentActions(formRef)
-
+// If initialData is provided, assign it to the state
 if (props.initialData) {
   Object.assign(state, props.initialData)
 }
 
-// Handle form submission
+// Called when user submits the form
 const handleSubmit = async () => {
   try {
     const result = await submitForm()
     if (result.success && result.data) {
-      emit('submit', result.data)
-      resetForm()
+      // If the form is valid and data is returned
+      emit('submit', result.data) // Emit the data to the parent component
+      resetForm() // Reset the form
     } else {
       console.error('Form submission failed:', result)
     }
   } catch (error) {
-    console.error('Submit error:', error)
+    console.error('Submit error:', error) // Log the error
   }
 }
 
-// Handle form cancellation
+// Called when user cancels the form
 const handleCancel = () => {
-  resetForm()
-  emit('cancel')
+  resetForm() // Reset the form
+  emit('cancel') // Emit the cancel event to the parent component
 }
 </script>
 
