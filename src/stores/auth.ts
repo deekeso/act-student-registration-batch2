@@ -25,11 +25,15 @@ export const useAuthStore = defineStore('auth', {
         return { success: false, message: 'Please enter both username and password' }
       }
 
-      // Hardcoded admin credentials for testing
-      const ADMIN_USERNAME = 'admin'
-      const ADMIN_PASSWORD = 'admin123!'
+      // Get stored credentials from localStorage
+      const storedUsername = localStorage.getItem('Username')
+      const storedPassword = localStorage.getItem('Password')
 
-      if (this.username === ADMIN_USERNAME && this.password === ADMIN_PASSWORD) {
+      // If no stored credentials, use default admin credentials
+      const validUsername = storedUsername || 'admin'
+      const validPassword = storedPassword || 'admin123!'
+
+      if (this.username === validUsername && this.password === validPassword) {
         return { success: true, message: 'Login successful', username: this.username }
       } else {
         return { success: false, message: 'Invalid username or password' }
@@ -57,6 +61,26 @@ export const useAuthStore = defineStore('auth', {
       this.password = ''
       localStorage.removeItem('Username')
       localStorage.removeItem('Password')
+    },
+
+    resetPassword(username: string, newPassword: string) {
+      // Only allow password reset for admin user
+      if (username !== 'admin') {
+        return {
+          success: false,
+          message: 'Username not found. Only valid user can reset password.',
+        }
+      }
+
+      // Update the stored credentials
+      this.username = username
+      this.password = newPassword
+
+      // Save to localStorage
+      localStorage.setItem('Username', username)
+      localStorage.setItem('Password', newPassword)
+
+      return { success: true, message: 'Password reset successfully' }
     },
   },
 })

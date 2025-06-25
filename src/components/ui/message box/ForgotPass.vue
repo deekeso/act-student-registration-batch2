@@ -1,23 +1,46 @@
 <template>
   <div class="forgot-pass-container">
-    <h2>Password Reset</h2>
-    <el-input v-model="username" placeholder="USERNAME" />
-    <el-input v-model="password" placeholder="PASSWORD" style />
-    <el-button color="#2148c0" :dark="useDark" @click="handleResetPassword"
-      >Reset Password</el-button
-    >
+    <!-- <h2>Password Reset</h2> -->
+    <el-input v-model="username" placeholder="USERNAME" :prefix-icon="User" />
+    <el-input v-model="password" type="password" placeholder="NEW PASSWORD" :prefix-icon="Lock" />
+    <el-button color="#ffff" @click="handleResetPassword"> RESET PASSWORD </el-button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useDark } from '@vueuse/core'
+import { Lock, User } from '@element-plus/icons-vue'
+import { useAuthStore } from '@/stores/auth'
+import { ElMessage } from 'element-plus'
 
+// Use the Pinia auth store
+const authStore = useAuthStore()
 const username = ref('')
 const password = ref('')
 
+// Define emits
+const emit = defineEmits<{
+  (e: 'close'): void
+}>()
+
 const handleResetPassword = () => {
-  console.log('Reset Password')
+  if (!username.value.trim() || !password.value.trim()) {
+    ElMessage.error('Please enter both username and new password')
+    return
+  }
+
+  const result = authStore.resetPassword(username.value, password.value)
+
+  if (result.success) {
+    ElMessage.success(result.message)
+    // Clear the form
+    username.value = ''
+    password.value = ''
+    // Close the dialog after successful reset
+    emit('close')
+  } else {
+    ElMessage.error(result.message)
+  }
 }
 </script>
 
@@ -27,7 +50,7 @@ const handleResetPassword = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px 0;
+  padding: 24px 0 0 0;
   text-align: center;
 }
 .forgot-pass-container h2 {
@@ -45,6 +68,17 @@ const handleResetPassword = () => {
 :deep(.password-input .el-input__inner) {
   background-color: #fff;
   color: red !important;
-  /* Add any other styles you want */
+}
+:deep(.el-input) {
+}
+.el-button {
+  border-radius: 10px;
+  height: 45px;
+  width: 100%;
+}
+:deep(.el-button > span) {
+  font-weight: 500 !important;
+  font-size: 14px;
+  color: #2148c0 !important;
 }
 </style>

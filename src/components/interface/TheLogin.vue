@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading" class="login-container">
+  <div class="login-container">
     <div id="user" class="login_fields">
       <el-input v-model="authStore.username" placeholder="USERNAME" :prefix-icon="User" />
       <el-input
@@ -8,9 +8,7 @@
         type="password"
         :prefix-icon="Lock"
       />
-      <el-button type="primary" @click="handleLogin" :disabled="!authStore.isFormValid">
-        LOGIN
-      </el-button>
+      <el-button color="white" @click="handleLogin" :disabled="!isFormValid"> LOGIN </el-button>
       <div>
         <a href="#" class="forgot-password" @click="handleForgotPassword"> Forgot password? </a>
         <el-dialog
@@ -18,9 +16,15 @@
           title="Forgot Password"
           width="400px"
           :close-on-click-modal="false"
-          style="border-radius: 10px"
+          style="
+            border-radius: 10px;
+            border-top: 4px solid #fff;
+            background-color: rgba(46, 86, 210);
+            padding: 40px 25px 20px 25px;
+          "
         >
-          <ForgotPass />
+          <p style="color: #fff">Enter your username and new password to reset your password.</p>
+          <ForgotPass @close="showForgotDialog = false" />
         </el-dialog>
       </div>
     </div>
@@ -28,22 +32,36 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { User, Lock } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElLoading } from 'element-plus'
 import ForgotPass from '@/components/ui/message box/ForgotPass.vue'
 
 // Use the Pinia auth store
 const authStore = useAuthStore()
 const router = useRouter()
-const loading = ref(false)
 const showForgotDialog = ref(false)
 
-// Load saved credentials from localStorage on component mount
-onMounted(() => {
-  authStore.loadStoredCredentials()
+// Debug: Check if form is valid
+const isFormValid = computed(() => {
+  const valid = authStore.username.trim() && authStore.password.trim()
+  console.log('Form validation:', {
+    username: authStore.username,
+    password: authStore.password,
+    isValid: valid,
+  })
+  return valid
+})
+
+// Watch for changes in form fields
+watch([() => authStore.username, () => authStore.password], () => {
+  console.log('Form fields changed:', {
+    username: authStore.username,
+    password: authStore.password,
+    isValid: isFormValid.value,
+  })
 })
 
 // Handle login action
@@ -54,8 +72,14 @@ const handleLogin = async () => {
     authStore.saveCredentials() // Save to localStorage
     console.log(result.message, { username: authStore.username })
 
-    // Loading
-    loading.value = true
+    // Full screen loading
+    const loadingInstance = ElLoading.service({
+      lock: true,
+      text: 'Logging in...',
+      background: 'rgba(255, 255, 255, 0.95)',
+      customClass: 'custom-loading',
+    })
+
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       await router.push('/dashboard')
@@ -63,7 +87,7 @@ const handleLogin = async () => {
     } catch (error) {
       console.error('Navigation error:', error)
     } finally {
-      loading.value = false
+      loadingInstance.close()
     }
   } else {
     ElMessage.error(result.message)
@@ -105,6 +129,12 @@ const handleForgotPassword = (event: Event) => {
 }
 :deep(.el-button) {
   margin: 20px 0 10px 0;
+  width: 100%;
+  height: 45px !important;
+  border-radius: 4px;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 4px 8px rgba(0, 0, 0, 0.15);
 }
 :deep(.el-button.el-button--primary) {
   background: #fff;
@@ -112,15 +142,55 @@ const handleForgotPassword = (event: Event) => {
   height: 45px;
 }
 :deep(.el-button > span) {
-  font-weight: bold;
+  font-weight: 500;
   color: #2148c0;
 }
 :deep(.el-button.el-button--primary.is-disabled) {
-  background: #a0cfff;
-  border-color: #a0cfff;
-  opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* Custom Loading Styles */
+:deep(.el-loading-mask) {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(2px);
+}
+
+:deep(.el-loading-spinner) {
+  color: #2148c0 !important;
+}
+
+:deep(.el-loading-spinner .el-loading-text) {
+  color: #2148c0 !important;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+:deep(.el-loading-spinner .path) {
+  stroke: #2148c0 !important;
+}
+
+/* Full Screen Loading Styles */
+:deep(.custom-loading .el-loading-mask) {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(2px);
+}
+
+:deep(.custom-loading .el-loading-spinner) {
+  color: #2148c0 !important;
+}
+
+:deep(.custom-loading .el-loading-spinner .el-loading-text) {
+  color: #2148c0 !important;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+:deep(.custom-loading .el-loading-spinner .path) {
+  stroke: #2148c0 !important;
+}
+
 .forgot-password {
   font-size: 16px;
   font-weight: medium;
@@ -133,7 +203,24 @@ const handleForgotPassword = (event: Event) => {
     color: #a0cfff;
     text-decoration: underline;
   }
-  :deep(.el-dialog) {
+  :deep(.el-dialog .el-dialog__title) {
+    color: white !important;
+    font-size: 18px;
+    font-weight: 600;
   }
+}
+:deep(.el-dialog__headerbtn .el-dialog__close) {
+  color: #ffffff;
+}
+:deep(.el-dialog__title) {
+  font-weight: 700 !important;
+  font-size: 20px;
+  color: #ffffff;
+}
+:deep(.el-dialog__header) {
+  padding-bottom: 12px;
+}
+:deep(.el-dialog) {
+  margin-top: 35vh;
 }
 </style>
