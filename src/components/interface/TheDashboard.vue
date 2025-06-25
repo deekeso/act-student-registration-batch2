@@ -1,46 +1,62 @@
 <template>
-  <section>
+  <div class="dashboard-container">
+    <TheHeader />
     <!-- Add Student Button -->
     <div class="add_Students">
+      <SearchBar v-model="search" />
       <AddButton @open="isAddDrawerOpen = true" />
-      <!-- Drawer for Adding a Student -->
-      <AddDrawer
-        v-model="isAddDrawerOpen"
-        title="Add Student"
-        @submit="handleSubmit"
-        @cancel="handleCancel"
-      />
-      <!-- Reset Students Button -->
-      <el-button @click="store.resetStudents">Reset Students</el-button>
-      <!-- Drawer for Editing a Student -->
-      <EditDrawer
-        v-model="isEditDrawerOpen"
-        title="Edit Student"
-        @submit="handleSubmit"
-        @cancel="handleCancel"
-        @delete="handleDelete"
-      />
     </div>
+    <!-- Drawer for Adding a Student -->
+    <AddDrawer
+      v-model="isAddDrawerOpen"
+      title="Add Student"
+      @submit="handleSubmit"
+      @cancel="handleCancel"
+    />
+    <!-- Reset Students Button -->
+    <!-- <el-button @click="store.resetStudents">Reset Students</el-button> -->
+    <!-- Drawer for Editing a Student -->
+    <EditDrawer
+      v-model="isEditDrawerOpen"
+      title="Edit Student"
+      @submit="handleSubmit"
+      @cancel="handleCancel"
+      @delete="handleDelete"
+    />
     <!-- Table displaying all students -->
-    <ReusableTable :data="store.allStudents()" @edit="handleEdit" @delete="handleDelete" />
-  </section>
+    <ReusableTable :data="filteredStudents" @edit="handleEdit" @delete="handleDelete" />
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import ReusableTable from '@/components/ui/ReusableTable.vue'
 import type { Student } from '@/types/Students'
 
 import AddButton from '@/components/ui/buttons/AddButton.vue'
 import AddDrawer from '@/components/ui/drawer/AddDrawer.vue'
 import EditDrawer from '@/components/ui/drawer/EditDrawer.vue'
+import SearchBar from '@/components/ui/SearchBar.vue'
 
 import { useStudentStore } from '@/stores/studentsStore.ts'
+import TheHeader from '@/components/ui/TheHeader.vue'
 
 const store = useStudentStore() // Pinia store instance for students
 const isAddDrawerOpen = ref(false) // Add drawer visibility state
 const isEditDrawerOpen = ref(false) // Edit drawer visibility state
 const editingStudent = ref<Student | null>(null) // Holds the student currently being edited
+const search = ref('')
+
+// Computed property to filter students based on search input
+const filteredStudents = computed(() => {
+  return store
+    .allStudents()
+    .filter((student) =>
+      Object.values(student).some((val) =>
+        String(val).toLowerCase().includes(search.value.toLowerCase()),
+      ),
+    )
+})
 
 // Called when user clicks "Edit" in the table
 const handleEdit = (student: Student) => {
@@ -79,9 +95,20 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.dashboard-container {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  background-color: white;
+}
+
 .add_Students {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  margin: 0;
+  align-items: center;
+  padding: 0 2rem;
+  gap: 5rem;
 }
 
 .course_title {

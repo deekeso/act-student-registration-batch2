@@ -10,6 +10,8 @@
               v-model="state.lastName"
               style="width: 100%"
               placeholder="ex. Dela Cruz"
+              maxlength="30"
+              @keypress="onlyLetters"
             />
           </el-form-item>
           <el-form-item label="First Name" prop="firstName" required>
@@ -19,6 +21,8 @@
               v-model="state.firstName"
               style="width: 100%"
               placeholder="ex. Juan"
+              maxlength="30"
+              @keypress="onlyLetters"
             />
           </el-form-item>
           <div class="input_row">
@@ -29,15 +33,20 @@
                 v-model="state.middleInitial"
                 style="width: 100%"
                 placeholder="ex. S"
+                maxlength="3"
+                @keypress="onlyLetters"
               />
             </el-form-item>
-            <el-form-item label="Birthday">
-              <el-input
+            <el-form-item label="Birthday" required prop="birthday">
+              <el-date-picker
                 id="birthDate"
                 type="date"
                 v-model="state.birthDate"
                 style="width: 100%"
                 placeholder=""
+                :disabled-date="disabledDate"
+                :default-value="formatDate(new Date())"
+                required
               />
             </el-form-item>
             <el-form-item label="Age">
@@ -47,6 +56,7 @@
                 v-model="state.age"
                 style="width: 100%"
                 placeholder=""
+                readonly
               />
             </el-form-item>
           </div>
@@ -88,11 +98,20 @@ import { courses } from '@/constants/index'
 import { useStudentActions } from '@/composables/useStudentActions'
 import { ref } from 'vue'
 import type { FormInstance } from 'element-plus'
+import { formRules, entryRestriction } from '@/composables/formRules'
+import { useBirthdayPicker } from '@/composables/birthday'
+import { useBirthdayAutoAge } from '@/composables/birthday'
 
 const props = defineProps<{
   initialData?: Partial<Student>
 }>()
 
+const rules = formRules
+const { onlyLetters } = entryRestriction()
+const { disabledDate } = useBirthdayPicker()
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString()
+}
 const emit = defineEmits<{
   (e: 'submit', data: Student): void
   (e: 'cancel'): void
@@ -100,7 +119,9 @@ const emit = defineEmits<{
 
 // Define state for the form
 const formRef = ref<FormInstance | null>(null)
-const { state, rules, submitForm, resetForm } = useStudentActions(formRef)
+const { state, submitForm, resetForm } = useStudentActions(formRef)
+useBirthdayAutoAge(state)
+
 // If initialData is provided, assign it to the state
 if (props.initialData) {
   Object.assign(state, props.initialData)

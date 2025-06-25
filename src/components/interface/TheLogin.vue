@@ -7,6 +7,7 @@
         placeholder="PASSWORD"
         type="password"
         :prefix-icon="Lock"
+        show-password
       />
       <el-button color="white" @click="handleLogin" :disabled="!isFormValid"> LOGIN </el-button>
       <div>
@@ -101,6 +102,13 @@ const handleForgotPassword = (event: Event) => {
 </script>
 
 <style scoped>
+.login-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .el-input {
   align-items: center;
   color: #fff;
@@ -116,6 +124,7 @@ const handleForgotPassword = (event: Event) => {
   font-size: 14px;
   font-weight: lighter;
 }
+
 :deep(.el-input__wrapper) {
   margin: 0 0 10px 0;
   background-color: transparent;
@@ -193,7 +202,7 @@ const handleForgotPassword = (event: Event) => {
 
 .forgot-password {
   font-size: 16px;
-  font-weight: medium;
+  font-weight: 400;
   color: #fff;
   align-self: flex-end !important;
   display: flex !important;
@@ -206,14 +215,14 @@ const handleForgotPassword = (event: Event) => {
   :deep(.el-dialog .el-dialog__title) {
     color: white !important;
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 300 !important;
   }
 }
 :deep(.el-dialog__headerbtn .el-dialog__close) {
   color: #ffffff;
 }
 :deep(.el-dialog__title) {
-  font-weight: 700 !important;
+  font-weight: 600 !important;
   font-size: 20px;
   color: #ffffff;
 }

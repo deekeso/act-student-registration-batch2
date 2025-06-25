@@ -2,7 +2,13 @@
   <div class="forgot-pass-container">
     <!-- <h2>Password Reset</h2> -->
     <el-input v-model="username" placeholder="USERNAME" :prefix-icon="User" />
-    <el-input v-model="password" type="password" placeholder="NEW PASSWORD" :prefix-icon="Lock" />
+    <el-input
+      v-model="password"
+      type="password"
+      placeholder="NEW PASSWORD"
+      :prefix-icon="Lock"
+      show-password
+    />
     <el-button color="#ffff" @click="handleResetPassword"> RESET PASSWORD </el-button>
   </div>
 </template>

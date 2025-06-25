@@ -10,6 +10,7 @@
               v-model="state.lastName"
               style="width: 100%"
               placeholder="ex. Dela Cruz"
+              @keypress="onlyLetters"
             />
           </el-form-item>
           <el-form-item label="First Name" prop="firstName" required>
@@ -19,6 +20,7 @@
               v-model="state.firstName"
               style="width: 100%"
               placeholder="ex. Juan"
+              @keypress="onlyLetters"
             />
           </el-form-item>
           <div class="input_row">
@@ -29,15 +31,20 @@
                 v-model="state.middleInitial"
                 style="width: 100%"
                 placeholder="ex. S"
+                @keypress="onlyLetters"
+                maxlength="3"
               />
             </el-form-item>
-            <el-form-item label="Birthday">
-              <el-input
+            <el-form-item label="Birthday" required prop="birthday">
+              <el-date-picker
                 id="birthDate"
                 type="date"
                 v-model="state.birthDate"
                 style="width: 100%"
                 placeholder=""
+                :disabled-date="disabledDate"
+                :default-value="formatDate(new Date())"
+                required
               />
             </el-form-item>
             <el-form-item label="Age">
@@ -94,6 +101,9 @@ import type { FormInstance } from 'element-plus'
 import { useStudentActions } from '@/composables/useStudentActions'
 import type { Student } from '@/types/Students'
 import { courses } from '@/constants/index.ts'
+import { formRules, entryRestriction } from '@/composables/formRules'
+import { useBirthdayPicker } from '@/composables/birthday'
+import { useBirthdayAutoAge } from '@/composables/birthday'
 
 const emit = defineEmits<{
   (e: 'submit', data: Student): void
@@ -103,7 +113,14 @@ const emit = defineEmits<{
 
 // Define state for the form
 const formRef = ref<FormInstance | null>(null)
-const { state, rules, submitForm, resetForm, editingStudent } = useStudentActions(formRef)
+const { state, submitForm, resetForm, editingStudent } = useStudentActions(formRef)
+const { onlyLetters } = entryRestriction()
+const { disabledDate } = useBirthdayPicker()
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString()
+}
+useBirthdayAutoAge(state)
+const rules = formRules
 
 // Called when the component is mounted
 onMounted(() => {
