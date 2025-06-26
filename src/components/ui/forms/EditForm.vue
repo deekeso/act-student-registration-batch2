@@ -461,4 +461,22 @@ const handleDelete = async () => {
     max-width: 200px;
   }
 }
+
+.edit-form :deep(.el-form-item__content) {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.edit-form :deep(.el-form-item__error) {
+  position: static;
+  margin-left: 16px;
+  color: var(--el-color-danger);
+  font-size: 12px;
+  white-space: nowrap;
+  background: transparent;
+  padding: 0;
+  z-index: 2;
+  line-height: normal;
+}
 </style>

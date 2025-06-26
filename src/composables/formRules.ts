@@ -45,15 +45,11 @@ export const formRules = reactive({
   birthDate: [
     { validator: birthDateValidator, trigger: 'blur', message: 'This field is required' },
   ],
-  // age: [
-  //   { required: true, message: 'Please enter age', trigger: 'blur' },
-  //   { type: 'number', min: 1, max: 99, message: 'Age must be between 1 and 99', trigger: 'blur' },
-  // ],
   streetAddress: [{ required: true, message: 'This field is required', trigger: 'blur' }],
   barangay: [{ required: true, message: 'This field is required', trigger: 'blur' }],
   city: [{ required: true, message: 'This field is required', trigger: 'blur' }],
-  province: [{ required: true, message: 'This field is required', trigger: 'blur' }],
-  zipCode: [{ required: true, message: 'This field is required', trigger: 'blur' }],
+  // province: [{ required: true, message: 'This field is required', trigger: 'blur' }],
+  // zipCode: [{ required: true, message: 'This field is required', trigger: 'blur' }],
   course: [{ required: true, message: 'This field is required', trigger: 'change' }],
 })
 

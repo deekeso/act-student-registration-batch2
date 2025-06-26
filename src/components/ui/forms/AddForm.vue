@@ -1,6 +1,6 @@
 <template>
   <div class="add-form">
-    <el-form :model="state" :rules="rules" ref="formRef">
+    <el-form :model="state" :rules="rules" ref="formRef" label-position="top">
       <div class="name_row">
         <h4>Name</h4>
         <el-form-item label="Last Name" prop="lastName" required>
@@ -30,7 +30,7 @@
             id="middleInitial"
             type="text"
             v-model="state.middleInitial"
-            style="width: 50%"
+            style="width: 100%"
             placeholder="ex. S"
             maxlength="3"
             @keypress="onlyLetters"
@@ -57,7 +57,7 @@
             id="age"
             type="number"
             v-model="state.age"
-            style="width: 50%"
+            style="width: 100%"
             placeholder=""
             readonly
           />
@@ -96,7 +96,7 @@
           </el-form-item>
         </div>
         <div>
-          <el-form-item label="Province" prop="province" required>
+          <el-form-item label="Province" prop="province">
             <el-input
               id="province"
               type="text"
@@ -106,12 +106,12 @@
               @keypress="onlyLetters"
             />
           </el-form-item>
-          <el-form-item label="Zip Code" prop="zipCode" required>
+          <el-form-item label="Zip Code" prop="zipCode">
             <el-input
               id="zipCode"
               type="text"
               v-model="state.zipCode"
-              style="width: 50%"
+              style="width: 100%"
               placeholder="ex. 1000"
               maxlength="5"
               @keypress="onlyDigits"
@@ -220,23 +220,34 @@ const handleCancel = async () => {
 </script>
 
 <style scoped>
+.el-form {
+  height: 90vh;
+  margin-bottom: 10px;
+}
+:deep(.el-form-item__error) {
+  color: var(--el-color-danger);
+  font-size: 12px;
+  padding: 4px;
+  position: absolute;
+  top: 100%;
+  line-height: normal;
+  right: 0;
+  left: revert;
+}
 .add-form {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100%;
-  padding: 20px 20px 100px 20px;
+  padding: 0 20px 2px 20px;
   max-width: 600px;
   margin: 0 auto;
+  white-space: nowrap;
 }
 
 .add-form :deep(.el-form) {
   width: 100%;
-}
-
-.add-form :deep(.el-form-item) {
-  margin-bottom: 20px;
 }
 
 .add-form :deep(.el-form-item__label) {
@@ -274,7 +285,7 @@ const handleCancel = async () => {
   font-weight: 600;
   color: #1a3a9a;
   margin: 30px 0 20px 0;
-  padding-bottom: 8px;
+  /* padding-bottom: 8px; */
   border-bottom: 1px solid #e0e0e0;
   margin-bottom: 10px;
   width: 100%;
@@ -290,7 +301,7 @@ const handleCancel = async () => {
 .address_row,
 .course_row {
   width: 100%;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 /* Input rows for side-by-side fields */

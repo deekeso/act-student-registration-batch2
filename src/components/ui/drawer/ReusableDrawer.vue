@@ -1,33 +1,54 @@
 <template>
   <el-drawer
+    v-if="isMobile"
     v-model="internalVisible"
     :direction="direction"
     :before-close="handleClose"
+    size="100%"
     style="
       border-radius: 10px;
-      margin-top: 30px;
-      height: 900px;
-      margin-right: 10px;
       border-left: 20px solid #1a3a9a;
       border-right: 5px solid #e0e0e0;
-      border-radius: 10px;
-      margin-top: 30px;
-      height: 1250px;
-      margin-right: 10px;
+      height: 100vh;
     "
   >
     <template #header>
       <slot name="header">
-        <h4
-          style="
-            margin-top: 20px;
-            font-size: 24px;
-            font-weight: 700;
-            color: #1a3a9a;
-            width: 100%;
-            padding: 10px;
-          "
-        >
+        <h4 style="margin-top: 5px; font-size: 24px; font-weight: 700; color: #1a3a9a; width: 100%">
+          {{ title }}
+        </h4>
+      </slot>
+    </template>
+
+    <template #default>
+      <slot />
+    </template>
+
+    <template #footer v-if="showFooter">
+      <slot name="footer">
+        <div style="flex: auto">
+          <el-button @click="onCancel">Cancel</el-button>
+          <el-button type="primary" @click="onConfirm">Confirm</el-button>
+        </div>
+      </slot>
+    </template>
+  </el-drawer>
+  <el-drawer
+    v-else
+    v-model="internalVisible"
+    :direction="direction"
+    :before-close="handleClose"
+    size="30%"
+    style="
+      border-radius: 10px;
+      border-left: 20px solid #1a3a9a;
+      border-right: 5px solid #e0e0e0;
+      height: 100vh;
+    "
+  >
+    <template #header>
+      <slot name="header">
+        <h4 style="margin-top: 5px; font-size: 24px; font-weight: 700; color: #1a3a9a; width: 100%">
           {{ title }}
         </h4>
       </slot>
@@ -49,7 +70,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { ElMessageBox } from 'element-plus'
 
 // Define props for the drawer
@@ -100,9 +121,23 @@ function onCancel() {
 function onConfirm() {
   emit('confirm')
 }
+
+const isMobile = ref(window.innerWidth <= 1100)
+
+function updateIsMobile() {
+  isMobile.value = window.innerWidth <= 1100
+}
+
+onMounted(() => {
+  window.addEventListener('resize', updateIsMobile)
+  updateIsMobile()
+})
+onUnmounted(() => {
+  window.removeEventListener('resize', updateIsMobile)
+})
 </script>
 <style scoped>
-.title {
-  color: red !important;
+.el-drawer__header {
+  margin-bottom: 0 !important;
 }
 </style>
