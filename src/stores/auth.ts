@@ -64,12 +64,16 @@ export const useAuthStore = defineStore('auth', {
     saveCredentials() {
       localStorage.setItem('Username', this.username)
       localStorage.setItem('Password', this.password)
+      // Set session flag for route protection
+      localStorage.setItem('isLoggedIn', 'true')
     },
 
     clearCredentials() {
       // Only clear the current session state, don't remove stored credentials
       this.username = ''
       this.password = ''
+      // Clear session flag for route protection
+      localStorage.removeItem('isLoggedIn')
       // Don't remove from localStorage - keep the stored credentials for next login
     },
 

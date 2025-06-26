@@ -1,13 +1,19 @@
 <template>
   <div class="login-container">
     <div id="user" class="login_fields">
-      <el-input v-model="authStore.username" placeholder="USERNAME" :prefix-icon="User" />
+      <el-input
+        v-model="authStore.username"
+        placeholder="USERNAME"
+        :prefix-icon="User"
+        @keyup.enter="handleLogin"
+      />
       <el-input
         v-model="authStore.password"
         placeholder="PASSWORD"
         type="password"
         :prefix-icon="Lock"
         show-password
+        @keyup.enter="handleLogin"
       />
       <el-button color="white" @click="handleLogin" :disabled="!isFormValid"> LOGIN </el-button>
       <div>
@@ -70,8 +76,9 @@ const handleLogin = async () => {
   const result = authStore.validateCredentials() // Not async in store
 
   if (result.success) {
-    authStore.saveCredentials() // Save to localStorage
-    console.log(result.message, { username: authStore.username })
+    // Save credentials and set session flag
+    authStore.saveCredentials() // Save to localStorage and set isLoggedIn
+    console.log('Login successful, session set:', localStorage.getItem('isLoggedIn'))
 
     // Full screen loading
     const loadingInstance = ElLoading.service({
@@ -83,6 +90,7 @@ const handleLogin = async () => {
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000))
+      // Force navigation to dashboard
       await router.push('/dashboard')
       console.log('Navigating to /dashboard')
     } catch (error) {

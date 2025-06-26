@@ -10,17 +10,30 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElLoading } from 'element-plus'
 import { Right } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
-const handleLogout = () => {
-  // Clear current session but preserve stored credentials for next login
+const handleLogout = async () => {
+  // Show loading indicator
+  const loadingInstance = ElLoading.service({
+    lock: true,
+    text: 'Logging out...',
+    background: 'rgba(255, 255, 255, 0.95)',
+    customClass: 'custom-loading',
+  })
+
+  // Clear session
   authStore.clearCredentials()
   ElMessage.success('Logged out successfully')
-  router.push('/')
+
+  // Wait a moment then navigate and close loading
+  setTimeout(async () => {
+    await router.push('/')
+    loadingInstance.close()
+  }, 1000)
 }
 </script>
 
