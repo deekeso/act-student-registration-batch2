@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <div class="add-form">
     <el-form :model="state" :rules="rules" ref="formRef">
-      <div>
+      <div class="name_row">
+        <h4>Name</h4>
         <el-form-item label="Last Name" prop="lastName" required>
           <el-input
             id="lastName"
@@ -24,40 +25,45 @@
             @keypress="onlyLetters"
           />
         </el-form-item>
-        <div class="input_row">
-          <el-form-item label="Middle Initial" prop="middleInitial" required>
-            <el-input
-              id="middleInitial"
-              type="text"
-              v-model="state.middleInitial"
-              style="width: 100%"
-              placeholder="ex. S"
-              maxlength="3"
-              @keypress="onlyLetters"
-            />
-          </el-form-item>
-          <el-form-item label="Birthday" required prop="birthDate">
-            <el-date-picker
-              id="birthDate"
-              type="date"
-              v-model="state.birthDate"
-              style="width: 100%"
-              placeholder=""
-              :disabled-date="disabledDate"
-              required
-            />
-          </el-form-item>
-          <el-form-item label="Age">
-            <el-input
-              id="age"
-              type="number"
-              v-model="state.age"
-              style="width: 100%"
-              placeholder=""
-              readonly
-            />
-          </el-form-item>
-        </div>
+        <el-form-item label="Middle Initial" prop="middleInitial" required>
+          <el-input
+            id="middleInitial"
+            type="text"
+            v-model="state.middleInitial"
+            style="width: 50%"
+            placeholder="ex. S"
+            maxlength="3"
+            @keypress="onlyLetters"
+          />
+        </el-form-item>
+      </div>
+      <div class="birthday_row">
+        <h4>Birthday</h4>
+        <el-form-item label="Birthday" required prop="birthDate">
+          <el-date-picker
+            id="birthDate"
+            type="date"
+            v-model="state.birthDate"
+            style="width: 100%"
+            placeholder=""
+            :disabled-date="disabledDate"
+            :default-value="defaultBirthdayView"
+            required
+          />
+        </el-form-item>
+        <el-form-item label="Age">
+          <el-input
+            id="age"
+            type="number"
+            v-model="state.age"
+            style="width: 50%"
+            placeholder=""
+            readonly
+          />
+        </el-form-item>
+      </div>
+      <div class="address_row">
+        <h4>Address</h4>
         <el-form-item label="Street Address" prop="streetAddress" required>
           <el-input
             id="streetAddress"
@@ -67,7 +73,7 @@
             placeholder="ex. 123 Main Street"
           />
         </el-form-item>
-        <div class="input_row">
+        <div class="">
           <el-form-item label="Barangay" prop="barangay" required>
             <el-input
               id="barangay"
@@ -84,10 +90,11 @@
               v-model="state.city"
               style="width: 100%"
               placeholder="ex. Manila"
+              @keypress="onlyLetters"
             />
           </el-form-item>
         </div>
-        <div class="input_row">
+        <div>
           <el-form-item label="Province" prop="province" required>
             <el-input
               id="province"
@@ -95,6 +102,7 @@
               v-model="state.province"
               style="width: 100%"
               placeholder="ex. Metro Manila"
+              @keypress="onlyLetters"
             />
           </el-form-item>
           <el-form-item label="Zip Code" prop="zipCode" required>
@@ -102,7 +110,7 @@
               id="zipCode"
               type="text"
               v-model="state.zipCode"
-              style="width: 100%"
+              style="width: 50%"
               placeholder="ex. 1000"
               maxlength="5"
               @keypress="onlyDigits"
@@ -110,7 +118,8 @@
           </el-form-item>
         </div>
       </div>
-      <div>
+      <div class="course_row">
+        <h4>Program</h4>
         <el-form-item label="Course" prop="course" required>
           <el-select v-model="state.course" id="course" placeholder="Select" style="width: 100%">
             <el-option disabled value="">Please select one</el-option>
@@ -140,6 +149,7 @@ import type { FormInstance } from 'element-plus'
 import { formRules, entryRestriction } from '@/composables/formRules'
 import { useBirthdayPicker } from '@/composables/birthday'
 import { useBirthdayAutoAge } from '@/composables/birthday'
+import { defaultBirthdayView } from '@/composables/birthday'
 
 const props = defineProps<{
   initialData?: Partial<Student>
@@ -187,15 +197,134 @@ const handleCancel = () => {
 </script>
 
 <style scoped>
-.input_row {
+.add-form {
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 20px 20px 100px 20px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
+.add-form :deep(.el-form) {
+  width: 100%;
+}
+
+.add-form :deep(.el-form-item) {
+  margin-bottom: 20px;
+}
+
+.add-form :deep(.el-form-item__label) {
+  margin-top: 10px;
+  font-weight: 400;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.add-form :deep(.el-input__wrapper) {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 35px;
+}
+
+.add-form :deep(.el-input__wrapper:hover) {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.add-form :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 2px rgba(26, 58, 154, 0.2);
+}
+
+.add-form :deep(.el-select .el-input__wrapper) {
+  border-radius: 8px;
+}
+
+.add-form :deep(.el-date-editor .el-input__wrapper) {
+  border-radius: 8px;
+}
+/* Section headers */
+.add-form h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a3a9a;
+  margin: 30px 0 20px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.add-form h4:first-child {
+  margin-top: 0;
+}
+
+/* Form sections */
+.name_row,
+.birthday_row,
+.address_row,
+.course_row {
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+/* Input rows for side-by-side fields */
+.input_row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Form actions */
 .form-actions {
-  margin-top: 16px;
+  margin-top: 40px;
   display: flex;
-  justify-content: flex-end;
-  gap: 8px;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.form-actions .el-button {
+  min-width: 120px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.form-actions .el-button--primary {
+  background-color: #1a3a9a;
+  border-color: #1a3a9a;
+}
+
+.form-actions .el-button--primary:hover {
+  background-color: #264eca;
+  border-color: #264eca;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .add-form {
+    padding: 16px;
+  }
+
+  .input_row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .form-actions .el-button {
+    width: 100%;
+    max-width: 200px;
+  }
 }
 </style>

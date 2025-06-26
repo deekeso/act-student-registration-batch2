@@ -19,6 +19,7 @@
     <EditDrawer
       v-model="isEditDrawerOpen"
       title="Edit Student"
+      :editing-student="editingStudent"
       @submit="handleSubmit"
       @cancel="handleCancel"
       @delete="handleDelete"

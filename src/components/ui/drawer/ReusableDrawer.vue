@@ -1,8 +1,35 @@
 <template>
-  <el-drawer v-model="internalVisible" :direction="direction" :before-close="handleClose">
+  <el-drawer
+    v-model="internalVisible"
+    :direction="direction"
+    :before-close="handleClose"
+    style="
+      border-radius: 10px;
+      margin-top: 30px;
+      height: 900px;
+      margin-right: 10px;
+      border-left: 20px solid #1a3a9a;
+      border-right: 5px solid #e0e0e0;
+      border-radius: 10px;
+      margin-top: 30px;
+      height: 1250px;
+      margin-right: 10px;
+    "
+  >
     <template #header>
       <slot name="header">
-        <h4>{{ title }}</h4>
+        <h4
+          style="
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a3a9a;
+            width: 100%;
+            padding: 10px;
+          "
+        >
+          {{ title }}
+        </h4>
       </slot>
     </template>
 
@@ -74,3 +101,8 @@ function onConfirm() {
   emit('confirm')
 }
 </script>
+<style scoped>
+.title {
+  color: red !important;
+}
+</style>

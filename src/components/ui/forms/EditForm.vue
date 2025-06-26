@@ -1,137 +1,146 @@
 <template>
-  <div>
+  <div class="edit-form">
     <el-form @submit.prevent :model="state" :rules="rules" ref="formRef" @validate="handleValidate">
-      <el-card>
-        <div>
-          <el-form-item label="Last Name" prop="lastName" required>
+      <div class="name_row">
+        <h4>Name</h4>
+        <el-form-item label="Last Name" prop="lastName" required>
+          <el-input
+            id="lastName"
+            type="text"
+            v-model="state.lastName"
+            style="width: 100%"
+            placeholder="ex. Dela Cruz"
+            maxlength="30"
+            @keypress="onlyLetters"
+          />
+        </el-form-item>
+        <el-form-item label="First Name" prop="firstName" required>
+          <el-input
+            id="firstName"
+            type="text"
+            v-model="state.firstName"
+            style="width: 100%"
+            placeholder="ex. Juan"
+            maxlength="30"
+            @keypress="onlyLetters"
+          />
+        </el-form-item>
+        <el-form-item label="Middle Initial" prop="middleInitial" required>
+          <el-input
+            id="middleInitial"
+            type="text"
+            v-model="state.middleInitial"
+            style="width: 50%"
+            placeholder="ex. S"
+            maxlength="3"
+            @keypress="onlyLetters"
+          />
+        </el-form-item>
+      </div>
+      <div class="birthday_row">
+        <h4>Birthday</h4>
+        <el-form-item label="Birthday" required prop="birthDate">
+          <el-date-picker
+            id="birthDate"
+            type="date"
+            v-model="state.birthDate"
+            style="width: 100%"
+            placeholder=""
+            :disabled-date="disabledDate"
+            :default-value="defaultBirthdayView"
+            required
+          />
+        </el-form-item>
+        <el-form-item label="Age">
+          <el-input
+            id="age"
+            type="number"
+            v-model="state.age"
+            style="width: 50%"
+            placeholder=""
+            readonly
+          />
+        </el-form-item>
+      </div>
+      <div class="address_row">
+        <h4>Address</h4>
+        <el-form-item label="Street Address" prop="streetAddress" required>
+          <el-input
+            id="streetAddress"
+            type="text"
+            v-model="state.streetAddress"
+            style="width: 100%"
+            placeholder="ex. 123 Main Street"
+          />
+        </el-form-item>
+        <div class="">
+          <el-form-item label="Barangay" prop="barangay" required>
             <el-input
-              id="lastName"
+              id="barangay"
               type="text"
-              v-model="state.lastName"
+              v-model="state.barangay"
               style="width: 100%"
-              placeholder="ex. Dela Cruz"
+              placeholder="ex. Barangay 1"
+            />
+          </el-form-item>
+          <el-form-item label="City/Municipality" prop="city" required>
+            <el-input
+              id="city"
+              type="text"
+              v-model="state.city"
+              style="width: 100%"
+              placeholder="ex. Manila"
               @keypress="onlyLetters"
             />
           </el-form-item>
-          <el-form-item label="First Name" prop="firstName" required>
+        </div>
+        <div>
+          <el-form-item label="Province" prop="province" required>
             <el-input
-              id="firstName"
+              id="province"
               type="text"
-              v-model="state.firstName"
+              v-model="state.province"
               style="width: 100%"
-              placeholder="ex. Juan"
+              placeholder="ex. Metro Manila"
               @keypress="onlyLetters"
             />
           </el-form-item>
-          <div class="input_row">
-            <el-form-item label="Middle Initial">
-              <el-input
-                id="middleInitial"
-                type="text"
-                v-model="state.middleInitial"
-                style="width: 100%"
-                placeholder="ex. S"
-                @keypress="onlyLetters"
-                maxlength="3"
-              />
-            </el-form-item>
-            <el-form-item label="Birthday" required prop="birthDate">
-              <el-date-picker
-                id="birthDate"
-                type="date"
-                v-model="state.birthDate"
-                style="width: 100%"
-                placeholder=""
-                :disabled-date="disabledDate"
-                required
-              />
-            </el-form-item>
-            <el-form-item label="Age">
-              <el-input
-                id="age"
-                type="number"
-                v-model.number="state.age"
-                style="width: 100%"
-                placeholder=""
-              />
-            </el-form-item>
-          </div>
-          <el-form-item label="Street Address" prop="streetAddress" required>
+          <el-form-item label="Zip Code" prop="zipCode" required>
             <el-input
-              id="streetAddress"
+              id="zipCode"
               type="text"
-              v-model="state.streetAddress"
-              style="width: 100%"
-              placeholder="ex. 123 Main Street"
+              v-model="state.zipCode"
+              style="width: 50%"
+              placeholder="ex. 1000"
+              maxlength="5"
+              @keypress="onlyDigits"
             />
           </el-form-item>
-          <div class="input_row">
-            <el-form-item label="Barangay" prop="barangay" required>
-              <el-input
-                id="barangay"
-                type="text"
-                v-model="state.barangay"
-                style="width: 100%"
-                placeholder="ex. Barangay 1"
-              />
-            </el-form-item>
-            <el-form-item label="City/Municipality" prop="city" required>
-              <el-input
-                id="city"
-                type="text"
-                v-model="state.city"
-                style="width: 100%"
-                placeholder="ex. Manila"
-              />
-            </el-form-item>
-          </div>
-          <div class="input_row">
-            <el-form-item label="Province" prop="province" required>
-              <el-input
-                id="province"
-                type="text"
-                v-model="state.province"
-                style="width: 100%"
-                placeholder="ex. Metro Manila"
-              />
-            </el-form-item>
-            <el-form-item label="Zip Code" prop="zipCode" required>
-              <el-input
-                id="zipCode"
-                type="text"
-                v-model="state.zipCode"
-                style="width: 100%"
-                placeholder="ex. 1000"
-                maxlength="5"
-                @keypress="onlyDigits"
-              />
-            </el-form-item>
-          </div>
         </div>
-        <div>
-          <el-form-item label="Course" prop="course" required>
-            <el-select
-              v-model="state.course"
-              id="course"
-              placeholder="Select"
-              style="width: 100%"
-              filterable
-            >
-              <el-option
-                v-for="course in courses"
-                :key="course.value"
-                :value="course.value"
-                :label="course.label"
-              />
-            </el-select>
-          </el-form-item>
+      </div>
+      <div class="course_row">
+        <h4>Program</h4>
+        <el-form-item label="Course" prop="course" required>
+          <el-select v-model="state.course" id="course" placeholder="Select" style="width: 100%">
+            <el-option disabled value="">Please select one</el-option>
+            <el-option
+              v-for="course in courses"
+              :key="course.value"
+              :value="course.value"
+              :label="course.label"
+            />
+          </el-select>
+        </el-form-item>
+      </div>
+      <div class="form-actions">
+        <div class="primary-actions">
+          <el-button type="danger" @click="handleDelete" style="width: 100%">Delete</el-button>
+          <el-button type="primary" @click="handleSubmit" style="width: 100%">Submit</el-button>
         </div>
-        <div class="form-actions">
-          <el-button type="danger" @click="handleDelete">Delete</el-button>
-          <el-button @click="handleCancel">Cancel</el-button>
-          <el-button type="primary" @click="handleSubmit">Submit</el-button>
+        <div class="cancel-action">
+          <el-button @click="handleCancel" style="width: 100%">Cancel</el-button>
         </div>
-      </el-card>
+      </div>
     </el-form>
   </div>
 </template>
@@ -143,9 +152,13 @@ import { useStudentActions } from '@/composables/useStudentActions'
 import type { Student } from '@/types/Students'
 import { courses } from '@/constants/index.ts'
 import { formRules, entryRestriction } from '@/composables/formRules'
-import { useBirthdayPicker } from '@/composables/birthday'
-import { useBirthdayAutoAge } from '@/composables/birthday'
+import { useBirthdayPicker, useBirthdayAutoAge, defaultBirthdayView } from '@/composables/birthday'
 
+const props = defineProps<{
+  editingStudent?: Student | null // Student object to be edited
+}>()
+
+// Define emits for the form
 const emit = defineEmits<{
   (e: 'submit', data: Student): void
   (e: 'cancel'): void
@@ -154,20 +167,57 @@ const emit = defineEmits<{
 
 // Define state for the form
 const formRef = ref<FormInstance | null>(null)
-const { state, submitForm, resetForm, editingStudent } = useStudentActions(formRef)
+const { state, submitForm, resetForm } = useStudentActions(formRef)
 const { onlyLetters, onlyDigits } = entryRestriction()
 const { disabledDate } = useBirthdayPicker()
 useBirthdayAutoAge(state)
 const rules = formRules
 
+// Watch for changes in the editingStudent prop and populate form
+watch(
+  () => props.editingStudent,
+  (newStudent) => {
+    if (newStudent) {
+      console.log('Populating form with student data:', newStudent)
+      Object.assign(state, {
+        id: newStudent.id,
+        firstName: newStudent.firstName,
+        middleInitial: newStudent.middleInitial,
+        lastName: newStudent.lastName,
+        birthDate: newStudent.birthDate,
+        age: Number(newStudent.age),
+        streetAddress: newStudent.streetAddress,
+        barangay: newStudent.barangay,
+        city: newStudent.city,
+        province: newStudent.province,
+        zipCode: newStudent.zipCode,
+        course: newStudent.course,
+      })
+    }
+  },
+  { immediate: true },
+)
+
 // Called when the component is mounted
 onMounted(() => {
-  console.log('onMounted: formRef.value =', formRef.value)
-})
-
-// Watch for changes in the formRef
-watch(formRef, (newVal) => {
-  console.log('formRef changed:', newVal)
+  console.log('EditForm mounted, editingStudent:', props.editingStudent)
+  if (props.editingStudent) {
+    console.log('Populating form with student data on mount:', props.editingStudent)
+    Object.assign(state, {
+      id: props.editingStudent.id,
+      firstName: props.editingStudent.firstName,
+      middleInitial: props.editingStudent.middleInitial,
+      lastName: props.editingStudent.lastName,
+      birthDate: props.editingStudent.birthDate,
+      age: Number(props.editingStudent.age),
+      streetAddress: props.editingStudent.streetAddress,
+      barangay: props.editingStudent.barangay,
+      city: props.editingStudent.city,
+      province: props.editingStudent.province,
+      zipCode: props.editingStudent.zipCode,
+      course: props.editingStudent.course,
+    })
+  }
 })
 
 // Called when the form is validated
@@ -199,22 +249,176 @@ const handleCancel = () => {
 
 // Called when user deletes the student
 const handleDelete = () => {
-  if (editingStudent.value) {
-    emit('delete', { ...editingStudent.value }) // Emit the data to the parent component
+  if (props.editingStudent) {
+    emit('delete', { ...props.editingStudent }) // Emit the data to the parent component
   }
 }
 </script>
 
 <style scoped>
-.input_row {
+.edit-form {
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 20px 20px 80px 20px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
+.edit-form :deep(.el-form) {
+  width: 100%;
+}
+
+.edit-form :deep(.el-form-item) {
+  margin-bottom: 20px;
+}
+
+.edit-form :deep(.el-form-item__label) {
+  margin-top: 10px;
+  font-weight: 400;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.edit-form :deep(.el-input__wrapper) {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 35px;
+}
+
+.edit-form :deep(.el-input__wrapper:hover) {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.edit-form :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 2px rgba(26, 58, 154, 0.2);
+}
+
+.edit-form :deep(.el-select .el-input__wrapper) {
+  border-radius: 8px;
+}
+
+.edit-form :deep(.el-date-editor .el-input__wrapper) {
+  border-radius: 8px;
+}
+
+/* Card styling */
+.edit-form :deep(.el-card) {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.edit-form :deep(.el-card__body) {
+  padding: 30px;
+}
+
+/* Input rows for side-by-side fields */
+.input_row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Section headers */
+.edit-form h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a3a9a;
+  margin: 30px 0 20px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.edit-form h4:first-child {
+  margin-top: 0;
+}
+
+/* Form actions */
 .form-actions {
-  margin-top: 16px;
+  margin-top: 40px;
   display: flex;
-  justify-content: flex-end;
-  gap: 8px;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.primary-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.cancel-action {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.form-actions .el-button {
+  min-width: 120px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.form-actions .el-button--primary {
+  background-color: #1a3a9a;
+  border-color: #1a3a9a;
+}
+
+.form-actions .el-button--primary:hover {
+  background-color: #264eca;
+  border-color: #264eca;
+}
+
+.form-actions .el-button--danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.form-actions .el-button--danger:hover {
+  background-color: #c82333;
+  border-color: #c82333;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .edit-form {
+    padding: 16px;
+  }
+
+  .input_row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .primary-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cancel-action {
+    margin-top: 8px;
+  }
+
+  .form-actions .el-button {
+    width: 100%;
+    max-width: 200px;
+  }
 }
 </style>

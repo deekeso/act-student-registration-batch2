@@ -63,3 +63,5 @@ export function formatAddress(student: {
 
   return parts.join(', ')
 }
+
+export const defaultBirthdayView = new Date(new Date().setFullYear(new Date().getFullYear() - 12))

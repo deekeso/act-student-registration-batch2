@@ -9,7 +9,7 @@
     <template #default>
       <!-- Pass editingStudent to EditForm -->
       <EditForm
-        :editing-student="editingStudent"
+        :editing-student="props.editingStudent"
         @submit="handleFormSubmit"
         @cancel="handleFormCancel"
         @delete="handleFormDelete"
@@ -29,7 +29,7 @@ const props = defineProps<{
   modelValue: boolean
   title?: string
   direction?: 'ltr' | 'rtl' | 'ttb' | 'btt'
-  editingStudent?: Student
+  editingStudent?: Student | null
 }>()
 
 // Define emits for the drawer
