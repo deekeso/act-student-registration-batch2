@@ -151,6 +151,7 @@ import { formRules, entryRestriction } from '@/composables/formRules'
 import { useBirthdayPicker } from '@/composables/birthday'
 import { useBirthdayAutoAge } from '@/composables/birthday'
 import { defaultBirthdayView } from '@/composables/birthday'
+import { ElMessageBox } from 'element-plus'
 
 const props = defineProps<{
   initialData?: Partial<Student>
@@ -177,23 +178,44 @@ if (props.initialData) {
 // Called when user submits the form
 const handleSubmit = async () => {
   try {
+    await ElMessageBox.confirm(
+      'Are you sure you want to submit this student?',
+      'Submit Confirmation',
+      {
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        // type: 'warning',
+      },
+    )
     const result = await submitForm()
     if (result.success && result.data) {
-      // If the form is valid and data is returned
       emit('submit', result.data) // Emit the data to the parent component
       resetForm() // Reset the form
     } else {
       console.error('Form submission failed:', result)
     }
-  } catch (error) {
-    console.error('Submit error:', error) // Log the error
+  } catch {
+    // User cancelled, do nothing
   }
 }
 
 // Called when user cancels the form
-const handleCancel = () => {
-  resetForm() // Reset the form
-  emit('cancel') // Emit the cancel event to the parent component
+const handleCancel = async () => {
+  try {
+    await ElMessageBox.confirm(
+      'Are you sure you want to cancel? Unsaved changes will be lost.',
+      'Cancel Confirmation',
+      {
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        // type: 'warning',
+      },
+    )
+    resetForm() // Reset the form
+    emit('cancel') // Emit the cancel event to the parent component
+  } catch {
+    // User cancelled, do nothing
+  }
 }
 </script>
 

@@ -9,6 +9,13 @@
       :prefix-icon="Lock"
       show-password
     />
+    <el-input
+      v-model="confirmPassword"
+      type="password"
+      placeholder="CONFIRM PASSWORD"
+      :prefix-icon="Lock"
+      show-password
+    />
     <el-button color="#ffff" @click="handleResetPassword"> RESET PASSWORD </el-button>
   </div>
 </template>
@@ -23,6 +30,7 @@ import { ElMessage } from 'element-plus'
 const authStore = useAuthStore()
 const username = ref('')
 const password = ref('')
+const confirmPassword = ref('')
 
 // Define emits
 const emit = defineEmits<{
@@ -30,8 +38,12 @@ const emit = defineEmits<{
 }>()
 
 const handleResetPassword = () => {
-  if (!username.value.trim() || !password.value.trim()) {
+  if (!username.value.trim() || !password.value.trim() || !confirmPassword.value.trim()) {
     ElMessage.error('Please enter both username and new password')
+    return
+  }
+  if (password.value !== confirmPassword.value) {
+    ElMessage.error('Passwords do not match')
     return
   }
 
@@ -42,6 +54,7 @@ const handleResetPassword = () => {
     // Clear the form
     username.value = ''
     password.value = ''
+    confirmPassword.value = ''
     // Close the dialog after successful reset
     emit('close')
   } else {
@@ -74,8 +87,6 @@ const handleResetPassword = () => {
 :deep(.password-input .el-input__inner) {
   background-color: #fff;
   color: red !important;
-}
-:deep(.el-input) {
 }
 .el-button {
   border-radius: 10px;

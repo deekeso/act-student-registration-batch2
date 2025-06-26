@@ -154,6 +154,7 @@ import type { Student } from '@/types/Students'
 import { courses } from '@/constants/index.ts'
 import { formRules, entryRestriction } from '@/composables/formRules'
 import { useBirthdayPicker, useBirthdayAutoAge, defaultBirthdayView } from '@/composables/birthday'
+import { ElMessageBox } from 'element-plus'
 
 const props = defineProps<{
   editingStudent?: Student | null // Student object to be edited
@@ -231,30 +232,65 @@ const handleValidate = (prop: string, isValid: boolean, error: unknown) => {
 // Called when user submits the form
 const handleSubmit = async () => {
   try {
+    await ElMessageBox.confirm(
+      'Are you sure you want to submit the changes to this student?',
+      'Submit Confirmation',
+      {
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        type: 'warning',
+      },
+    )
     const result = await submitForm()
     if (result.success && result.data) {
       emit('submit', result.data) // Emit the data to the parent component
     } else {
       console.error('Form submission failed:', result) // Log the error
     }
-  } catch (error) {
-    console.error('Error submitting form:', error)
+  } catch {
+    // User cancelled, do nothing
   }
 }
 
 // Called when user cancels the form
-const handleCancel = () => {
-  if (props.editingStudent) {
-    Object.assign(state, { ...props.editingStudent })
+const handleCancel = async () => {
+  try {
+    await ElMessageBox.confirm(
+      'Are you sure you want to cancel? Unsaved changes will be lost.',
+      'Cancel Confirmation',
+      {
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        type: 'warning',
+      },
+    )
+    if (props.editingStudent) {
+      Object.assign(state, { ...props.editingStudent })
+    }
+    resetForm() // Reset the form
+    emit('cancel') // Emit the cancel event to the parent component
+  } catch {
+    // User cancelled, do nothing
   }
-  resetForm() // Reset the form
-  emit('cancel') // Emit the cancel event to the parent component
 }
 
 // Called when user deletes the student
-const handleDelete = () => {
-  if (props.editingStudent) {
-    emit('delete', { ...props.editingStudent }) // Emit the data to the parent component
+const handleDelete = async () => {
+  try {
+    await ElMessageBox.confirm(
+      'Are you sure you want to delete this student? This action cannot be undone.',
+      'Delete Confirmation',
+      {
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+        type: 'error',
+      },
+    )
+    if (props.editingStudent) {
+      emit('delete', { ...props.editingStudent }) // Emit the data to the parent component
+    }
+  } catch {
+    // User cancelled, do nothing
   }
 }
 </script>

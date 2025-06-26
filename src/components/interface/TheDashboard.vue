@@ -25,7 +25,10 @@
       @delete="handleDelete"
     />
     <!-- Table displaying all students -->
-    <ReusableTable :data="filteredStudents" @edit="handleEdit" @delete="handleDelete" />
+
+    <div class="table-container">
+      <ReusableTable :data="filteredStudents" @edit="handleEdit" @delete="handleDelete" />
+    </div>
   </div>
 </template>
 
@@ -97,10 +100,21 @@ onMounted(() => {
 
 <style scoped>
 .dashboard-container {
-  width: 100%;
+  position: relative;
   height: 100vh;
-  margin: 0;
   background-color: white;
+}
+
+.table-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90vw; /* responsive width based on viewport */
+  max-width: 50vw;
+
+  height: 85vh; /* keeps your original height */
+  margin: 0 auto; /* centers it horizontally */
+  box-sizing: border-box;
 }
 
 .add_Students {
