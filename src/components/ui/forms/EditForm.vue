@@ -25,7 +25,7 @@
             @keypress="onlyLetters"
           />
         </el-form-item>
-        <el-form-item label="Middle Initial" prop="middleInitial" required>
+        <el-form-item label="Middle Initial" prop="middleInitial">
           <el-input
             id="middleInitial"
             type="text"
@@ -48,6 +48,7 @@
             placeholder=""
             :disabled-date="disabledDate"
             :default-value="defaultBirthdayView"
+            @keydown.prevent
             required
           />
         </el-form-item>
@@ -243,6 +244,9 @@ const handleSubmit = async () => {
 
 // Called when user cancels the form
 const handleCancel = () => {
+  if (props.editingStudent) {
+    Object.assign(state, { ...props.editingStudent })
+  }
   resetForm() // Reset the form
   emit('cancel') // Emit the cancel event to the parent component
 }

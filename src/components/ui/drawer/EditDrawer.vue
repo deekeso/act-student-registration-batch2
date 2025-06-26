@@ -9,6 +9,7 @@
     <template #default>
       <!-- Pass editingStudent to EditForm -->
       <EditForm
+        :key="(props.editingStudent?.id || '') + '-' + isOpen"
         :editing-student="props.editingStudent"
         @submit="handleFormSubmit"
         @cancel="handleFormCancel"

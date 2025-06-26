@@ -25,7 +25,7 @@
             @keypress="onlyLetters"
           />
         </el-form-item>
-        <el-form-item label="Middle Initial" prop="middleInitial" required>
+        <el-form-item label="Middle Initial" prop="middleInitial">
           <el-input
             id="middleInitial"
             type="text"
@@ -48,6 +48,7 @@
             placeholder=""
             :disabled-date="disabledDate"
             :default-value="defaultBirthdayView"
+            @keydown.prevent
             required
           />
         </el-form-item>

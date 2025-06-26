@@ -15,8 +15,7 @@ function middleInitialValidator(
   value: string,
   callback: (error?: Error) => void,
 ) {
-  if (!value) return callback(new Error('Please enter middle initial'))
-  if (!/^[A-Za-z]$/.test(value)) {
+  if (!/^[A-Za-z]{0,3}$/.test(value)) {
     callback(new Error('Only 1 to 3 letters allowed'))
   } else {
     callback()
@@ -24,7 +23,7 @@ function middleInitialValidator(
 }
 
 function birthDateValidator(rule: FormItemRule, value: string, callback: (error?: Error) => void) {
-  if (!value) return callback(new Error('Please enter birth date'))
+  if (!value) return callback(new Error('This field is required'))
   const today = new Date()
   const birth = new Date(value)
   let age = today.getFullYear() - birth.getFullYear()
@@ -43,17 +42,19 @@ export const formRules = reactive({
   lastName: [{ validator: nameValidator, trigger: 'blur' }],
   firstName: [{ validator: nameValidator, trigger: 'blur' }],
   middleInitial: [{ validator: middleInitialValidator, trigger: 'blur' }],
-  birthDate: [{ validator: birthDateValidator, trigger: 'change' }],
-  age: [
-    { required: true, message: 'Please enter age', trigger: 'blur' },
-    { type: 'number', min: 1, max: 99, message: 'Age must be between 1 and 99', trigger: 'blur' },
+  birthDate: [
+    { validator: birthDateValidator, trigger: 'blur', message: 'This field is required' },
   ],
-  streetAddress: [{ required: true, message: 'Please enter street address', trigger: 'blur' }],
-  barangay: [{ required: true, message: 'Please enter barangay', trigger: 'blur' }],
-  city: [{ required: true, message: 'Please enter city/municipality', trigger: 'blur' }],
-  province: [{ required: true, message: 'Please enter province', trigger: 'blur' }],
-  zipCode: [{ required: true, message: 'Please enter zip code', trigger: 'blur' }],
-  course: [{ required: true, message: 'Please select a course', trigger: 'change' }],
+  // age: [
+  //   { required: true, message: 'Please enter age', trigger: 'blur' },
+  //   { type: 'number', min: 1, max: 99, message: 'Age must be between 1 and 99', trigger: 'blur' },
+  // ],
+  streetAddress: [{ required: true, message: 'This field is required', trigger: 'blur' }],
+  barangay: [{ required: true, message: 'This field is required', trigger: 'blur' }],
+  city: [{ required: true, message: 'This field is required', trigger: 'blur' }],
+  province: [{ required: true, message: 'This field is required', trigger: 'blur' }],
+  zipCode: [{ required: true, message: 'This field is required', trigger: 'blur' }],
+  course: [{ required: true, message: 'This field is required', trigger: 'change' }],
 })
 
 export const entryRestriction = () => {
