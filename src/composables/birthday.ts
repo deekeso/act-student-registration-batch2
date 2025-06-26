@@ -25,6 +25,7 @@ export function formatDate(date: string | Date) {
   return d.toISOString().split('T')[0]
 }
 
+// Auto-calculate age based on birthday
 export function useBirthdayAutoAge(state: { birthDate: string | Date; age: number | string }) {
   watch(
     () => state.birthDate,
@@ -43,4 +44,22 @@ export function useBirthdayAutoAge(state: { birthDate: string | Date; age: numbe
       }
     },
   )
+}
+
+export function formatAddress(student: {
+  streetAddress: string
+  barangay: string
+  city: string
+  province: string
+  zipCode: string
+}) {
+  const parts = [
+    student.streetAddress,
+    student.barangay,
+    student.city,
+    student.province,
+    student.zipCode,
+  ].filter((part) => part && part.trim())
+
+  return parts.join(', ')
 }

@@ -1,93 +1,132 @@
 <template>
   <div>
     <el-form :model="state" :rules="rules" ref="formRef">
-      <el-card>
-        <div>
-          <el-form-item label="Last Name" prop="lastName" required>
+      <div>
+        <el-form-item label="Last Name" prop="lastName" required>
+          <el-input
+            id="lastName"
+            type="text"
+            v-model="state.lastName"
+            style="width: 100%"
+            placeholder="ex. Dela Cruz"
+            maxlength="30"
+            @keypress="onlyLetters"
+          />
+        </el-form-item>
+        <el-form-item label="First Name" prop="firstName" required>
+          <el-input
+            id="firstName"
+            type="text"
+            v-model="state.firstName"
+            style="width: 100%"
+            placeholder="ex. Juan"
+            maxlength="30"
+            @keypress="onlyLetters"
+          />
+        </el-form-item>
+        <div class="input_row">
+          <el-form-item label="Middle Initial" prop="middleInitial" required>
             <el-input
-              id="lastName"
+              id="middleInitial"
               type="text"
-              v-model="state.lastName"
+              v-model="state.middleInitial"
               style="width: 100%"
-              placeholder="ex. Dela Cruz"
-              maxlength="30"
+              placeholder="ex. S"
+              maxlength="3"
               @keypress="onlyLetters"
             />
           </el-form-item>
-          <el-form-item label="First Name" prop="firstName" required>
-            <el-input
-              id="firstName"
-              type="text"
-              v-model="state.firstName"
+          <el-form-item label="Birthday" required prop="birthDate">
+            <el-date-picker
+              id="birthDate"
+              type="date"
+              v-model="state.birthDate"
               style="width: 100%"
-              placeholder="ex. Juan"
-              maxlength="30"
-              @keypress="onlyLetters"
+              placeholder=""
+              :disabled-date="disabledDate"
+              required
             />
           </el-form-item>
-          <div class="input_row">
-            <el-form-item label="Middle Initial">
-              <el-input
-                id="middleInitial"
-                type="text"
-                v-model="state.middleInitial"
-                style="width: 100%"
-                placeholder="ex. S"
-                maxlength="3"
-                @keypress="onlyLetters"
-              />
-            </el-form-item>
-            <el-form-item label="Birthday" required prop="birthday">
-              <el-date-picker
-                id="birthDate"
-                type="date"
-                v-model="state.birthDate"
-                style="width: 100%"
-                placeholder=""
-                :disabled-date="disabledDate"
-                :default-value="formatDate(new Date())"
-                required
-              />
-            </el-form-item>
-            <el-form-item label="Age">
-              <el-input
-                id="age"
-                type="number"
-                v-model="state.age"
-                style="width: 100%"
-                placeholder=""
-                readonly
-              />
-            </el-form-item>
-          </div>
-          <el-form-item label="Address">
+          <el-form-item label="Age">
             <el-input
-              id="address"
-              type="text"
-              v-model="state.address"
+              id="age"
+              type="number"
+              v-model="state.age"
               style="width: 100%"
-              placeholder="Blk., No., Street, City, Province"
+              placeholder=""
+              readonly
             />
           </el-form-item>
         </div>
-        <div>
-          <el-form-item label="Course" prop="course" required>
-            <el-select v-model="state.course" id="course" placeholder="Select" style="width: 100%">
-              <el-option disabled value="">Please select one</el-option>
-              <el-option
-                v-for="course in courses"
-                :key="course.value"
-                :value="course.value"
-                :label="course.label"
-              />
-            </el-select>
+        <el-form-item label="Street Address" prop="streetAddress" required>
+          <el-input
+            id="streetAddress"
+            type="text"
+            v-model="state.streetAddress"
+            style="width: 100%"
+            placeholder="ex. 123 Main Street"
+          />
+        </el-form-item>
+        <div class="input_row">
+          <el-form-item label="Barangay" prop="barangay" required>
+            <el-input
+              id="barangay"
+              type="text"
+              v-model="state.barangay"
+              style="width: 100%"
+              placeholder="ex. Barangay 1"
+            />
+          </el-form-item>
+          <el-form-item label="City/Municipality" prop="city" required>
+            <el-input
+              id="city"
+              type="text"
+              v-model="state.city"
+              style="width: 100%"
+              placeholder="ex. Manila"
+            />
           </el-form-item>
         </div>
-        <div class="form-actions">
-          <el-button @click="handleCancel">Cancel</el-button>
-          <el-button type="primary" @click="handleSubmit">Submit</el-button>
+        <div class="input_row">
+          <el-form-item label="Province" prop="province" required>
+            <el-input
+              id="province"
+              type="text"
+              v-model="state.province"
+              style="width: 100%"
+              placeholder="ex. Metro Manila"
+            />
+          </el-form-item>
+          <el-form-item label="Zip Code" prop="zipCode" required>
+            <el-input
+              id="zipCode"
+              type="text"
+              v-model="state.zipCode"
+              style="width: 100%"
+              placeholder="ex. 1000"
+              maxlength="5"
+              @keypress="onlyDigits"
+            />
+          </el-form-item>
         </div>
-      </el-card>
+      </div>
+      <div>
+        <el-form-item label="Course" prop="course" required>
+          <el-select v-model="state.course" id="course" placeholder="Select" style="width: 100%">
+            <el-option disabled value="">Please select one</el-option>
+            <el-option
+              v-for="course in courses"
+              :key="course.value"
+              :value="course.value"
+              :label="course.label"
+            />
+          </el-select>
+        </el-form-item>
+      </div>
+      <div class="form-actions">
+        <el-button @click="handleCancel">Cancel</el-button>
+        <el-button type="primary" @click="handleSubmit">Submit</el-button>
+      </div>
     </el-form>
   </div>
 </template>
@@ -107,11 +146,8 @@ const props = defineProps<{
 }>()
 
 const rules = formRules
-const { onlyLetters } = entryRestriction()
+const { onlyLetters, onlyDigits } = entryRestriction()
 const { disabledDate } = useBirthdayPicker()
-const formatDate = (date: Date) => {
-  return date.toLocaleDateString()
-}
 const emit = defineEmits<{
   (e: 'submit', data: Student): void
   (e: 'cancel'): void

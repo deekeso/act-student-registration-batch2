@@ -27,7 +27,11 @@
         </template>
       </el-table-column>
       <el-table-column align="center" prop="age" label="Age" />
-      <el-table-column prop="address" label="Address" />
+      <el-table-column prop="address" label="Address">
+        <template #default="scope">
+          {{ formatAddress(scope.row) }}
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="Actions">
         <template #default="scope">
           <el-button size="small" @click="$emit('edit', scope.row)">Edit</el-button>
@@ -43,7 +47,7 @@
 <script lang="ts" setup>
 import { defineProps, defineEmits } from 'vue'
 import type { Student } from '@/types/Students'
-import { formatDate } from '@/composables/birthday'
+import { formatDate, formatAddress } from '@/composables/birthday'
 
 defineProps<{
   data: Student[]

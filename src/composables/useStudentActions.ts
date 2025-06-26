@@ -14,7 +14,11 @@ export function useStudentActions(formRef: Ref<FormInstance | null>) {
     lastName: '',
     birthDate: '',
     age: 0,
-    address: '',
+    streetAddress: '',
+    barangay: '',
+    city: '',
+    province: '',
+    zipCode: '',
     course: '',
   })
 
@@ -76,7 +80,11 @@ export function useStudentActions(formRef: Ref<FormInstance | null>) {
       lastName: '',
       birthDate: '',
       age: 0,
-      address: '',
+      streetAddress: '',
+      barangay: '',
+      city: '',
+      province: '',
+      zipCode: '',
       course: '',
     })
     formRef.value?.resetFields()
@@ -99,7 +107,11 @@ export function useStudentActions(formRef: Ref<FormInstance | null>) {
       lastName: student.lastName,
       birthDate: student.birthDate,
       age: Number(student.age),
-      address: student.address,
+      streetAddress: student.streetAddress,
+      barangay: student.barangay,
+      city: student.city,
+      province: student.province,
+      zipCode: student.zipCode,
       course: student.course,
     })
     console.log('Editing Student:', student)

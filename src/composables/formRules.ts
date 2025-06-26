@@ -48,7 +48,11 @@ export const formRules = reactive({
     { required: true, message: 'Please enter age', trigger: 'blur' },
     { type: 'number', min: 1, max: 99, message: 'Age must be between 1 and 99', trigger: 'blur' },
   ],
-  address: [{ required: true, message: 'Please enter address', trigger: 'blur' }],
+  streetAddress: [{ required: true, message: 'Please enter street address', trigger: 'blur' }],
+  barangay: [{ required: true, message: 'Please enter barangay', trigger: 'blur' }],
+  city: [{ required: true, message: 'Please enter city/municipality', trigger: 'blur' }],
+  province: [{ required: true, message: 'Please enter province', trigger: 'blur' }],
+  zipCode: [{ required: true, message: 'Please enter zip code', trigger: 'blur' }],
   course: [{ required: true, message: 'Please select a course', trigger: 'change' }],
 })
 

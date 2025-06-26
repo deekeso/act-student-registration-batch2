@@ -16,6 +16,10 @@ export interface Student {
   lastName: string
   birthDate: string
   age: number
-  address: string
+  streetAddress: string
+  barangay: string
+  city: string
+  province: string
+  zipCode: string
   course: string
 }

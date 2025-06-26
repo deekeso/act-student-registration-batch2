@@ -35,7 +35,7 @@
                 maxlength="3"
               />
             </el-form-item>
-            <el-form-item label="Birthday" required prop="birthday">
+            <el-form-item label="Birthday" required prop="birthDate">
               <el-date-picker
                 id="birthDate"
                 type="date"
@@ -43,7 +43,6 @@
                 style="width: 100%"
                 placeholder=""
                 :disabled-date="disabledDate"
-                :default-value="formatDate(new Date())"
                 required
               />
             </el-form-item>
@@ -57,15 +56,57 @@
               />
             </el-form-item>
           </div>
-          <el-form-item label="Address">
+          <el-form-item label="Street Address" prop="streetAddress" required>
             <el-input
-              id="address"
+              id="streetAddress"
               type="text"
-              v-model="state.address"
+              v-model="state.streetAddress"
               style="width: 100%"
-              placeholder="Blk., No., Street, City, Province"
+              placeholder="ex. 123 Main Street"
             />
           </el-form-item>
+          <div class="input_row">
+            <el-form-item label="Barangay" prop="barangay" required>
+              <el-input
+                id="barangay"
+                type="text"
+                v-model="state.barangay"
+                style="width: 100%"
+                placeholder="ex. Barangay 1"
+              />
+            </el-form-item>
+            <el-form-item label="City/Municipality" prop="city" required>
+              <el-input
+                id="city"
+                type="text"
+                v-model="state.city"
+                style="width: 100%"
+                placeholder="ex. Manila"
+              />
+            </el-form-item>
+          </div>
+          <div class="input_row">
+            <el-form-item label="Province" prop="province" required>
+              <el-input
+                id="province"
+                type="text"
+                v-model="state.province"
+                style="width: 100%"
+                placeholder="ex. Metro Manila"
+              />
+            </el-form-item>
+            <el-form-item label="Zip Code" prop="zipCode" required>
+              <el-input
+                id="zipCode"
+                type="text"
+                v-model="state.zipCode"
+                style="width: 100%"
+                placeholder="ex. 1000"
+                maxlength="5"
+                @keypress="onlyDigits"
+              />
+            </el-form-item>
+          </div>
         </div>
         <div>
           <el-form-item label="Course" prop="course" required>
@@ -114,11 +155,8 @@ const emit = defineEmits<{
 // Define state for the form
 const formRef = ref<FormInstance | null>(null)
 const { state, submitForm, resetForm, editingStudent } = useStudentActions(formRef)
-const { onlyLetters } = entryRestriction()
+const { onlyLetters, onlyDigits } = entryRestriction()
 const { disabledDate } = useBirthdayPicker()
-const formatDate = (date: Date) => {
-  return date.toLocaleDateString()
-}
 useBirthdayAutoAge(state)
 const rules = formRules
 
