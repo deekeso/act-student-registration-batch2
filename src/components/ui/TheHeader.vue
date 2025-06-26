@@ -17,6 +17,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const handleLogout = () => {
+  // Clear current session but preserve stored credentials for next login
   authStore.clearCredentials()
   ElMessage.success('Logged out successfully')
   router.push('/')

@@ -29,9 +29,19 @@ export const useAuthStore = defineStore('auth', {
       const storedUsername = localStorage.getItem('Username')
       const storedPassword = localStorage.getItem('Password')
 
-      // If no stored credentials, use default admin credentials
-      const validUsername = storedUsername || 'admin'
-      const validPassword = storedPassword || 'admin123!'
+      // If stored credentials exist, use them; otherwise use default admin credentials
+      let validUsername: string
+      let validPassword: string
+
+      if (storedUsername && storedPassword) {
+        // Use stored credentials (including any changed via forgot password)
+        validUsername = storedUsername
+        validPassword = storedPassword
+      } else {
+        // Fall back to default admin credentials only if no stored credentials exist
+        validUsername = 'admin'
+        validPassword = 'admin123!'
+      }
 
       if (this.username === validUsername && this.password === validPassword) {
         return { success: true, message: 'Login successful', username: this.username }
@@ -57,11 +67,19 @@ export const useAuthStore = defineStore('auth', {
     },
 
     clearCredentials() {
+      // Only clear the current session state, don't remove stored credentials
       this.username = ''
       this.password = ''
-      localStorage.removeItem('Username')
-      localStorage.removeItem('Password')
+      // Don't remove from localStorage - keep the stored credentials for next login
     },
+
+    // clearStoredCredentials() {
+    //   // This function completely removes stored credentials from localStorage
+    //   this.username = ''
+    //   this.password = ''
+    //   localStorage.removeItem('Username')
+    //   localStorage.removeItem('Password')
+    // },
 
     resetPassword(username: string, newPassword: string) {
       // Only allow password reset for admin user
