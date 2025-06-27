@@ -205,7 +205,7 @@ onMounted(() => {
   gap: 1rem;
   align-items: center;
   background-color: #264eca;
-  padding: 20px;
+  padding: 15px;
   border-radius: 10px;
 }
 
