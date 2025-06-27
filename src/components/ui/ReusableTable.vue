@@ -2,20 +2,18 @@
   <div class="table-container">
     <el-table :data="data">
       <!-- <el-table-column prop="id" label="id" /> -->
-      <el-table-column align="center" prop="course" label="Course" width="80px" />
+      <el-table-column align="center" prop="course" label="Course" />
       <el-table-column
         align="center"
         prop="lastName"
         label="Last Name"
         :formatter="(row: any) => (row.lastName ? row.lastName.toUpperCase() : '')"
-        width="120px"
       />
       <el-table-column
         align="center"
         prop="firstName"
         label="First Name"
         :formatter="(row: any) => (row.firstName ? row.firstName.toUpperCase() : '')"
-        width="100px"
       />
       <el-table-column
         align="center"
@@ -30,9 +28,9 @@
         </template>
       </el-table-column>
       <el-table-column align="center" prop="age" label="Age" width="80px" />
-      <el-table-column prop="address" label="Address" min-width="400px" align="center">
+      <el-table-column prop="address" label="Address" min-width="350px" align="center">
         <template #default="scope">
-          <div style="text-align: left">
+          <div style="text-align: center">
             {{ formatAddress(scope.row) }}
           </div>
         </template>
@@ -62,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits } from 'vue'
+import { defineEmits } from 'vue'
 import type { Student } from '@/types/Students'
 import { formatDate, formatAddress } from '@/composables/birthday'
 import { ElMessageBox } from 'element-plus'
@@ -107,14 +105,42 @@ const handleDelete = async (student: Student) => {
   align-items: center;
   width: 80vw auto;
   height: 85vh;
+  max-width: 65vw !important;
 }
+
 .el-table {
   width: 80vw;
   height: 70vh;
   border-radius: 10px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-  border: 5px solid #e0e0e0;
+  border: 3px solid rgb(38, 78, 198);
 }
+
+.el-table__label {
+  background-color: #2148c0;
+  border-color: #2148c0;
+  color: white;
+}
+
+.table-header {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.filter-button {
+  background-color: #2148c0;
+  border-color: #2148c0;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.filter-button:hover {
+  background-color: #264eca;
+  border-color: #264eca;
+}
+
 .el-table .el-button {
   width: 100%;
   margin: 4px 0;
@@ -132,5 +158,29 @@ const handleDelete = async (student: Student) => {
   flex-direction: column;
   align-items: stretch;
   height: 30px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .table-container {
+    width: 95vw !important;
+    max-width: none !important;
+    padding: 0 1rem;
+  }
+
+  .el-table {
+    width: 95vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .table-container {
+    width: 98vw !important;
+    max-width: none !important;
+  }
+
+  .el-table {
+    width: 98vw;
+  }
 }
 </style>
