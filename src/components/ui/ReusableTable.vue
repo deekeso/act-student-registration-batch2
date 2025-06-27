@@ -93,27 +93,17 @@ const handleDelete = async (student: Student) => {
 
 <style scoped>
 .table-container {
-  /*  margin: 2rem 0 0 0;
-  display: flex;
-  justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 85vh; */
-
-  display: flex;
   justify-content: center;
-  align-items: center;
-  width: 80vw auto;
-  height: 85vh;
-  max-width: 65vw !important;
+  top: 0;
 }
 
 .el-table {
-  width: 80vw;
-  height: 70vh;
+  max-height: 720px;
   border-radius: 10px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   border: 3px solid rgb(38, 78, 198);
+  height: 80vh;
 }
 
 .el-table__label {
@@ -124,8 +114,6 @@ const handleDelete = async (student: Student) => {
 
 .table-header {
   display: flex;
-  justify-content: flex-end;
-  width: 100%;
   margin-bottom: 1rem;
 }
 
@@ -141,24 +129,17 @@ const handleDelete = async (student: Student) => {
   border-color: #264eca;
 }
 
-.el-table .el-button {
+.el-button {
   width: 100%;
-  margin: 4px 0;
   border-radius: 8px;
 }
 .el-table .el-table__row .el-table__cell .el-button + .el-button {
   margin-top: 8px;
   margin-left: 0;
 }
-.el-table .el-table__cell .el-button {
+/* .el-table .el-table__cell .el-button {
   display: block;
-}
-.el-table .el-table__cell {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  height: 30px;
-}
+} */
 
 /* Responsive design */
 @media (max-width: 768px) {
@@ -181,6 +162,7 @@ const handleDelete = async (student: Student) => {
 
   .el-table {
     width: 98vw;
+    height: 50vh;
   }
 }
 </style>

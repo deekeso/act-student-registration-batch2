@@ -13,5 +13,7 @@ defineEmits(['open'])
   height: 40px;
   width: 100px;
   border-radius: 10px;
+  border: 1px solid #fff;
+  z-index: 10;
 }
 </style>

@@ -26,11 +26,11 @@ const emit = defineEmits<{
 
 <style scoped>
 .search-bar {
-  width: 80vw;
+  width: 100%;
   height: 40px;
   display: flex;
   justify-content: center;
-  margin: 0;
+  z-index: 10;
 }
 
 .search-bar :deep(.el-input__wrapper) {

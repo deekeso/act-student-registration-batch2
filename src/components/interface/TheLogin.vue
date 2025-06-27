@@ -21,13 +21,13 @@
         <el-dialog
           v-model="showForgotDialog"
           title="Forgot Password"
-          width="400px"
           :close-on-click-modal="false"
           style="
             border-radius: 10px;
             border-top: 4px solid #fff;
             background-color: rgba(46, 86, 210);
             padding: 40px 25px 20px 25px;
+            width: 350px;
           "
         >
           <p style="color: #fff">Enter your username and new password to reset your password.</p>
@@ -239,5 +239,17 @@ const handleForgotPassword = (event: Event) => {
 }
 :deep(.el-dialog) {
   margin-top: 35vh;
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    padding: 0 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 0 2rem;
+  }
 }
 </style>

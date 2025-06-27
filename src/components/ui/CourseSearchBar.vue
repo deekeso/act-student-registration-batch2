@@ -34,14 +34,15 @@ const emit = defineEmits<{
 <style scoped>
 .course-search-bar {
   width: 100%;
-  height: 40px;
+  height: 100%;
   display: flex;
   justify-content: center;
-  margin: 0;
+  z-index: 10;
 }
 
 .course-search-bar :deep(.el-select) {
   width: 100%;
+  height: 40px;
 }
 
 .course-search-bar :deep(.el-input__wrapper) {
@@ -52,10 +53,17 @@ const emit = defineEmits<{
 
 .course-search-bar :deep(.el-input__wrapper:hover) {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  height: 40px;
 }
 
 .course-search-bar :deep(.el-input__wrapper.is-focus) {
   box-shadow: 0 0 0 2px rgba(26, 58, 154, 0.2);
+  height: 40px;
+}
+
+:deep(.el-select__wrapper) {
+  padding: 8px 12px;
+  border-radius: 10px;
 }
 
 /* Responsive design */

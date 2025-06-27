@@ -50,21 +50,18 @@ const handleLogout = async () => {
     rgba(230, 237, 250, 1) 100%
   );
   color: #2148c0;
-  padding: 16px 24px;
+  padding: 24px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
 }
 
 .header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  margin: 0;
+  padding-right: 10px;
 }
 
 .header h1 {
-  margin: 0;
   font-size: 24px;
   font-weight: 400;
   color: #fff;
