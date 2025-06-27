@@ -133,9 +133,11 @@
           </el-select>
         </el-form-item>
       </div>
-      <div class="form-actions">
+      <div class="form-actions" style="padding-bottom: 20px">
         <el-button @click="handleCancel">Cancel</el-button>
-        <el-button type="primary" @click="handleSubmit">Submit</el-button>
+        <el-button type="primary" @click="handleSubmit" style="margin-right: 10px"
+          >Submit</el-button
+        >
       </div>
     </el-form>
   </div>
@@ -221,8 +223,7 @@ const handleCancel = async () => {
 
 <style scoped>
 .el-form {
-  height: 90vh;
-  margin-bottom: 10px;
+  height: 80vh;
 }
 :deep(.el-form-item__error) {
   color: var(--el-color-danger);
@@ -239,8 +240,8 @@ const handleCancel = async () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  padding: 0 20px 2px 20px;
+  height: 80vh;
+  padding: 0 20px 10px 20px;
   max-width: 600px;
   margin: 0 auto;
   white-space: nowrap;
@@ -284,7 +285,7 @@ const handleCancel = async () => {
   font-size: 16px;
   font-weight: 600;
   color: #1a3a9a;
-  margin: 30px 0 20px 0;
+  /* margin: 30px 0 20px 0; */
   /* padding-bottom: 8px; */
   border-bottom: 1px solid #e0e0e0;
   margin-bottom: 10px;
@@ -314,20 +315,25 @@ const handleCancel = async () => {
 
 /* Form actions */
 .form-actions {
-  margin-top: 40px;
+  /* margin-top: 40px; */
   display: flex;
   justify-content: center;
-  gap: 16px;
+  align-items: center;
+  gap: 10px;
   width: 100%;
   padding-top: 20px;
   border-top: 1px solid #e0e0e0;
+  margin-bottom: 10px;
 }
 
 .form-actions .el-button {
-  min-width: 120px;
-  padding: 12px 24px;
-  border-radius: 8px;
+  width: 100%;
+  /* padding: 12px 24px; */
+  border-radius: 10px;
   font-weight: 500;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .form-actions .el-button--primary {
@@ -358,7 +364,6 @@ const handleCancel = async () => {
 
   .form-actions .el-button {
     width: 100%;
-    max-width: 200px;
   }
 }
 </style>

@@ -14,7 +14,7 @@
   >
     <template #header>
       <slot name="header">
-        <h4 style="margin-top: 5px; font-size: 24px; font-weight: 700; color: #1a3a9a; width: 100%">
+        <h4 style="font-size: 24px; font-weight: 700; color: #1a3a9a; width: 100%">
           {{ title }}
         </h4>
       </slot>
@@ -48,7 +48,7 @@
   >
     <template #header>
       <slot name="header">
-        <h4 style="margin-top: 5px; font-size: 24px; font-weight: 700; color: #1a3a9a; width: 100%">
+        <h4 style="font-size: 24px; font-weight: 700; color: #1a3a9a; width: 100%">
           {{ title }}
         </h4>
       </slot>

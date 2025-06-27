@@ -1,6 +1,13 @@
 <template>
   <div class="edit-form">
-    <el-form @submit.prevent :model="state" :rules="rules" ref="formRef" @validate="handleValidate">
+    <el-form
+      @submit.prevent
+      :model="state"
+      :rules="rules"
+      ref="formRef"
+      @validate="handleValidate"
+      label-position="top"
+    >
       <div class="name_row">
         <h4>Name</h4>
         <el-form-item label="Last Name" prop="lastName" required>
@@ -30,7 +37,7 @@
             id="middleInitial"
             type="text"
             v-model="state.middleInitial"
-            style="width: 50%"
+            style="width: 100%"
             placeholder="ex. S"
             maxlength="3"
             @keypress="onlyLetters"
@@ -57,7 +64,7 @@
             id="age"
             type="number"
             v-model="state.age"
-            style="width: 50%"
+            style="width: 100%"
             placeholder=""
             readonly
           />
@@ -96,7 +103,7 @@
           </el-form-item>
         </div>
         <div>
-          <el-form-item label="Province" prop="province" required>
+          <el-form-item label="Province" prop="province">
             <el-input
               id="province"
               type="text"
@@ -106,12 +113,12 @@
               @keypress="onlyLetters"
             />
           </el-form-item>
-          <el-form-item label="Zip Code" prop="zipCode" required>
+          <el-form-item label="Zip Code" prop="zipCode">
             <el-input
               id="zipCode"
               type="text"
               v-model="state.zipCode"
-              style="width: 50%"
+              style="width: 100%"
               placeholder="ex. 1000"
               maxlength="5"
               @keypress="onlyDigits"
@@ -133,14 +140,12 @@
           </el-select>
         </el-form-item>
       </div>
-      <div class="form-actions">
-        <div class="primary-actions">
-          <el-button type="danger" @click="handleDelete" style="width: 100%">Delete</el-button>
-          <el-button type="primary" @click="handleSubmit" style="width: 100%">Submit</el-button>
-        </div>
-        <div class="cancel-action">
-          <el-button @click="handleCancel" style="width: 100%">Cancel</el-button>
-        </div>
+      <div class="form-actions" style="margin-left: 8px">
+        <!-- <el-button @click="handleCancel">Cancel</el-button> -->
+        <el-button type="danger" @click="handleDelete">Delete</el-button>
+        <el-button type="primary" @click="handleSubmit" style="margin-right: 10px"
+          >Submit</el-button
+        >
       </div>
     </el-form>
   </div>
@@ -301,10 +306,11 @@ const handleDelete = async () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  padding: 20px 20px 80px 20px;
+  height: 100vh;
+  padding: 0 20px 120px 20px;
   max-width: 600px;
   margin: 0 auto;
+  white-space: nowrap;
 }
 
 .edit-form :deep(.el-form) {
@@ -369,8 +375,8 @@ const handleDelete = async () => {
   font-size: 16px;
   font-weight: 600;
   color: #1a3a9a;
-  margin: 30px 0 20px 0;
-  padding-bottom: 8px;
+  /* margin: 30px 0 20px 0; */
+  /* padding-bottom: 8px; */
   border-bottom: 1px solid #e0e0e0;
   margin-bottom: 10px;
   width: 100%;
@@ -382,32 +388,25 @@ const handleDelete = async () => {
 
 /* Form actions */
 .form-actions {
-  margin-top: 40px;
+  /* margin-top: 40px; */
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
   width: 100%;
   padding-top: 20px;
   border-top: 1px solid #e0e0e0;
-}
-
-.primary-actions {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  width: 100%;
-}
-
-.cancel-action {
-  display: flex;
-  justify-content: center;
-  width: 100%;
+  margin-bottom: 10px;
 }
 
 .form-actions .el-button {
-  min-width: 120px;
-  border-radius: 8px;
+  width: 100%;
+  /* padding: 12px 24px; */
+  border-radius: 10px;
   font-weight: 500;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .form-actions .el-button--primary {
@@ -446,37 +445,28 @@ const handleDelete = async () => {
     align-items: center;
   }
 
-  .primary-actions {
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .cancel-action {
-    margin-top: 8px;
-  }
-
   .form-actions .el-button {
     width: 100%;
-    max-width: 200px;
   }
-}
-
-.edit-form :deep(.el-form-item__content) {
-  display: flex;
-  align-items: center;
-  position: relative;
 }
 
 .edit-form :deep(.el-form-item__error) {
-  position: static;
-  margin-left: 16px;
   color: var(--el-color-danger);
   font-size: 12px;
-  white-space: nowrap;
-  background: transparent;
-  padding: 0;
-  z-index: 2;
+  padding: 4px;
+  position: absolute;
+  top: 100%;
   line-height: normal;
+  right: 0;
+  left: revert;
+}
+
+/* Form sections */
+.name_row,
+.birthday_row,
+.address_row,
+.course_row {
+  width: 100%;
+  margin-bottom: 10px;
 }
 </style>
