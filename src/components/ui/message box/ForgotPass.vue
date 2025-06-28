@@ -1,6 +1,5 @@
 <template>
   <div class="forgot-pass-container">
-    <!-- <h2>Password Reset</h2> -->
     <el-input v-model="username" placeholder="USERNAME" :prefix-icon="User" />
     <el-input
       v-model="password"

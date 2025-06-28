@@ -81,7 +81,7 @@ const filteredStudents = computed(() => {
   // Filter by course if course search is active
   if (courseSearch.value) {
     students = students.filter((student) =>
-      student.course.toLowerCase().includes(courseSearch.value.toLowerCase()),
+      student.course?.toLowerCase().includes(courseSearch.value.toLowerCase()),
     )
   }
 
@@ -121,9 +121,9 @@ const filteredStudents = computed(() => {
       }
 
       if (direction === 'asc') {
-        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0
+        return aValue && bValue ? (aValue < bValue ? -1 : aValue > bValue ? 1 : 0) : 0
       } else {
-        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0
+        return aValue && bValue ? (aValue > bValue ? -1 : aValue < bValue ? 1 : 0) : 0
       }
     })
   }
@@ -168,6 +168,12 @@ const handleSort = (command: string) => {
 // On mount, log all students (for debugging)
 onMounted(() => {
   console.log('All Students:', store.allStudents())
+
+  // Initialize students table if it's empty (first time login)
+  if (store.allStudents().length === 0) {
+    console.log('Initializing students table with initial data...')
+    store.resetStudents()
+  }
 })
 </script>
 
@@ -239,7 +245,7 @@ onMounted(() => {
   max-width: 100vw;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Keep this if you want contents centered vertically */
+  align-items: center;
 }
 
 .div1 {
@@ -255,18 +261,12 @@ onMounted(() => {
 .div3 {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* aligns children to the top vertically */
-  align-items: center; /* aligns children to the left horizontally */
+  justify-content: center;
+  align-items: center;
   width: 100%;
   box-sizing: border-box;
 }
 
-/* .filter-button:hover {
-  background-color: #264eca;
-  border-color: #264eca;
-} */
-
-/* Responsive design */
 @media (max-width: 768px) {
   .dashboard-container > *:not(:first-child) {
     padding-left: 1rem;
@@ -334,14 +334,12 @@ onMounted(() => {
   }
 
   .add_Students :deep(.el-button) {
-    /* width: 90vw; */
     max-width: none;
     padding: 0 1.5rem;
     height: 40px;
   }
 
   .filter-button {
-    /* width: 90vw; */
     max-width: none;
     z-index: 10;
     position: relative;

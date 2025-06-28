@@ -137,9 +137,6 @@ const handleDelete = async (student: Student) => {
   margin-top: 8px;
   margin-left: 0;
 }
-/* .el-table .el-table__cell .el-button {
-  display: block;
-} */
 
 /* Responsive design */
 @media (max-width: 768px) {

@@ -174,10 +174,10 @@ const emit = defineEmits<{
 
 // Define state for the form
 const formRef = ref<FormInstance | null>(null)
-const { state, submitForm, resetForm } = useStudentActions(formRef)
+const { state, submitForm } = useStudentActions(formRef)
 const { onlyLetters, onlyDigits } = entryRestriction()
 const { disabledDate } = useBirthdayPicker()
-useBirthdayAutoAge(state)
+useBirthdayAutoAge({ birthDate: state.birthDate, age: state.age })
 const rules = formRules
 
 // Watch for changes in the editingStudent prop and populate form
@@ -258,26 +258,26 @@ const handleSubmit = async () => {
 }
 
 // Called when user cancels the form
-const handleCancel = async () => {
-  try {
-    await ElMessageBox.confirm(
-      'Are you sure you want to cancel? Unsaved changes will be lost.',
-      'Cancel Confirmation',
-      {
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-        type: 'warning',
-      },
-    )
-    if (props.editingStudent) {
-      Object.assign(state, { ...props.editingStudent })
-    }
-    resetForm() // Reset the form
-    emit('cancel') // Emit the cancel event to the parent component
-  } catch {
-    // User cancelled, do nothing
-  }
-}
+// const handleCancel = async () => {
+//   try {
+//     await ElMessageBox.confirm(
+//       'Are you sure you want to cancel? Unsaved changes will be lost.',
+//       'Cancel Confirmation',
+//       {
+//         confirmButtonText: 'Yes',
+//         cancelButtonText: 'No',
+//         type: 'warning',
+//       },
+//     )
+//     if (props.editingStudent) {
+//       Object.assign(state, { ...props.editingStudent })
+//     }
+//     resetForm() // Reset the form
+//     emit('cancel') // Emit the cancel event to the parent component
+//   } catch {
+//     // User cancelled, do nothing
+//   }
+// }
 
 // Called when user deletes the student
 const handleDelete = async () => {
@@ -362,7 +362,6 @@ const handleDelete = async () => {
   padding: 30px;
 }
 
-/* Input rows for side-by-side fields */
 .input_row {
   display: grid;
   grid-template-columns: 1fr 1fr;

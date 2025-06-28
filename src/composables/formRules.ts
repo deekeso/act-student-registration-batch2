@@ -31,8 +31,8 @@ function birthDateValidator(rule: FormItemRule, value: string, callback: (error?
   if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
     age--
   }
-  if (age < 12) {
-    callback(new Error('Student must be at least 12 years old'))
+  if (age < 18) {
+    callback(new Error('Student must be at least 18 years old'))
   } else {
     callback()
   }

@@ -166,7 +166,6 @@ const handleForgotPassword = (event: Event) => {
   cursor: not-allowed;
 }
 
-/* Custom Loading Styles */
 :deep(.el-loading-mask) {
   background-color: rgba(255, 255, 255, 0.95) !important;
   backdrop-filter: blur(2px);

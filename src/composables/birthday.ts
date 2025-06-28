@@ -12,7 +12,7 @@ export function useBirthdayPicker() {
   // Disable dates after today minus 12 years
   const disabledDate = (date: Date) => {
     const today = new Date()
-    const minDate = new Date(today.getFullYear() - 12, today.getMonth(), today.getDate() + 1)
+    const minDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate() + 1)
     return date > minDate
   }
   return { disabledDate }
@@ -21,8 +21,14 @@ export function useBirthdayPicker() {
 export function formatDate(date: string | Date) {
   if (!date) return ''
   const d = new Date(date)
+
+  // Handle timezone issues by using local date methods
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+
   // Format as YYYY-MM-DD
-  return d.toISOString().split('T')[0]
+  return `${year}-${month}-${day}`
 }
 
 // Auto-calculate age based on birthday
@@ -64,4 +70,4 @@ export function formatAddress(student: {
   return parts.join(', ')
 }
 
-export const defaultBirthdayView = new Date(new Date().setFullYear(new Date().getFullYear() - 12))
+export const defaultBirthdayView = new Date(new Date().setFullYear(new Date().getFullYear() - 18))

@@ -67,5 +67,4 @@ const handleCancel = () => {
 </script>
 
 <style scoped>
-/* Add drawer-specific styles if needed */
 </style>
