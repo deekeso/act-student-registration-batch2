@@ -36,8 +36,6 @@
               <el-dropdown-menu>
                 <el-dropdown-item command="lastName-asc">Last Name (A-Z)</el-dropdown-item>
                 <el-dropdown-item command="lastName-desc">Last Name (Z-A)</el-dropdown-item>
-                <el-dropdown-item command="added-desc">Newest Added </el-dropdown-item>
-                <el-dropdown-item command="added-asc">Oldest Added </el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -98,19 +96,6 @@ const filteredStudents = computed(() => {
   if (currentSort.value) {
     const [field, direction] = currentSort.value.split('-')
     students.sort((a, b) => {
-      // Handle sorting by order added (using array index)
-      if (field === 'added') {
-        const originalStudents = store.allStudents()
-        const aIndex = originalStudents.findIndex((student) => student.id === a.id)
-        const bIndex = originalStudents.findIndex((student) => student.id === b.id)
-
-        if (direction === 'asc') {
-          return aIndex - bIndex // Oldest first (original order)
-        } else {
-          return bIndex - aIndex // Newest first (reverse order)
-        }
-      }
-
       let aValue = a[field as keyof Student]
       let bValue = b[field as keyof Student]
 
