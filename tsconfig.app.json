@@ -16,6 +16,7 @@
     "src/views/LoginView.vue",
     "src/components/interface/InfoTech.vue",
     "src/views/InfoTechView.vue",
+    "src/components/ui/SearchBar.vue",
     ""
   ],
   "compilerOptions": {
