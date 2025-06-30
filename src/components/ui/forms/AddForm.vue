@@ -240,7 +240,6 @@ const handleCancel = async () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 80vh;
   padding: 0 20px 10px 20px;
   max-width: 600px;
   margin: 0 auto;
@@ -349,7 +348,7 @@ const handleCancel = async () => {
 /* Responsive design */
 @media (max-width: 768px) {
   .add-form {
-    padding: 16px;
+    padding: 16px 16px 25px 16px;
   }
 
   .input_row {

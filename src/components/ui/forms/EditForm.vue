@@ -288,7 +288,7 @@ const handleDelete = async () => {
       {
         confirmButtonText: 'Delete',
         cancelButtonText: 'Cancel',
-        type: 'error',
+        // type: 'error',
       },
     )
     if (props.editingStudent) {
@@ -306,7 +306,6 @@ const handleDelete = async () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   padding: 0 20px 120px 20px;
   max-width: 600px;
   margin: 0 auto;
