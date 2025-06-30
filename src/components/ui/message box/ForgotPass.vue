@@ -1,12 +1,19 @@
 <template>
   <div class="forgot-pass-container">
-    <el-input v-model="username" placeholder="USERNAME" :prefix-icon="User" />
+    <el-input
+      v-model="username"
+      placeholder="USERNAME"
+      :prefix-icon="User"
+      @keyup.enter="handleResetPassword"
+    />
     <el-input
       v-model="password"
       type="password"
       placeholder="NEW PASSWORD"
       :prefix-icon="Lock"
+      :minlength="8"
       show-password
+      @keyup.enter="handleResetPassword"
     />
     <el-input
       v-model="confirmPassword"
@@ -14,6 +21,7 @@
       placeholder="CONFIRM PASSWORD"
       :prefix-icon="Lock"
       show-password
+      @keyup.enter="handleResetPassword"
     />
     <el-button color="#ffff" @click="handleResetPassword"> RESET PASSWORD </el-button>
   </div>
@@ -36,9 +44,15 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
+const MIN_PASSWORD_LENGTH = 8
+
 const handleResetPassword = () => {
   if (!username.value.trim() || !password.value.trim() || !confirmPassword.value.trim()) {
     ElMessage.error('Please enter both username and new password')
+    return
+  }
+  if (password.value.length < MIN_PASSWORD_LENGTH) {
+    ElMessage.error(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`)
     return
   }
   if (password.value !== confirmPassword.value) {
