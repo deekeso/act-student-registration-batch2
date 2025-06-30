@@ -153,7 +153,7 @@ import { formRules, entryRestriction } from '@/composables/formRules'
 import { useBirthdayPicker } from '@/composables/birthday'
 import { useBirthdayAutoAge } from '@/composables/birthday'
 import { defaultBirthdayView } from '@/composables/birthday'
-import { ElMessageBox } from 'element-plus'
+import { ElMessageBox, ElMessage } from 'element-plus'
 
 const props = defineProps<{
   initialData?: Partial<Student>
@@ -191,6 +191,7 @@ const handleSubmit = async () => {
     )
     const result = await submitForm()
     if (result.success && result.data) {
+      ElMessage.success('Student added successfully!')
       emit('submit', result.data) // Emit the data to the parent component
       resetForm() // Reset the form
     } else {

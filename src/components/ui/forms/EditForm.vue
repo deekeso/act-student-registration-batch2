@@ -159,7 +159,7 @@ import type { Student } from '@/types/Students'
 import { courses } from '@/constants/index.ts'
 import { formRules, entryRestriction } from '@/composables/formRules'
 import { useBirthdayPicker, useBirthdayAutoAge, defaultBirthdayView } from '@/composables/birthday'
-import { ElMessageBox } from 'element-plus'
+import { ElMessageBox, ElMessage } from 'element-plus'
 
 const props = defineProps<{
   editingStudent?: Student | null // Student object to be edited
@@ -248,6 +248,7 @@ const handleSubmit = async () => {
     )
     const result = await submitForm()
     if (result.success && result.data) {
+      ElMessage.success('Student edited successfully!')
       emit('submit', result.data) // Emit the data to the parent component
     } else {
       console.error('Form submission failed:', result) // Log the error
@@ -292,6 +293,7 @@ const handleDelete = async () => {
       },
     )
     if (props.editingStudent) {
+      ElMessage.success('Student deleted successfully!')
       emit('delete', { ...props.editingStudent }) // Emit the data to the parent component
     }
   } catch {
