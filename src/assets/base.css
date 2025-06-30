@@ -78,9 +78,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* body {
-  font-family: 'Poppins', sans-serif;
-} */
+@media (max-width: 600px) {
+  html {
+    font-size: 14px;
+  }
+}
 
 * {
   font-family: 'Poppins', sans-serif !important;

@@ -74,7 +74,7 @@ const currentSort = ref('')
 
 // Computed property to filter students based on search input
 const filteredStudents = computed(() => {
-  let students = store.allStudents()
+  let students = store.allStudents() // Start with all students
 
   // Filter by course if course search is active
   if (courseSearch.value) {
