@@ -3,7 +3,7 @@ import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { ElMessage } from 'element-plus'
 import type { Student } from '../types/studentInterface'
 import { Courses } from '@/constants/courses'
-import { useStudentStore } from '../stores/register'
+import { useStudentStore } from '../stores/StudentStore'
 import { studentFormRules } from '@/composables/ruleForm'
 
 interface Props {

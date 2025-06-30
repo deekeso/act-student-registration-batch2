@@ -2,7 +2,7 @@
 import { ElMessage } from 'element-plus'
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthenticationStore } from '../stores/auth'
+import { useAuthenticationStore } from '../stores/AuthStore'
 import { getStoredAdminCredentials } from '@/components/utils/adminInit'
 import { adminFormRules } from '@/composables/ruleForm'
 
@@ -25,18 +25,19 @@ async function onSubmit() {
     }
 
     const storedAdmin = getStoredAdminCredentials()
+    console.log(storedAdmin)
 
     if (!storedAdmin) {
       ElMessage.error('Admin credentials not found')
       return
     }
 
-    if (
-      authStore.admin.username === storedAdmin.username &&
-      authStore.admin.password === storedAdmin.password
-    ) {
+    const matchedAdmin = storedAdmin.find(
+      (admin: { username: string; password: string }) =>
+        admin.username === authStore.admin.username && admin.password === authStore.admin.password,
+    )
+    if (matchedAdmin) {
       await wait(1000)
-
       handleLogin()
       await router.push('/studentList')
       ElMessage.success('Login successful')

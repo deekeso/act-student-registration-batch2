@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
-import { useStudentStore } from '@/stores/register.ts'
+import { useStudentStore } from '@/stores/StudentStore'
 import { ElMessage } from 'element-plus'
 import type { Student } from '../types/studentInterface'
 import { Courses } from '@/constants/courses'
 import { studentFormRules } from '../composables/ruleForm'
-import { capitalize } from '@/composables/capitalize'
 
 interface Props {
   modelValue: boolean
@@ -29,42 +28,6 @@ const formRef = ref()
 const isLoading = ref(false)
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
-watch(
-  () => studentStore.studentInfo.firstName,
-  (newValue) => {
-    if (newValue) {
-      studentStore.studentInfo.firstName = capitalize(newValue)
-    }
-  },
-)
-
-watch(
-  () => studentStore.studentInfo.lastName,
-  (newValue) => {
-    if (newValue) {
-      studentStore.studentInfo.lastName = capitalize(newValue)
-    }
-  },
-)
-
-watch(
-  () => studentStore.studentInfo.middleInitial,
-  (newValue) => {
-    if (newValue) {
-      studentStore.studentInfo.middleInitial = newValue.toUpperCase()
-    }
-  },
-)
-
-watch(
-  () => studentStore.studentInfo.address,
-  (newValue) => {
-    if (newValue) {
-      studentStore.studentInfo.address = newValue.toUpperCase()
-    }
-  },
-)
 
 const closeDrawer = () => {
   emit('update:modelValue', false)

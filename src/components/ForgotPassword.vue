@@ -10,6 +10,7 @@ const formRef = ref()
 const newPassword = passwordFields.newPassword
 const confirmPassword = ref('')
 const isLoading = ref(false)
+const username = ref('')
 
 async function resetPassword() {
   if (!formRef.value) return
@@ -21,19 +22,25 @@ async function resetPassword() {
       isLoading.value = true
 
       setTimeout(() => {
-        const currentAdmin = getStoredAdminCredentials()
+        const adminList = getStoredAdminCredentials()
 
-        if (!currentAdmin) {
+        if (!adminList) {
           ElMessage.error('Admin credentials not found')
           isLoading.value = false
           return
         }
 
-        const updatedAdminData = {
-          username: currentAdmin.username,
-          password: newPassword.value,
+        const adminIndex = adminList.findIndex(
+          (admin: { username: string }) => admin.username === username.value,
+        )
+        if (adminIndex === -1) {
+          ElMessage.error('Username not recognized. Password not changed.')
+          isLoading.value = false
+          return
         }
-        localStorage.setItem('admin', JSON.stringify(updatedAdminData))
+
+        adminList[adminIndex].password = newPassword.value
+        localStorage.setItem('admin', JSON.stringify(adminList))
 
         ElMessage.success('Admin password reset successfully!')
         isLoading.value = false
@@ -54,14 +61,18 @@ async function resetPassword() {
   <div class="form-body">
     <div class="forgot-password-container">
       <h2>Reset Password</h2>
+
       <p class="subtitle">Enter new admin password</p>
 
       <el-form
         ref="formRef"
-        :model="{ newPassword, confirmPassword }"
+        :model="{ username, newPassword, confirmPassword }"
         :rules="passwordResetRules"
         label-width="auto"
       >
+        <el-form-item prop="username">
+          <el-input v-model="username" placeholder="Admin Username" required prefix-icon="User" />
+        </el-form-item>
         <el-form-item prop="newPassword">
           <el-input
             v-model="newPassword"
