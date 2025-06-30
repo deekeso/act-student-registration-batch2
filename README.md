@@ -5,6 +5,11 @@ A web application made with VueJS and Typescript for managing student informatio
 ## Features
 
 ### Admin
+- **Admin** Login Credentials: 
+- **Account 1**: username: admin password: admin123
+- **Account 2**: admin2 admin123
+- **Account 3**: admin3 admin123
+- **Account 4**: admin4 admin123
 
 ### Student Management
 
