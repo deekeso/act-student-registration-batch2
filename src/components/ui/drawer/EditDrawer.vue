@@ -24,6 +24,7 @@ import { ref, watch } from 'vue'
 import ReusableDrawer from '@/components/ui/drawer/ReusableDrawer.vue'
 import EditForm from '@/components/ui/forms/EditForm.vue'
 import type { Student } from '@/types/Students'
+import { ElMessage } from 'element-plus'
 
 // Define props for the drawer
 const props = defineProps<{
@@ -70,7 +71,8 @@ const handleFormCancel = () => {
 }
 
 // Called when user deletes the student
-const handleFormDelete = (data: Student) => {
+const handleFormDelete = async (data: Student) => {
+  ElMessage.success('Student deleted successfully!')
   emit('delete', data) // Emit the data to the parent component
   isOpen.value = false // Close the drawer
 }

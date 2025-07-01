@@ -63,7 +63,7 @@
 import { defineEmits } from 'vue'
 import type { Student } from '@/types/Students'
 import { formatDate, formatAddress } from '@/composables/birthday'
-import { ElMessageBox } from 'element-plus'
+import { ElMessageBox, ElMessage } from 'element-plus'
 import { Edit, Delete } from '@element-plus/icons-vue'
 
 defineProps<{ data: Student[] }>()
@@ -84,6 +84,7 @@ const handleDelete = async (student: Student) => {
         // type: 'error',
       },
     )
+    ElMessage.success('Student deleted successfully!')
     emit('delete', student)
   } catch {
     // User cancelled, do nothing

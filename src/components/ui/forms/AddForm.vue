@@ -196,6 +196,8 @@ const handleSubmit = async () => {
       resetForm() // Reset the form
     } else {
       console.error('Form submission failed:', result)
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      ElMessage.error('Failed to add student!')
     }
   } catch {
     // User cancelled, do nothing

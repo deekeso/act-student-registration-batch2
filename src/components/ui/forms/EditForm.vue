@@ -293,7 +293,6 @@ const handleDelete = async () => {
       },
     )
     if (props.editingStudent) {
-      ElMessage.success('Student deleted successfully!')
       emit('delete', { ...props.editingStudent }) // Emit the data to the parent component
     }
   } catch {
