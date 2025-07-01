@@ -48,7 +48,7 @@ const MIN_PASSWORD_LENGTH = 8
 
 const handleResetPassword = () => {
   if (!username.value.trim() || !password.value.trim() || !confirmPassword.value.trim()) {
-    ElMessage.error('Please enter both username and new password')
+    ElMessage.error('Please answer all fields.')
     return
   }
   if (password.value.length < MIN_PASSWORD_LENGTH) {
