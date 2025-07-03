@@ -3,8 +3,12 @@ import type { FormItemRule } from 'element-plus'
 
 function nameValidator(rule: FormItemRule, value: string, callback: (error?: Error) => void) {
   if (!value) return callback(new Error('This field is required'))
-  if (!/^[A-Za-z\s'-]+$/.test(value)) {
+  if (!/^[A-Za-zñÑ\s'-]+$/.test(value)) {
     callback(new Error('Only letters, spaces, apostrophes, and hyphens allowed'))
+  } else if (/^\s|\s$/.test(value)) {
+    callback(new Error('No leading or trailing spaces allowed'))
+  } else if ((value.match(/[A-Za-zñÑ]/g) || []).length < 2) {
+    callback(new Error('Must contain at least two letters'))
   } else {
     callback()
   }
@@ -15,8 +19,8 @@ function middleInitialValidator(
   value: string,
   callback: (error?: Error) => void,
 ) {
-  if (!/^[A-Za-z]{0,3}$/.test(value)) {
-    callback(new Error('Only 1 to 3 letters allowed'))
+  if (!/^[A-Za-zñÑ\s-]{0,1}$/.test(value)) {
+    callback(new Error('Only 1 letter allowed'))
   } else {
     callback()
   }
@@ -38,6 +42,15 @@ function birthDateValidator(rule: FormItemRule, value: string, callback: (error?
   }
 }
 
+function addressValidator(rule: FormItemRule, value: string, callback: (error?: Error) => void) {
+  if (!value) return callback(new Error('This field is required'))
+  if (/^\s|\s$/.test(value)) {
+    callback(new Error('No leading or trailing spaces allowed'))
+  } else {
+    callback()
+  }
+}
+
 export const formRules = reactive({
   lastName: [{ validator: nameValidator, trigger: 'blur' }],
   firstName: [{ validator: nameValidator, trigger: 'blur' }],
@@ -45,11 +58,11 @@ export const formRules = reactive({
   birthDate: [
     { validator: birthDateValidator, trigger: 'blur', message: 'This field is required' },
   ],
-  streetAddress: [{ required: true, message: 'This field is required', trigger: 'blur' }],
-  barangay: [{ required: true, message: 'This field is required', trigger: 'blur' }],
-  city: [{ required: true, message: 'This field is required', trigger: 'blur' }],
-  // province: [{ required: true, message: 'This field is required', trigger: 'blur' }],
-  // zipCode: [{ required: true, message: 'This field is required', trigger: 'blur' }],
+  streetAddress: [{ validator: addressValidator, trigger: 'blur' }],
+  barangay: [{ validator: addressValidator, trigger: 'blur' }],
+  city: [{ validator: addressValidator, trigger: 'blur' }],
+  province: [{ validator: addressValidator, trigger: 'blur' }],
+  zipCode: [{ validator: addressValidator, trigger: 'blur' }],
   course: [{ required: true, message: 'This field is required', trigger: 'change' }],
 })
 
@@ -61,7 +74,7 @@ export const entryRestriction = () => {
   }
 
   const onlyLetters = (event: KeyboardEvent) => {
-    if (!/[a-zA-Z\s.'-]/.test(event.key)) {
+    if (!/[a-zA-ZñÑ\s.'-]/.test(event.key)) {
       event.preventDefault()
     }
   }
