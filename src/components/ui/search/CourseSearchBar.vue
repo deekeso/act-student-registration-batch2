@@ -7,6 +7,7 @@
       clearable
       filterable
       style="width: 100%"
+      fit-input-width
     >
       <el-option
         v-for="course in courses"

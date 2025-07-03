@@ -129,7 +129,13 @@
       <div class="course_row">
         <h4>Program</h4>
         <el-form-item label="Course" prop="course" required>
-          <el-select v-model="state.course" id="course" placeholder="Select" style="width: 100%">
+          <el-select
+            v-model="state.course"
+            id="course"
+            placeholder="Select"
+            style="width: 100%"
+            fit-input-width
+          >
             <el-option disabled value="">Please select one</el-option>
             <el-option
               v-for="course in courses"
