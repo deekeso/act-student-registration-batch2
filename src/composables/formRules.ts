@@ -51,6 +51,14 @@ function addressValidator(rule: FormItemRule, value: string, callback: (error?: 
   }
 }
 
+function spaceChecker(rule: FormItemRule, value: string, callback: (error?: Error) => void) {
+  if (/^\s|\s$/.test(value)) {
+    callback(new Error('No leading or trailing spaces allowed'))
+  } else {
+    callback()
+  }
+}
+
 export const formRules = reactive({
   lastName: [{ validator: nameValidator, trigger: 'blur' }],
   firstName: [{ validator: nameValidator, trigger: 'blur' }],
@@ -61,8 +69,8 @@ export const formRules = reactive({
   streetAddress: [{ validator: addressValidator, trigger: 'blur' }],
   barangay: [{ validator: addressValidator, trigger: 'blur' }],
   city: [{ validator: addressValidator, trigger: 'blur' }],
-  province: [{ validator: addressValidator, trigger: 'blur' }],
-  zipCode: [{ validator: addressValidator, trigger: 'blur' }],
+  province: [{ validator: spaceChecker, trigger: 'blur' }],
+  zipCode: [{ validator: spaceChecker, trigger: 'blur' }],
   course: [{ required: true, message: 'This field is required', trigger: 'change' }],
 })
 
@@ -83,4 +91,22 @@ export const entryRestriction = () => {
     onlyDigits,
     onlyLetters,
   }
+}
+
+export function formatAddress(student: {
+  streetAddress: string
+  barangay: string
+  city: string
+  province: string
+  zipCode: string
+}) {
+  const parts = [
+    student.streetAddress,
+    student.barangay,
+    student.city,
+    student.province,
+    student.zipCode,
+  ].filter((part) => part && part.trim())
+
+  return parts.join(', ')
 }

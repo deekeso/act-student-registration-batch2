@@ -183,7 +183,7 @@ const formRef = ref<FormInstance | null>(null)
 const { state, submitForm } = useStudentActions(formRef)
 const { onlyLetters, onlyDigits } = entryRestriction()
 const { disabledDate } = useBirthdayPicker()
-useBirthdayAutoAge({ birthDate: state.birthDate, age: state.age })
+useBirthdayAutoAge(state)
 const rules = formRules
 
 // Watch for changes in the editingStudent prop and populate form

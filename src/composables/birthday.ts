@@ -52,22 +52,4 @@ export function useBirthdayAutoAge(state: { birthDate: string | Date; age: numbe
   )
 }
 
-export function formatAddress(student: {
-  streetAddress: string
-  barangay: string
-  city: string
-  province: string
-  zipCode: string
-}) {
-  const parts = [
-    student.streetAddress,
-    student.barangay,
-    student.city,
-    student.province,
-    student.zipCode,
-  ].filter((part) => part && part.trim())
-
-  return parts.join(', ')
-}
-
 export const defaultBirthdayView = new Date(new Date().setFullYear(new Date().getFullYear() - 18))

@@ -62,7 +62,8 @@
 <script lang="ts" setup>
 import { defineEmits } from 'vue'
 import type { Student } from '@/types/Students'
-import { formatDate, formatAddress } from '@/composables/birthday'
+import { formatDate } from '@/composables/birthday'
+import { formatAddress } from '@/composables/formRules'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { Edit, Delete } from '@element-plus/icons-vue'
 
