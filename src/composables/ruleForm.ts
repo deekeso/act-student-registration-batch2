@@ -2,8 +2,9 @@ import type { FormRules } from 'element-plus'
 import { ref } from 'vue'
 
 const namePattern = /^[A-Za-z\s'-]+$/
-const middleInitialPattern = /^[A-Za-z]{1,3}$/
+const middleInitialPattern = /^[A-Za-z\s]{1,3}$/
 const newPassword = ref('')
+const addressPattern = /^[^!@$%^&*()_=+\\\[\]{}:;"'?><]*$/
 
 const validateCollegeAge = (_rule: unknown, value: number, callback: (error?: Error) => void) => {
   if (!value) {
@@ -18,32 +19,71 @@ const validateCollegeAge = (_rule: unknown, value: number, callback: (error?: Er
   callback()
 }
 
+// Custom validator for names to prevent only spaces
+const validateName = (fieldName: string) => {
+  return (_rule: unknown, value: string, callback: (error?: Error) => void) => {
+    if (!value || value.trim() === '') {
+      return callback(new Error(`Please input ${fieldName}`))
+    }
+    if (value.trim().length < 2 || value.trim().length > 50) {
+      return callback(new Error('Length should be 2 to 50 characters'))
+    }
+    if (!namePattern.test(value.trim())) {
+      return callback(new Error('Numbers are invalid name inputs'))
+    }
+    callback()
+  }
+}
+
+// Custom validator for middle initial
+const validateMiddleInitial = (
+  _rule: unknown,
+  value: string,
+  callback: (error?: Error) => void,
+) => {
+  // If empty, it's valid (optional field)
+  if (!value || value.trim() === '') {
+    return callback()
+  }
+
+  const trimmedValue = value.trim()
+
+  if (trimmedValue.length > 3) {
+    return callback(new Error('Length maximum is 3 characters'))
+  }
+
+  if (!middleInitialPattern.test(trimmedValue)) {
+    return callback(new Error('Numbers are invalid inputs'))
+  }
+
+  callback()
+}
+
+// Custom validator for address to prevent only spaces
+const validateAddress = (_rule: unknown, value: string, callback: (error?: Error) => void) => {
+  if (!value || value.trim() === '') {
+    return callback(new Error('Please input address'))
+  }
+  if (value.trim().length < 10) {
+    return callback(new Error('Address should be at least 10 characters'))
+  }
+  if (!addressPattern.test(value.trim())) {
+    return callback(new Error('Specific special characters are invalid'))
+  }
+  callback()
+}
+
 export const studentFormRules: FormRules = {
-  firstName: [
-    { required: true, message: 'Please input first name', trigger: 'blur' },
-    { min: 2, max: 50, message: 'Length should be 2 to 50 characters', trigger: 'blur' },
-    { pattern: namePattern, message: 'Numbers are invalid name inputs', trigger: 'blur' },
-  ],
-  middleInitial: [
-    { required: true, message: 'Ex. T. IG', trigger: 'blur' },
-    { min: 1, max: 3, message: 'Length maximum is 2', trigger: 'blur' },
-    { pattern: middleInitialPattern, message: 'Numbers are invalid inputs', trigger: 'blur' },
-  ],
-  lastName: [
-    { required: true, message: 'Please input last name', trigger: 'blur' },
-    { min: 2, max: 50, message: 'Length should be 2 to 50 characters', trigger: 'blur' },
-    { pattern: namePattern, message: 'Numbers are invalid inputs', trigger: 'blur' },
-  ],
+  firstName: [{ validator: validateName('first name'), trigger: 'blur' }],
+  middleInitial: [{ validator: validateMiddleInitial, trigger: 'blur' }],
+  lastName: [{ validator: validateName('last name'), trigger: 'blur' }],
   birthDay: [{ required: true, message: 'Please select birthday', trigger: 'change' }],
   age: [
     { required: true, message: 'Please input age', trigger: 'blur' },
     { required: true, type: 'number', message: 'Age must be a number', trigger: 'blur' },
     { validator: validateCollegeAge, trigger: 'blur' },
   ],
-  address: [
-    { required: true, message: 'Please input address', trigger: 'blur' },
-    { min: 10, message: 'Address should be at least 10 characters', trigger: 'blur' },
-  ],
+  address: [{ validator: validateAddress, trigger: 'blur' }],
   courses: [
     { required: true, message: 'Please select a course', trigger: 'blur' },
     {

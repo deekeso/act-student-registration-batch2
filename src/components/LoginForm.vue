@@ -12,6 +12,8 @@ const authStore = useAuthenticationStore()
 const { handleLogin } = authStore
 const isLoading = ref(false)
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+authStore.admin.username = ''
+authStore.admin.password = ''
 
 async function onSubmit() {
   if (!formRef.value) return
@@ -32,14 +34,20 @@ async function onSubmit() {
       return
     }
 
+    const inputUserName = authStore.admin.username.trim()
+    const inputPassword = authStore.admin.password.trim()
+
     const matchedAdmin = storedAdmin.find(
       (admin: { username: string; password: string }) =>
-        admin.username === authStore.admin.username && admin.password === authStore.admin.password,
+        admin.username === inputUserName && admin.password === inputPassword,
     )
     if (matchedAdmin) {
       await wait(1000)
       handleLogin()
       await router.push('/studentList')
+      //clear form
+      authStore.admin.username = ''
+      authStore.admin.password = ''
       ElMessage.success('Login successful')
     } else {
       ElMessage.error('Invalid username or password')
@@ -114,7 +122,7 @@ onMounted(() => {
   background-color: transparent;
   height: 30px;
   padding: 20px;
-  margin-bottom: 30px;
+  margin-top: 15px;
   font-size: 20px;
   width: 400px;
   color: white;

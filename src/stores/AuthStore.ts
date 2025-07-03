@@ -11,7 +11,7 @@ export const useAuthenticationStore = defineStore('auth', () => {
 
   function handleLogin() {
     localStorage.setItem(
-      'admin',
+      'loggedInAdmin',
       JSON.stringify({
         username: admin.value.username,
         password: admin.value.password,
@@ -25,8 +25,8 @@ export const useAuthenticationStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => {
     try {
       const token = localStorage.getItem('token')
-      const savedAdmin = localStorage.getItem('admin')
-      return !!(token && savedAdmin)
+      const savedLoggedInAdmin = localStorage.getItem('loggedInAdmin')
+      return !!(token && savedLoggedInAdmin)
     } catch (error) {
       console.log(error)
       return false
@@ -34,8 +34,8 @@ export const useAuthenticationStore = defineStore('auth', () => {
   })
 
   function logout() {
-    localStorage.removeItem('admin')
     localStorage.removeItem('token')
+    localStorage.removeItem('loggedInAdmin')
     ElMessage('Logout successful')
     window.location.href = '/login'
   }

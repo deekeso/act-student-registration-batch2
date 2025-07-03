@@ -2,7 +2,7 @@ import type { Course } from '@/constants/courses'
 
 export interface Student {
   firstName: string
-  middleInitial: string
+  middleInitial?: string
   lastName: string
   birthDay: string
   age: number

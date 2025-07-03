@@ -146,7 +146,7 @@ async function onEditSubmit() {
     @update:model-value="emit('update:modelValue', $event)"
     title="Edit Student"
     :withHeader="false"
-    :size="isMobile ? '100%' : '40%'"
+    :size="isMobile ? '100%' : '30%'"
     direction="rtl"
   >
     <button class="close-button" @click="closeDrawer" aria-label="Close Drawer">×</button>
@@ -206,6 +206,7 @@ async function onEditSubmit() {
           multiple
           placeholder="Select Courses"
           style="width: 100%"
+          fit-input-width
         >
           <el-option v-for="course in Courses" :key="course" :label="course" :value="course">
           </el-option>

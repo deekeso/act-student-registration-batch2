@@ -23,20 +23,20 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   initializeAdminCredentials()
-
-  const publicRoutes = ['login', 'forgetpassword', 'home']
+  const publicRoutes = ['login', 'forgetpassword', 'home', 'notfound']
   const routeName = to.name?.toString() || ''
 
   const token = localStorage.getItem('token')
-  const savedAdmin = localStorage.getItem('admin')
-  const isAuthenticated = !!(token && savedAdmin)
+  const loggedInAdmin = localStorage.getItem('loggedInAdmin')
+  const isAuthenticated = !!(token && loggedInAdmin)
 
   if (!publicRoutes.includes(routeName) && !isAuthenticated) {
-    console.log('User not authenticated, redirecting to login')
+    console.log('User not authenticated')
     return next({ name: 'login' })
   }
 
   if (routeName === 'login' && isAuthenticated) {
+    console.log('Already authenticated, redirecting to dashboard')
     return next({ name: 'studentList' })
   }
 

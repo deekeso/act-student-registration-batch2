@@ -8,6 +8,7 @@ import { passwordFields, passwordResetRules } from '@/composables/ruleForm'
 const router = useRouter()
 const formRef = ref()
 const newPassword = passwordFields.newPassword
+newPassword.value = ''
 const confirmPassword = ref('')
 const isLoading = ref(false)
 const username = ref('')
@@ -33,6 +34,7 @@ async function resetPassword() {
         const adminIndex = adminList.findIndex(
           (admin: { username: string }) => admin.username === username.value,
         )
+
         if (adminIndex === -1) {
           ElMessage.error('Username not recognized. Password not changed.')
           isLoading.value = false
@@ -44,6 +46,11 @@ async function resetPassword() {
 
         ElMessage.success('Admin password reset successfully!')
         isLoading.value = false
+
+        //clear inputs
+        username.value = ''
+        newPassword.value = ''
+        confirmPassword.value = ''
 
         setTimeout(() => {
           router.push('/login')
@@ -112,9 +119,9 @@ async function resetPassword() {
 
 :deep(.el-input__wrapper) {
   background-color: transparent;
-  height: 30px;
   padding: 20px;
-  margin-bottom: 30px;
+  margin-top: 15px;
+  height: 30px;
   font-size: 20px;
   width: 500px;
   color: white;
@@ -135,6 +142,7 @@ async function resetPassword() {
   width: 100%;
   height: 50px;
   font-size: large;
+  margin-top: 10px;
   background-color: white;
   color: #2148c0;
   border-radius: 10px;
