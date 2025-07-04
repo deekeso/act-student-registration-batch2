@@ -263,6 +263,7 @@ const handleSubmit = async () => {
       emit('submit', result.data) // Emit the data to the parent component
     } else {
       console.error('Form submission failed:', result) // Log the error
+      ElMessage.error(result.error)
     }
   } catch {
     // User cancelled, do nothing

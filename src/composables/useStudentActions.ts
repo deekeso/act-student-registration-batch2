@@ -1,5 +1,5 @@
 import { reactive, ref, watch, type Ref } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import type { FormInstance } from 'element-plus'
 import type { Student } from '@/types/Students'
 import { useStudentStore } from '@/stores/studentsStore'
 
@@ -22,15 +22,15 @@ export function useStudentActions(formRef: Ref<FormInstance | null>) {
     course: '',
   })
 
-  // Validation rules for the form fields (Element Plus format)
-  const rules = reactive<FormRules>({
-    firstName: [{ required: true, message: 'Please enter first name', trigger: 'blur' }],
-    lastName: [{ required: true, message: 'Please enter last name', trigger: 'blur' }],
-    course: [{ required: true, message: 'Please select a course', trigger: 'change' }],
-    age: [
-      { type: 'number', min: 0, message: 'Age must be a non-negative number', trigger: 'blur' },
-    ],
-  })
+  // // Validation rules for the form fields (Element Plus format)
+  // const rules = reactive<FormRules>({
+  //   firstName: [{ required: true, message: 'Please enter first name', trigger: 'blur' }],
+  //   lastName: [{ required: true, message: 'Please enter last name', trigger: 'blur' }],
+  //   course: [{ required: true, message: 'Please select a course', trigger: 'change' }],
+  //   age: [
+  //     { type: 'number', min: 0, message: 'Age must be a non-negative number', trigger: 'blur' },
+  //   ],
+  // })
 
   // Watch formRef to ensure it's initialized (for debugging)
   watch(formRef, (newRef) => {
@@ -41,12 +41,11 @@ export function useStudentActions(formRef: Ref<FormInstance | null>) {
 
   // Validate and submit the form
   const submitForm = async () => {
-    // Check if formRef is initialized
     if (!formRef.value) {
       console.error('formRef is null. Form may not be initialized.')
       return { success: false, data: null }
     }
-    // Validate the form using Element Plus
+
     try {
       const valid = await new Promise((resolve) => {
         formRef.value!.validate((isValid, errors) => {
@@ -56,16 +55,64 @@ export function useStudentActions(formRef: Ref<FormInstance | null>) {
           resolve(isValid)
         })
       })
-      // If form is valid, return the form data
-      if (valid) {
-        console.log('Form validated successfully:', state)
-        return { success: true, data: { ...state } }
+
+      if (!valid) {
+        console.log('Form validation failed')
+        return { success: false, data: null }
       }
-      // If form is not valid, return false
-      console.log('Form validation failed')
-      return { success: false, data: null }
+
+      const allStudents = store.allStudents()
+
+      // Normalize birthDate to YYYY-MM-DD string for consistent comparison
+      const normalizeDate = (date: string | Date): string => {
+        if (!date) return ''
+        const d = date instanceof Date ? date : new Date(date)
+        return isNaN(d.getTime()) ? '' : d.toISOString().split('T')[0]
+      }
+
+      const isDuplicate = allStudents.some((student) => {
+        if (editingStudent.value && student.id === editingStudent.value.id) {
+          return false
+        }
+
+        // Normalize fields for comparison
+        const formBirthDate = normalizeDate(state.birthDate)
+        const studentBirthDate = normalizeDate(student.birthDate)
+        const formMiddleInitial = state.middleInitial || ''
+        const studentMiddleInitial = student.middleInitial || ''
+        const formZipCode = state.zipCode || ''
+        const studentZipCode = student.zipCode || ''
+
+        return (
+          student.firstName === state.firstName &&
+          studentMiddleInitial === formMiddleInitial &&
+          student.lastName === state.lastName &&
+          studentBirthDate === formBirthDate &&
+          student.age === Number(state.age) &&
+          student.streetAddress === state.streetAddress &&
+          student.barangay === state.barangay &&
+          student.city === state.city &&
+          student.province === state.province &&
+          studentZipCode === formZipCode &&
+          student.course === state.course
+        )
+      })
+
+      if (isDuplicate) {
+        console.log('Duplicate student found, submission prevented', {
+          formData: state,
+          students: allStudents,
+        })
+        return {
+          success: false,
+          data: null,
+          error: 'A student with identical details already exists',
+        }
+      }
+
+      console.log('Form validated successfully:', state)
+      return { success: true, data: { ...state, birthDate: normalizeDate(state.birthDate) } }
     } catch (error) {
-      // If there is an error, return false
       console.error('Form submission error:', error)
       return { success: false, data: null }
     }
@@ -155,7 +202,7 @@ export function useStudentActions(formRef: Ref<FormInstance | null>) {
   return {
     state, // Reactive form data
     formRef, // Form instance ref
-    rules, // Validation rules
+    // rules, // Validation rules
     submitForm, // Validate and submit
     resetForm, // Reset form fields
     isEditDrawerOpen, // Edit drawer state

@@ -31,7 +31,7 @@ export const useSearchFilter = (students: Ref<Student[]>, searchQuery: Ref<strin
 
       // Create full name variations
       const fullName =
-        `${normalizedFields.firstName} ${normalizedFields.middleInitial} ${normalizedFields.lastName}`.trim()
+        `${normalizedFields.firstName} ${normalizedFields.middleInitial}. ${normalizedFields.lastName}`.trim()
       const fullNameReversed = `${normalizedFields.lastName} ${normalizedFields.firstName}`
 
       // Check exact query match first (most common case)
