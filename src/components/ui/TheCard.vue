@@ -41,6 +41,7 @@
       :address="address"
       :course="props.course"
       :id="props.id"
+      @on-drawer-close="onDrawerClose"
     ></student-form>
   </the-drawer>
 </template>
@@ -52,19 +53,30 @@ import type { Users } from '@/types'
 import { Edit, Calendar, School, MapLocation, User, IceTea } from '@element-plus/icons-vue'
 import { TheDrawer } from '@/components/ui'
 import { StudentForm } from '@/components'
-import { capitalize } from "@/utils/capitalize"
 import { capitalizeEachWord } from '@/utils/capitalize'
 // to toggle the drawer
 const drawer = ref(false)
 
 // display the fullname
-const fullname = computed(() => `${capitalize(props.firstname)} ${props.middlename.charAt(0).toUpperCase()}. ${capitalize(props.lastname)} `)
+const fullname = computed(() => {
+  if(props.middlename){
+    return `${capitalizeEachWord(props.firstname)} ${props.middlename?.charAt(0).toUpperCase()}. ${capitalizeEachWord(props.lastname)} `
+  } else {
+    return `${capitalizeEachWord(props.firstname)} ${capitalizeEachWord(props.lastname)} `
+  }
+})
 
 // display address 
 const address = computed(() => `${capitalizeEachWord(props.address)}`)
 // define props
 const props = defineProps<Users>()
 
+
+const onDrawerClose = () => {
+  drawer.value = false;
+  console.log('on drawer close', )
+
+}
 </script>
 
 <style scoped>
