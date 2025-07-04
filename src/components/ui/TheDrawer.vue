@@ -4,7 +4,7 @@
       class="drawer"
       :model-value="visible"
       @update:model-value="emit('update:visible', $event)"
-      title="Student Infomation"
+      title="Student Information"
       direction="rtl"
       custom-class="drawer"
       :size="`${size}%`"
