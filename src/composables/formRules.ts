@@ -71,6 +71,34 @@ function zipcodeValidator(rule: FormItemRule, value: string, callback: (error?: 
   }
 }
 
+// forgot password
+export function passwordValidator(
+  rule: FormItemRule,
+  value: string,
+  callback: (error?: Error) => void,
+) {
+  if (!value) return callback(new Error('New password is required'))
+  if (/^\s|\s$/.test(value)) {
+    callback(new Error('No leading or trailing spaces allowed'))
+  } else if ((value.match(/[A-Za-zñÑ]/g) || []).length < 8) {
+    callback(new Error('Must contain at least 8 letters'))
+  } else {
+    callback()
+  }
+}
+
+export function confirmPasswordValidator(passwordGetter: () => string) {
+  return (rule: FormItemRule, value: string, callback: (error?: Error) => void) => {
+    if (!value) {
+      callback(new Error('Confirm password is required'))
+    } else if (value !== passwordGetter()) {
+      callback(new Error('Passwords do not match'))
+    } else {
+      callback()
+    }
+  }
+}
+
 export const formRules = reactive({
   lastName: [{ validator: nameValidator, trigger: 'blur' }],
   firstName: [{ validator: nameValidator, trigger: 'blur' }],
