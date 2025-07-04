@@ -8,18 +8,20 @@
         prop="lastName"
         label="Last Name"
         :formatter="(row: any) => (row.lastName ? row.lastName.toUpperCase() : '')"
+        min-width="120"
       />
       <el-table-column
         align="center"
         prop="firstName"
         label="First Name"
         :formatter="(row: any) => (row.firstName ? row.firstName.toUpperCase() : '')"
+        min-width="120"
       />
       <el-table-column
         align="center"
         prop="middleInitial"
         label="Middle Initial"
-        :formatter="(row: any) => (row.middleInitial ? row.middleInitial.toUpperCase() : '')"
+        :formatter="(row: any) => (row.middleInitial ? row.middleInitial.toUpperCase() + '.' : '')"
         width="100px"
       />
       <el-table-column align="center" type="date" prop="birthDate" label="Birth Date" width="120px">
