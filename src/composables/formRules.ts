@@ -8,7 +8,7 @@ function nameValidator(rule: FormItemRule, value: string, callback: (error?: Err
   } else if (/^\s|\s$/.test(value)) {
     callback(new Error('No leading or trailing spaces allowed'))
   } else if ((value.match(/[A-Za-zñÑ]/g) || []).length < 2) {
-    callback(new Error('Must contain at least two letters'))
+    callback(new Error('Must contain at least 2 letters'))
   } else {
     callback()
   }
@@ -46,6 +46,8 @@ function addressValidator(rule: FormItemRule, value: string, callback: (error?: 
   if (!value) return callback(new Error('This field is required'))
   if (/^\s|\s$/.test(value)) {
     callback(new Error('No leading or trailing spaces allowed'))
+  } else if ((value.match(/[A-Za-zñÑ]/g) || []).length < 4) {
+    callback(new Error('Must contain at least 4 letters'))
   } else {
     callback()
   }
@@ -54,6 +56,16 @@ function addressValidator(rule: FormItemRule, value: string, callback: (error?: 
 function spaceChecker(rule: FormItemRule, value: string, callback: (error?: Error) => void) {
   if (/^\s|\s$/.test(value)) {
     callback(new Error('No leading or trailing spaces allowed'))
+  } else if ((value.match(/[A-Za-zñÑ]/g) || []).length < 4) {
+    callback(new Error('Must contain at least 4 letters'))
+  } else {
+    callback()
+  }
+}
+
+function zipcodeValidator(rule: FormItemRule, value: string, callback: (error?: Error) => void) {
+  if (value.length !== 4) {
+    callback(new Error('Zipcode must be exactly 4 digits long'))
   } else {
     callback()
   }
@@ -70,7 +82,7 @@ export const formRules = reactive({
   barangay: [{ validator: addressValidator, trigger: 'blur' }],
   city: [{ validator: addressValidator, trigger: 'blur' }],
   province: [{ validator: spaceChecker, trigger: 'blur' }],
-  zipCode: [{ validator: spaceChecker, trigger: 'blur' }],
+  zipCode: [{ validator: zipcodeValidator, trigger: 'blur' }],
   course: [{ required: true, message: 'This field is required', trigger: 'change' }],
 })
 

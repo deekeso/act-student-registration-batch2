@@ -39,7 +39,7 @@
             v-model="state.middleInitial"
             style="width: 100%"
             placeholder="ex. S"
-            maxlength="3"
+            maxlength="1"
             @keypress="onlyLetters"
           />
         </el-form-item>
@@ -79,6 +79,7 @@
             v-model="state.streetAddress"
             style="width: 100%"
             placeholder="ex. 123 Main Street"
+            maxlength="30"
           />
         </el-form-item>
         <div class="">
@@ -89,6 +90,7 @@
               v-model="state.barangay"
               style="width: 100%"
               placeholder="ex. Barangay 1"
+              maxlength="30"
             />
           </el-form-item>
           <el-form-item label="City/Municipality" prop="city" required>
@@ -99,6 +101,7 @@
               style="width: 100%"
               placeholder="ex. Manila"
               @keypress="onlyLetters"
+              maxlength="30"
             />
           </el-form-item>
         </div>
@@ -111,6 +114,7 @@
               style="width: 100%"
               placeholder="ex. Metro Manila"
               @keypress="onlyLetters"
+              maxlength="30"
             />
           </el-form-item>
           <el-form-item label="Zip Code" prop="zipCode">
@@ -120,7 +124,8 @@
               v-model="state.zipCode"
               style="width: 100%"
               placeholder="ex. 1000"
-              maxlength="5"
+              maxlength="4"
+              minlength="4"
               @keypress="onlyDigits"
             />
           </el-form-item>
