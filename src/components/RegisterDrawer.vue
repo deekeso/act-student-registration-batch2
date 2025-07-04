@@ -2,7 +2,7 @@
 import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { useStudentStore } from '@/stores/StudentStore'
 import { ElMessage } from 'element-plus'
-import type { Student } from '../types/studentInterface'
+import type { Student } from '../interfaces/studentInterface'
 import { Courses } from '@/constants/courses'
 import { studentFormRules } from '../composables/ruleForm'
 
@@ -135,7 +135,6 @@ async function onSubmit() {
     formRef.value.resetFields()
     emit('update:modelValue', false)
 
-    ElMessage.success('Registration successful')
     emit('student-registered', newStudent)
     emit(
       'operation-success',
@@ -178,7 +177,7 @@ async function onSubmit() {
           clearable
         ></el-input>
       </el-form-item>
-      <el-form-item label="Middle Initial" prop="middleInitial">
+      <el-form-item label="Middle Initial (Optional)" prop="middleInitial">
         <el-input
           v-model="studentStore.studentInfo.middleInitial"
           :minlength="1"

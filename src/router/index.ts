@@ -1,10 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import LoginForm from '@/components/LoginForm.vue'
-import ForgotPassword from '@/components/ForgotPassword.vue'
-import StudentList from '@/components/StudentList.vue'
 import NotFound from '@/views/NotFound.vue'
-import { initializeAdminCredentials } from '@/components/utils/adminInit'
+import ForgetPasswordView from '@/views/ForgetPasswordView.vue'
+import LoginView from '@/views/LoginView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,15 +12,14 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
     },
-    { path: '/login', name: 'login', component: LoginForm },
-    { path: '/forgotpassword', name: 'forgetpassword', component: ForgotPassword },
-    { path: '/studentList', name: 'studentList', component: StudentList },
+    { path: '/login', name: 'login', component: LoginView },
+    { path: '/forgotpassword', name: 'forgetpassword', component: ForgetPasswordView },
+    { path: '/studentList', name: 'studentList', component: HomeView },
     { path: '/:pathMatch(.*)*', name: 'notfound', component: NotFound },
   ],
 })
 
 router.beforeEach((to, from, next) => {
-  initializeAdminCredentials()
   const publicRoutes = ['login', 'forgetpassword', 'home', 'notfound']
   const routeName = to.name?.toString() || ''
 

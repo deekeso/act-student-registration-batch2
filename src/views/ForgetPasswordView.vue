@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
-import { getStoredAdminCredentials } from '@/components/utils/adminInit'
+import { getStoredAdminCredentials, initializeAdminCredentials } from '@/components/utils/adminInit'
 import { passwordFields, passwordResetRules } from '@/composables/ruleForm'
 
 const router = useRouter()
@@ -14,6 +14,7 @@ const isLoading = ref(false)
 const username = ref('')
 
 async function resetPassword() {
+  initializeAdminCredentials()
   if (!formRef.value) return
 
   try {

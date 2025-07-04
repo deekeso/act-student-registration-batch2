@@ -1,4 +1,4 @@
-import type { Admin } from '@/types/adminInterface'
+import type { Admin } from '@/interfaces/adminInterface'
 
 export function initializeAdminCredentials() {
   const existingAdmin = localStorage.getItem('admin')

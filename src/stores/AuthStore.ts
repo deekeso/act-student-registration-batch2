@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { Admin } from '@/types/adminInterface'
+import type { Admin } from '@/interfaces/adminInterface'
 import { computed, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 

@@ -19,7 +19,6 @@ const validateCollegeAge = (_rule: unknown, value: number, callback: (error?: Er
   callback()
 }
 
-// Custom validator for names to prevent only spaces
 const validateName = (fieldName: string) => {
   return (_rule: unknown, value: string, callback: (error?: Error) => void) => {
     if (!value || value.trim() === '') {
@@ -35,13 +34,11 @@ const validateName = (fieldName: string) => {
   }
 }
 
-// Custom validator for middle initial
 const validateMiddleInitial = (
   _rule: unknown,
   value: string,
   callback: (error?: Error) => void,
 ) => {
-  // If empty, it's valid (optional field)
   if (!value || value.trim() === '') {
     return callback()
   }
@@ -59,7 +56,6 @@ const validateMiddleInitial = (
   callback()
 }
 
-// Custom validator for address to prevent only spaces
 const validateAddress = (_rule: unknown, value: string, callback: (error?: Error) => void) => {
   if (!value || value.trim() === '') {
     return callback(new Error('Please input address'))

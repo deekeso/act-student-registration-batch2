@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { ElMessage } from 'element-plus'
-import type { Student } from '../types/studentInterface'
+import type { Student } from '../interfaces/studentInterface'
 import { Courses } from '@/constants/courses'
 import { useStudentStore } from '../stores/StudentStore'
 import { studentFormRules } from '@/composables/ruleForm'
@@ -162,7 +162,7 @@ async function onEditSubmit() {
         <el-input v-model="editStudentInfo.firstName" placeholder="First Name" clearable></el-input>
       </el-form-item>
 
-      <el-form-item label="Middle Initial" prop="middleInitial">
+      <el-form-item label="Middle Initial (Optional)" prop="middleInitial">
         <el-input
           v-model="editStudentInfo.middleInitial"
           :maxlength="3"
