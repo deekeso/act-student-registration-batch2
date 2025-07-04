@@ -86,6 +86,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
   (e: 'confirm'): void
   (e: 'cancel'): void
+  (e: 'reset'): void
 }>()
 
 // Define state for the drawer
@@ -106,8 +107,13 @@ watch(internalVisible, (val) => {
 
 // Handle close event
 const handleClose = (done: () => void) => {
-  ElMessageBox.confirm('Are you sure you want to close this?')
-    .then(() => done())
+  ElMessageBox.confirm(
+    "Are you sure you want to close this form? Any information you've entered will be lost.",
+  )
+    .then(() => {
+      emit('reset')
+      done()
+    })
     .catch(() => {})
 }
 

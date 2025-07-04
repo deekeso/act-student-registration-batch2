@@ -233,6 +233,10 @@ const handleCancel = async () => {
     // User cancelled, do nothing
   }
 }
+
+defineExpose({
+  resetForm,
+})
 </script>
 
 <style scoped>

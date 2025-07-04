@@ -5,9 +5,15 @@
     :direction="direction"
     :show-footer="false"
     @cancel="handleCancel"
+    @reset="handleDrawerReset"
   >
     <template #default>
-      <AddForm :initial-data="initialData" @submit="handleFormSubmit" @cancel="handleFormCancel" />
+      <AddForm
+        :initial-data="initialData"
+        @submit="handleFormSubmit"
+        @cancel="handleFormCancel"
+        ref="addFormRef"
+      />
     </template>
   </ReusableDrawer>
 </template>
@@ -34,6 +40,11 @@ const emit = defineEmits<{
 // Default title if not provided
 const title = ref(props.title || 'Add Student')
 const isOpen = ref(props.modelValue)
+const addFormRef = ref()
+
+function handleDrawerReset() {
+  addFormRef.value?.resetForm()
+}
 
 // Sync isOpen with modelValue
 watch(
@@ -66,5 +77,4 @@ const handleCancel = () => {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
