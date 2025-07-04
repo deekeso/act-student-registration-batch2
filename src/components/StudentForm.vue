@@ -1,23 +1,21 @@
 <template>
   <!-- Student Form -->
-  <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules">
+  <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" @submit.prevent="submitForm(ruleFormRef)">
     <header>
       <!-- Inject Header Here -->
       <slot name="header"></slot>
     </header>
-
     <!-- Firstname -->
-    <el-form-item label="Firstname" prop="firstname" label-position="top">
+    <el-form-item label="First Name" prop="firstname" label-position="top">
       <el-input
         v-model="ruleForm.firstname"
-        placeholder="Enter your firstname"
+        placeholder="Enter your first name"
         clearable
         autocomplete="off"
       />
     </el-form-item>
-
     <!-- Middle Name -->
-    <el-form-item label="Middlename" prop="middlename" label-position="top">
+    <el-form-item label="Middle Name (optional)" prop="middlename" label-position="top">
       <el-input
         v-model.value="ruleForm.middlename"
         placeholder="Enter your middle name"
@@ -25,8 +23,6 @@
         autocomplete="off"
       />
     </el-form-item>
-
-
     <!-- Lastname -->
     <el-form-item label="Lastname" prop="lastname" label-position="top">
       <el-input
@@ -36,17 +32,16 @@
         autocomplete="off"
       />
     </el-form-item>
-
     <!-- Birthdate -->
-    <el-form-item label="Birthdate" prop="birthdate" label-position="top">
+    <el-form-item label="Birth Date" prop="birthdate" label-position="top">
       <el-date-picker
         v-model="ruleForm.birthdate"
         type="date"
-        placeholder="Select your birthdate"
+        placeholder="Select your birth date"
         size="large"
+        :disabled-date="disabledDate"
       />
     </el-form-item>
-
     <!-- Age -->
     <el-form-item label="Age" prop="age" label-position="top">
       <el-input
@@ -58,10 +53,9 @@
         autocomplete="off"
       />
     </el-form-item>
-
     <!-- Course -->
     <el-form-item label="Course" prop="course" label-position="top">
-      <el-select v-model="ruleForm.course" placeholder="Select" size="large">
+      <el-select v-model="ruleForm.course" placeholder="Select" size="large" fit-input-width>
         <el-option
           v-for="(course, index) in courses"
           :key="index"
@@ -70,7 +64,6 @@
         />
       </el-select>
     </el-form-item>
-
     <!-- Address -->
     <el-form-item label="Address" prop="address" label-position="top">
       <el-input
@@ -80,28 +73,25 @@
         autocomplete="off"
       />
     </el-form-item>
-
     <!-- Button Group  for (Add, Reset Delete) -->
     <div class="button-group">
-      <el-button color="#181818" @click="submitForm(ruleFormRef)" :icon="Edit">
+      <el-button color="#181818" native-type="submit" :icon="Edit">
         {{ BtnLabel }}
       </el-button>
       <el-button @click="resetForm(ruleFormRef)" type="primary" :icon="Refresh"> Reset </el-button>
       <el-button 
         v-if="props.BtnDelete" type="danger"
-        @click=" () => { confirmDelete(ruleForm.id)}"
+        @click="()=>{ confirmDelete(ruleForm.id)}"
         :icon="Delete"
       >
         Delete
       </el-button>
-      
     </div>
-
   </el-form>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, defineProps, watch, onUpdated } from 'vue'
+import { reactive, ref, defineProps, watch, onUpdated, defineEmits } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import type { Users, UsersRuleForm } from '@/types'
 import { Edit, Delete, Refresh } from '@element-plus/icons-vue'
@@ -109,16 +99,21 @@ import { courses } from '@/constants'
 import { useStudents } from '@/stores/students'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { capitalize } from '@/utils/capitalize'
+import { useDate } from "@/composables/useDate"
+
+// disable dates
+const { disabledDate } = useDate(); 
 
 // functions that handle update / delete / add student records
 const { onUpdateStudentInfo, onDeleteStudentInfo, onAddStudents } = useStudents()
 
+const emits = defineEmits(['on-drawer-close'])
 
 // Student form props
 interface StudentFormProps {
-  id: string
+  id?: string
   firstname: string
-  middlename: string
+  middlename?: string
   lastname: string
   birthdate: string
   age: number
@@ -145,9 +140,9 @@ const ruleFormRef = ref<FormInstance>()
 *   Initialized with props passed to the component.
 */ 
 const ruleForm = reactive<Users>({
-  id: props.id,
+  id: props.id ?? '',
   firstname: capitalize(props.firstname),
-  middlename: capitalize(props.middlename) ,
+  middlename: capitalize(props.middlename ?? '' ) ,
   lastname: capitalize(JSON.parse(JSON.stringify(props.lastname))),
   age: Number(props.age),
   address: props.address,
@@ -175,13 +170,15 @@ watch(
   },
 )
 
+
+
 /**
  * custom validator to check if the age is valid.
- * @param {any} rule - Validation rule object
+ * @param {string} rule - Validation rule object
  * @param {number} value - The value of the age field to validate
- * @param {any} callback - Function to call with validation result (error or success)
+ * @param {string | Error } callback - Function to call with validation result (error or success)
  */
-const checkAgeNumber = (rule: any, value: number, callback: any) => {
+const checkAgeNumber = (rule: string, value: number, callback: (error?: string | Error) => void) => {
   if (!value) {
     return callback(new Error('Age is required'))
   }
@@ -197,17 +194,95 @@ const checkAgeNumber = (rule: any, value: number, callback: any) => {
  * @param {any} value - The value of the names field to validate if they have
  * @param {any} callback - Function to call with validation result (error or success)
  */
-const nameValidator = (rule: any, value: string, callback: any) => {
-  const pattern = /^[a-zA-Z\s'-]+$/
+const nameValidator = (field: string) => (rule: string, value: string, callback: (error?: string | Error) => void) => {
+  // 1. Allow only letters, hyphens, and spaces
+  const validCharsPattern = /^[A-Za-z\s-]+$/;
+  // 2. Ensure clean structure: no multiple/consecutive hyphens or spaces, no leading/trailing hyphens/spaces
+  const cleanStructurePattern = /^[A-Za-z]+(?:[- ][A-Za-z]+)*$/;
   // if value doesnt exist
-  if (!value) {
+  if (!value.trim()) {
     callback(new Error('This field is required.'))
-  } else if (!pattern.test(value)) {
-    // else if the password has numbers / symbols
-    callback(new Error('Only letters, spaces, hyphens, and apostrophes are allowed.'))
+  } else if (!validCharsPattern.test(value.trim())) {
+    callback(new Error(`${field} contains invalid characters. Only letters and dashes are allowed`));
+  } else if (!cleanStructurePattern.test(value.trim())) {
+    callback(new Error('No leading/trailing or repeated hyphens/spaces allowed.'))
   } else {
     callback()
   }
+}
+
+
+const middleNameValidator = (rule: string, value: string, callback: (error?: string | Error) => void) => {
+   const trimmed = value.trim();
+
+  // If it's optional and empty, it's valid — exit cleanly
+  if (!trimmed) {
+    return callback(); 
+  }
+
+  const validCharsPattern = /^[A-Za-z\s-]+$/;
+  const cleanStructurePattern = /^[A-Za-z]+(?:[- ][A-Za-z]+)*$/;
+  
+  if (!validCharsPattern.test(trimmed)) {
+    callback(new Error('contains invalid characters. Only letters and dashes are allowed'));
+  } else if (!cleanStructurePattern.test(trimmed)) {
+    callback(new Error('No leading/trailing or repeated hyphens/spaces allowed.'));
+  } else if(trimmed.length < 2){
+    callback(new Error('Invalid Middlename'));
+  }
+  else {
+    callback(); // ✅ success
+  }
+
+
+}
+
+
+const addressValidator = (rule: string, value: string, callback: (error?: string | Error) => void ) => {
+  const trimmed = value.trim()
+  // Pattern: Only digits (pure number)
+  const isOnlyNumbersPattern = /^\d+$/
+
+  // Pattern: Valid characters only (letters, numbers, space, comma, period, hyphen)
+  const validCharactersPattern = /^[A-Za-z0-9\s,.-]+$/
+
+  // Pattern: Repeated spaces or hyphens
+  const repeatedHyphenOrSpacePattern = /[\s-]{2,}/
+
+  // Pattern: Starts or ends with punctuation or space
+  const leadingOrTrailingPunctuationPattern = /^[,\-.\s]|[,\-.\s]$/
+
+  // Required field
+  if (!trimmed) {
+    return callback(new Error('Address is required'))
+  }
+
+  // Should not be only numbers
+  if (isOnlyNumbersPattern.test(trimmed)) {
+    return callback(new Error('Address cannot be only numbers'))
+  }
+
+  // Invalid characters
+  if (!validCharactersPattern.test(trimmed)) {
+    return callback(
+      new Error('Only letters, numbers, commas, periods, and hyphens are allowed')
+    )
+  }
+
+  // Repeated hyphens or spaces
+  if (repeatedHyphenOrSpacePattern.test(trimmed)) {
+    return callback(
+      new Error('No repeated spaces or hyphens allowed in the address')
+    )
+  }
+
+  //  Starts or ends with space or punctuation
+  if (leadingOrTrailingPunctuationPattern.test(trimmed)) {
+    return callback(new Error('Address cannot start or end with punctuation or space'))
+  }
+
+  // ✅ Valid address
+  callback()
 }
 
 // validate the user inputs
@@ -216,32 +291,37 @@ const rules = reactive<FormRules<UsersRuleForm>>({
   firstname: [
     { required: true, message: 'firstname is required', trigger: 'blur' },
     { min: 2, message: 'firstname is required', trigger: 'blur' },
-    { validator: nameValidator, message: 'Numbers and Specials are not allowed', trigger: 'blur' },
+    { validator: nameValidator('firstname'), trigger: 'blur' },
   ],
   // middlename validators
   middlename: [
-    { required: true, message: 'middlename is required', trigger: 'blur' },
-    { validator: nameValidator, message: 'Numbers and Specials are not allowed', trigger: 'blur' },
+    { required: false, message: 'middlename is required', trigger: 'blur' },
+    { validator: middleNameValidator, trigger: 'blur' },
   ],
   // lastname validators
   lastname: [
     { required: true, message: 'lastname is required', trigger: 'blur' },
-    { validator: nameValidator, message: 'Numbers and Specials are not allowed', trigger: 'blur' },
+    { validator: nameValidator('lastname'), trigger: 'blur' },
   ],
   // age validators
   age: [
     { required: true, message: 'age is required', trigger: 'blur' },
-    { required: true, validator: checkAgeNumber, trigger: 'blur' },
+    { validator: checkAgeNumber, trigger: 'blur' },
   ],
   // address validators
   address: [
     { required: true, message: 'address is required', trigger: 'blur' },
     { min: 5, message: 'Invalid address' },
+     { validator: addressValidator, trigger: 'blur'}
   ],
   // courses validators
   course: [{ required: true, message: 'course is required', trigger: 'blur' }],
   // birthdate validators
-  birthdate: [{ required: true, message: 'birthdate is required', trigger: 'blur' }],
+  birthdate: [
+    { required: true, message: 'birthdate is required', trigger: 'blur' }, 
+   
+  ],
+  
 })
 
 // Lower case the student data
@@ -249,12 +329,11 @@ const toLowerCaseFormData = () => {
   return {
     ...ruleForm,
     firstname: ruleForm.firstname.toLowerCase().trim(),
-    middlename: ruleForm.middlename.toLowerCase().trim(),
+    middlename: ruleForm.middlename?.toLowerCase().trim() ,
     lastname: ruleForm.lastname.toLowerCase().trim(),
     address: ruleForm.address.toLowerCase().trim(),
   }
 }
-
 
 /**
  *  handle form submit toggles between add students or update students
@@ -264,13 +343,13 @@ const toLowerCaseFormData = () => {
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
-    
     if (valid) {
       const formCopy = toLowerCaseFormData()
       if (props.OnAdd) {
         onAddStudents(formCopy)
       } else if (!props.OnAdd) {
         onUpdateStudentInfo(formCopy)
+        emits('on-drawer-close');
       } else {
         ElMessage.error('Something went wrong')
       }
@@ -286,7 +365,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 /**
  *  Message box for confirmation of deletetion of student record
  * @param {any} id:string
- * @returns {any}
  */
 const confirmDelete = (id: string) => {
   ElMessageBox.confirm(
