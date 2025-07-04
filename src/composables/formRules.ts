@@ -54,7 +54,10 @@ function addressValidator(rule: FormItemRule, value: string, callback: (error?: 
 }
 
 function spaceChecker(rule: FormItemRule, value: string, callback: (error?: Error) => void) {
-  if (/^\s|\s$/.test(value)) {
+  if (!value) {
+    // Allow empty input (0 characters)
+    callback()
+  } else if (/^\s|\s$/.test(value)) {
     callback(new Error('No leading or trailing spaces allowed'))
   } else if ((value.match(/[A-Za-zñÑ]/g) || []).length < 4) {
     callback(new Error('Must contain at least 4 letters'))
@@ -64,7 +67,10 @@ function spaceChecker(rule: FormItemRule, value: string, callback: (error?: Erro
 }
 
 function zipcodeValidator(rule: FormItemRule, value: string, callback: (error?: Error) => void) {
-  if (value.length !== 4) {
+  if (!value) {
+    // Allow empty input
+    callback()
+  } else if (value.length !== 4) {
     callback(new Error('Zipcode must be exactly 4 digits long'))
   } else {
     callback()
