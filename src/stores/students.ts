@@ -2,6 +2,9 @@ import { defineStore } from 'pinia'
 import type { Users } from '@/types'
 import { ElMessage } from 'element-plus'
 import { dateFormatter } from '@/utils/dateFormatter'
+import { v4 as uuidv4 } from "uuid"
+
+
 export const useStudents = defineStore('students', {
   // Defines the default state for the store.
   state: () => ({
@@ -27,8 +30,8 @@ export const useStudents = defineStore('students', {
           ? student.course.toLowerCase() === state.filterCourse.toLowerCase()
           : true
 
-        const fullName =
-          `${student.firstname} ${student.middlename} ${student.lastname}`.toLowerCase()
+        const fullName = `${student.firstname} ${student.middlename} ${student.lastname}`.toLowerCase().trim() 
+
         const matchName = state.filterName
           ? fullName.includes(state.filterName.toLowerCase())
           : true
@@ -36,6 +39,8 @@ export const useStudents = defineStore('students', {
         return matchCourse && matchName
       })
     },
+
+
 
     /**
      * Get student record by id
@@ -92,11 +97,17 @@ export const useStudents = defineStore('students', {
      */
     onAddStudents(studentData: Users) {
       const studentList = this.getStudentOnLocalStorage()
-      studentData.birthdate = dateFormatter(studentData.birthdate.toString())
-      studentList.push(studentData)
+      
+      const newStudent = {
+        ...studentData,
+        id: uuidv4(),
+        birthdate: dateFormatter(studentData.birthdate.toString()),
+      };
+      
+      studentList.push(newStudent)
       localStorage.setItem('students', JSON.stringify(studentList))
       this.students = studentList
-      ElMessage.success('Successfully added new User')
+      ElMessage.success('Successfully added new student record')
     },
 
 
