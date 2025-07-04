@@ -3,7 +3,7 @@
     <el-input
       :model-value="props.modelValue"
       @input="(val: string) => emit('update:modelValue', val)"
-      :placeholder="props.placeholder || 'Search by name or address'"
+      :placeholder="props.placeholder || 'Search by name, and address'"
       :suffix-icon="Search"
       clearable
     />

@@ -93,6 +93,7 @@ export const entryRestriction = () => {
   }
 }
 
+// address formatter
 export function formatAddress(student: {
   streetAddress: string
   barangay: string

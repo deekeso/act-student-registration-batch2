@@ -63,6 +63,7 @@ import { Filter, ArrowDown } from '@element-plus/icons-vue'
 
 import { useStudentStore } from '@/stores/studentsStore.ts'
 import TheHeader from '@/components/ui/TheHeader.vue'
+import { useSearchFilter } from '@/composables/filter'
 
 const store = useStudentStore() // Pinia store instance for students
 const isAddDrawerOpen = ref(false) // Add drawer visibility state
@@ -72,23 +73,20 @@ const search = ref('')
 const courseSearch = ref('')
 const currentSort = ref('')
 
-// Computed property to filter students based on search input
+// Use the search filter composable
+const { filteredStudents: searchFilteredStudents } = useSearchFilter(
+  computed(() => store.allStudents()),
+  search,
+)
+
+// Computed property to filter students based on search input and course
 const filteredStudents = computed(() => {
-  let students = store.allStudents() // Start with all students
+  let students = searchFilteredStudents.value // Start with search filtered students
 
   // Filter by course if course search is active
   if (courseSearch.value) {
     students = students.filter((student) =>
       student.course?.toLowerCase().includes(courseSearch.value.toLowerCase()),
-    )
-  }
-
-  // Filter by name/address if search is active
-  if (search.value) {
-    students = students.filter((student) =>
-      Object.values(student).some((val) =>
-        String(val).toLowerCase().includes(search.value.toLowerCase()),
-      ),
     )
   }
 
