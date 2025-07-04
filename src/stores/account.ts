@@ -33,10 +33,9 @@ export const useAccount = defineStore('accounts', {
 
     
     /**
-     * Check user credentials if valid
-     * @param {any} credentials:Credentials
-     * @returns {any}
-     */
+     * Check user credentials if its valid or not
+     * @param {Credentials} credentials:Credentials
+     * */
     onLogin(credentials: Credentials) { 
       const account = JSON.parse(localStorage.getItem('accounts') || 'null')
       const hashedPassword = SHA256(credentials.password).toString()
@@ -47,9 +46,9 @@ export const useAccount = defineStore('accounts', {
           ElMessage.error('No accounts found')
         }
         // check username and password 
-        if (account?.username === credentials.username && account?.password === hashedPassword) {
+        if (account.username === credentials.username && account.password === hashedPassword) {
           localStorage.setItem('isAuthenticated', 'true')
-          ElMessage.success('Successfully login')
+          ElMessage.success('Successfully logged in')
           this.router.push('/dashboard')
         } else {
           ElMessage.error('Invalid Username or Password')
