@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <div class="search-bar">
-      <el-input v-model="nameFilter" placeholder="Search by name" clearable  :prefix-icon="Search"/>
+      <el-input v-model="nameFilter" placeholder="Search by name" clearable  :prefix-icon="Search"  />
 
-      <el-select v-model="courseFilter" placeholder="Filter by course" clearable>
+      <el-select v-model="courseFilter" placeholder="Filter by course" fit-input-width  clearable>
         <el-option v-for="course in courses" :key="course" :label="course" :value="course" />
       </el-select>
     </div>
@@ -21,7 +21,9 @@
         :course="student.course"
         :address="student.address"
       />
+      
     </ul>
+
     <el-empty v-if="!filteredStudents.length" description="No Students Found" />
   </div>
 </template>
@@ -70,20 +72,23 @@ onMounted(() => {
 
 
 
+
 :deep(.el-input) {
   width: 300px;
   margin-bottom: 10px;
 }
 
 :deep(.el-select) {
-  width: 200px;
   margin-left: 10px;
   text-overflow: ellipsis;
 }
 
+
 .search-bar {
+  width:  700px;
   margin-top: 10rem;
   display: flex;
+  gap: 4px;
   justify-content: center;
 }
 
