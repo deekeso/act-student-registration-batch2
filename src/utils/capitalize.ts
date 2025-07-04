@@ -15,5 +15,13 @@ export const capitalize = (value: string): string => {
  */
 export const capitalizeEachWord = (value: string): string => {
   if(!value) return ''
-  return value.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+   return value
+    .split(' ')
+    .map(word =>
+      word
+        .split('-')
+        .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+        .join('-')
+    )
+    .join(' ')
 }
