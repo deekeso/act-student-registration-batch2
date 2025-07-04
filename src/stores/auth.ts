@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed } from 'vue'
+import CryptoJS from 'crypto-js'
 
 interface LoginState {
   username: string
@@ -27,23 +28,26 @@ export const useAuthStore = defineStore('auth', {
 
       // Get stored credentials from localStorage
       const storedUsername = localStorage.getItem('Username')
-      const storedPassword = localStorage.getItem('Password')
+      const storedPasswordHash = localStorage.getItem('Password')
 
       // If stored credentials exist, use them; otherwise use default admin credentials
       let validUsername: string
-      let validPassword: string
+      let validPasswordHash: string
 
-      if (storedUsername && storedPassword) {
+      // Hash the input password for comparison
+      const inputPasswordHash = CryptoJS.SHA256(this.password).toString()
+
+      if (storedUsername && storedPasswordHash) {
         // Use stored credentials (including any changed via forgot password)
         validUsername = storedUsername
-        validPassword = storedPassword
+        validPasswordHash = storedPasswordHash
       } else {
         // Fall back to default admin credentials only if no stored credentials exist
         validUsername = 'admin'
-        validPassword = 'admin123!'
+        validPasswordHash = CryptoJS.SHA256('admin123!').toString()
       }
 
-      if (this.username === validUsername && this.password === validPassword) {
+      if (this.username === validUsername && inputPasswordHash === validPasswordHash) {
         return { success: true, message: 'Login successful', username: this.username }
       } else {
         return { success: false, message: 'Invalid username or password' }
@@ -63,7 +67,7 @@ export const useAuthStore = defineStore('auth', {
 
     saveCredentials() {
       localStorage.setItem('Username', this.username)
-      localStorage.setItem('Password', this.password)
+      localStorage.setItem('Password', CryptoJS.SHA256(this.password).toString())
       // Set session flag for route protection
       localStorage.setItem('isLoggedIn', 'true')
     },
@@ -98,9 +102,9 @@ export const useAuthStore = defineStore('auth', {
       this.username = username
       this.password = newPassword
 
-      // Save to localStorage
+      // Save to localStorage (store hashed password)
       localStorage.setItem('Username', username)
-      localStorage.setItem('Password', newPassword)
+      localStorage.setItem('Password', CryptoJS.SHA256(newPassword).toString())
 
       return { success: true, message: 'Password reset successfully' }
     },
