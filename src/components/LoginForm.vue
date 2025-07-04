@@ -1,20 +1,33 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthenticationStore } from '../stores/AuthStore'
-import { getStoredAdminCredentials } from '@/components/utils/adminInit'
+import { useAuthenticationStore } from '@/stores/AuthStore'
+import { getStoredAdminCredentials, initializeAdminCredentials } from '@/components/utils/adminInit'
 import { adminFormRules } from '@/composables/ruleForm'
 
+// Composables
 const router = useRouter()
-const formRef = ref()
 const authStore = useAuthenticationStore()
 const { handleLogin } = authStore
+
+// Reactive references
+const formRef = ref()
 const isLoading = ref(false)
+
+// Utilities
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
+// Initialize form data
+authStore.admin.username = ''
+authStore.admin.password = ''
+
+// Methods
 async function onSubmit() {
+  initializeAdminCredentials()
+
   if (!formRef.value) return
+
   isLoading.value = true
 
   try {
@@ -32,14 +45,23 @@ async function onSubmit() {
       return
     }
 
+    const inputUserName = authStore.admin.username.trim()
+    const inputPassword = authStore.admin.password.trim()
+
     const matchedAdmin = storedAdmin.find(
       (admin: { username: string; password: string }) =>
-        admin.username === authStore.admin.username && admin.password === authStore.admin.password,
+        admin.username === inputUserName && admin.password === inputPassword,
     )
+
     if (matchedAdmin) {
       await wait(1000)
       handleLogin()
       await router.push('/studentList')
+
+      // Clear form
+      authStore.admin.username = ''
+      authStore.admin.password = ''
+
       ElMessage.success('Login successful')
     } else {
       ElMessage.error('Invalid username or password')
@@ -51,6 +73,7 @@ async function onSubmit() {
   }
 }
 
+// Lifecycle hooks
 onMounted(() => {
   if (authStore.isAuthenticated) {
     router.push('/studentList')
@@ -59,7 +82,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="form-body">
+  <div class="login-form-container">
     <el-form
       ref="formRef"
       :model="authStore.admin"
@@ -98,14 +121,22 @@ onMounted(() => {
         :loading="isLoading"
         :disabled="isLoading"
         @click="onSubmit"
-        >{{ isLoading ? 'Logging in...' : 'Login' }}</el-button
       >
+        {{ isLoading ? 'Logging in...' : 'Login' }}
+      </el-button>
+
       <router-link to="/forgotpassword" class="forgot-password"> Forgot password? </router-link>
     </el-form>
   </div>
 </template>
 
 <style scoped>
+.login-form-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Input Styling */
 :deep(.el-input input) {
   color: white !important;
 }
@@ -114,7 +145,7 @@ onMounted(() => {
   background-color: transparent;
   height: 30px;
   padding: 20px;
-  margin-bottom: 30px;
+  margin-top: 15px;
   font-size: 20px;
   width: 400px;
   color: white;
@@ -131,6 +162,7 @@ onMounted(() => {
   color: white;
 }
 
+/* Button Styling */
 :deep(.el-button) {
   width: 100%;
   height: 50px;
@@ -147,6 +179,7 @@ onMounted(() => {
   background-color: rgb(139, 210, 252);
 }
 
+/* Forgot Password Link */
 .forgot-password {
   display: flex;
   justify-content: flex-end;
@@ -157,20 +190,6 @@ onMounted(() => {
 
 .forgot-password:hover {
   text-decoration: underline;
-}
-.form-body {
-  display: flex;
-  margin: 0 auto;
-  justify-content: center;
-  align-items: center;
-  width: auto;
-  height: 100vh;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.input-login {
-  color: white;
 }
 
 /* Mobile Responsive Breakpoints */
@@ -189,10 +208,6 @@ onMounted(() => {
     height: 45px;
     font-size: 16px;
   }
-
-  .form-body {
-    padding: 16px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -210,10 +225,6 @@ onMounted(() => {
   :deep(.el-button) {
     height: 42px;
     font-size: 15px;
-  }
-
-  .form-body {
-    padding: 12px;
   }
 
   .forgot-password {

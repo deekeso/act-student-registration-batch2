@@ -2,7 +2,7 @@
 import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { useStudentStore } from '@/stores/StudentStore'
 import { ElMessage } from 'element-plus'
-import type { Student } from '../types/studentInterface'
+import type { Student } from '../interfaces/studentInterface'
 import { Courses } from '@/constants/courses'
 import { studentFormRules } from '../composables/ruleForm'
 
@@ -18,7 +18,7 @@ interface Emits {
   'operation-error': [message: string]
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 const isMobile = ref(window.innerWidth <= 768)
@@ -26,6 +26,8 @@ const isMobile = ref(window.innerWidth <= 768)
 const studentStore = useStudentStore()
 const formRef = ref()
 const isLoading = ref(false)
+
+//Resetting inputs everything the drawer is close
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -65,6 +67,26 @@ function calculateAge(birthDate: string): number {
   return age
 }
 
+function resetStudentInfo() {
+  studentStore.studentInfo = {
+    firstName: '',
+    middleInitial: '',
+    lastName: '',
+    birthDay: '',
+    age: 0,
+    address: '',
+    courses: [],
+  }
+}
+
+function trimAllInputs() {
+  const studentInfo = studentStore.studentInfo
+  studentInfo.firstName = studentInfo.firstName?.trim() || ''
+  studentInfo.middleInitial = studentInfo.middleInitial?.trim() || ''
+  studentInfo.lastName = studentInfo.lastName?.trim() || ''
+  studentInfo.address = studentInfo.address?.trim() || ''
+}
+
 watch(
   () => studentStore.studentInfo.birthDay,
   (newBirthDay) => {
@@ -77,11 +99,22 @@ watch(
   },
 )
 
+watch(
+  () => props.modelValue,
+  (val) => {
+    if (!val) {
+      formRef.value?.resetFields()
+      resetStudentInfo()
+    }
+  },
+)
+
 async function onSubmit() {
   if (!formRef.value) return
   isLoading.value = true
 
   try {
+    trimAllInputs()
     let valid = false
     await formRef.value.validate((validResult: boolean) => {
       valid = validResult
@@ -102,7 +135,6 @@ async function onSubmit() {
     formRef.value.resetFields()
     emit('update:modelValue', false)
 
-    ElMessage.success('Registration successful')
     emit('student-registered', newStudent)
     emit(
       'operation-success',
@@ -124,7 +156,7 @@ async function onSubmit() {
     @update:model-value="emit('update:modelValue', $event)"
     title="Register"
     :with-header="false"
-    :size="isMobile ? '100%' : '40%'"
+    :size="isMobile ? '100%' : '30%'"
     direction="rtl"
   >
     <button class="close-button" @click="closeDrawer" aria-label="Close drawer">×</button>
@@ -145,12 +177,12 @@ async function onSubmit() {
           clearable
         ></el-input>
       </el-form-item>
-      <el-form-item label="Middle Initial" prop="middleInitial">
+      <el-form-item label="Middle Initial (Optional)" prop="middleInitial">
         <el-input
           v-model="studentStore.studentInfo.middleInitial"
           :minlength="1"
           :maxlength="3"
-          placeholder="Enter your middle initial (type 'NA' if unavailable)"
+          placeholder="Enter your middle initial (Leave empty if N/A)"
           clearable
         ></el-input>
       </el-form-item>
@@ -163,12 +195,15 @@ async function onSubmit() {
         ></el-input>
       </el-form-item>
       <el-form-item label="Birthday" prop="birthDay">
-        <el-input
+        <el-date-picker
           v-model="studentStore.studentInfo.birthDay"
           type="date"
-          placeholder="Enter your Birthday"
-          required
-        ></el-input>
+          placeholder="Pick a day"
+          size="default"
+          style="width: 100%"
+          format="YYYY-MM-DD"
+          value-format="YYYY-MM-DD"
+        />
       </el-form-item>
       <el-form-item label="Age" prop="age">
         <el-input
@@ -194,6 +229,7 @@ async function onSubmit() {
           multiple
           placeholder="Select Courses"
           style="width: 100%"
+          fit-input-width
         >
           <el-option v-for="course in Courses" :key="course" :label="course" :value="course" />
         </el-select>

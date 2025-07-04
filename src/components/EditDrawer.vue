@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { ElMessage } from 'element-plus'
-import type { Student } from '../types/studentInterface'
+import type { Student } from '../interfaces/studentInterface'
 import { Courses } from '@/constants/courses'
 import { useStudentStore } from '../stores/StudentStore'
 import { studentFormRules } from '@/composables/ruleForm'
@@ -146,7 +146,7 @@ async function onEditSubmit() {
     @update:model-value="emit('update:modelValue', $event)"
     title="Edit Student"
     :withHeader="false"
-    :size="isMobile ? '100%' : '40%'"
+    :size="isMobile ? '100%' : '30%'"
     direction="rtl"
   >
     <button class="close-button" @click="closeDrawer" aria-label="Close Drawer">×</button>
@@ -162,7 +162,7 @@ async function onEditSubmit() {
         <el-input v-model="editStudentInfo.firstName" placeholder="First Name" clearable></el-input>
       </el-form-item>
 
-      <el-form-item label="Middle Initial" prop="middleInitial">
+      <el-form-item label="Middle Initial (Optional)" prop="middleInitial">
         <el-input
           v-model="editStudentInfo.middleInitial"
           :maxlength="3"
@@ -206,6 +206,7 @@ async function onEditSubmit() {
           multiple
           placeholder="Select Courses"
           style="width: 100%"
+          fit-input-width
         >
           <el-option v-for="course in Courses" :key="course" :label="course" :value="course">
           </el-option>
