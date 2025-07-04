@@ -1,8 +1,7 @@
 
 <template>
   <!-- form  -->
-  
-  <el-form ref="ruleFormRef" :rules="rules" :model="ruleForm">
+  <el-form ref="ruleFormRef" :rules="rules" :model="ruleForm" @submit.prevent="submitForm(ruleFormRef)">
     <h1 v-if="props.confirmpassword">Forgot Password</h1>
     <!-- Username input -->
     <el-form-item prop="username" label-position="top">
@@ -39,12 +38,15 @@
       />
     </el-form-item>
     <!-- Submit button -->
-    <el-button @click="submitForm(ruleFormRef)">
-      {{ props.confirmpassword ? 'Save Changes' : 'Login' }}
+    <el-button  native-type="submit">
+      {{ props.confirmpassword ? 'Save Changes' : 'LOGIN' }}
     </el-button>
 
      <!-- Forgot Password only for login page -->
-    <RouterLink v-if="!props.confirmpassword" to="/forgot-password" class="right-link">Forgot Password</RouterLink>
+    <div class="right-link">
+      <RouterLink v-if="!props.confirmpassword" to="/forgot-password">Forgot Password?</RouterLink>
+      <RouterLink v-if="props.confirmpassword" to="/">&larr; Return Home</RouterLink>
+    </div>
   </el-form>
 </template>
 
@@ -113,7 +115,7 @@ const matchPassword = (rule: any, value: string, callback: any) => {
   if (!value) {
     return callback(new Error('Password is required.'))
   } else if (value !== ruleForm.password) {
-    return callback(new Error('Password and Confirm Password doesnt match'))
+    return callback(new Error('Password and Confirm Password must match'))
   } else {
     return callback() 
   }
@@ -192,22 +194,35 @@ form {
 
 /* Right-aligned link styling */
 .right-link {
-  margin-bottom: 4px;
+  margin-top: 12px;
   display: flex;
   justify-content: end;
   color: white;
+  
+}
+
+.right-link > a{
+  color: white;
   text-decoration: none;
 }
+
 /* element plus button styling */
-:deep(.el-button) {
+button{
+  --el-button-font-weight: bold;
+  --el-button-text-color: #2148c0;
+  font-family: 'Montserrat', sans-serif;
   width: 100%;
   height: 50px;
-  margin: 12px 0px;
+}
+
+
+
+:deep(.el-form-item){
+  margin-bottom: 32px;
 }
 
 /* element plus input styling */
 :deep(.el-input) {
-  margin-bottom: 12px;
   --el-input-placeholder-color: #fff;
 }
 
