@@ -5,9 +5,16 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue'
+import { onMounted } from 'vue';
+import { useAuth } from '@/composables/useAuth';
 import { BaseContainer, LoginForm } from '@/components'
-import { useAuth } from '@/composables/useAuth'
+
+const { isGuest } = useAuth();
+
+onMounted(() => {
+  isGuest()
+}) 
+
 </script>
 
 <style></style>
