@@ -8,7 +8,7 @@
     class="student-form"
   >
     <el-form-item label="First Name" prop="firstName">
-      <el-input v-model="formData.firstName" placeholder="Enter first name" />
+      <el-input v-model="formData.firstName" placeholder="Enter first name" @blur="formatFirstName" maxlength="70" show-word-limit />
     </el-form-item>
 
     <!-- Middle initial, optional and limited to 1 character -->
@@ -18,35 +18,43 @@
         placeholder="Enter middle initial"
         maxlength="1"
         show-word-limit
+        @blur="formatMiddleInitial"
       />
     </el-form-item>
 
     <el-form-item label="Last Name" prop="lastName">
-      <el-input v-model="formData.lastName" placeholder="Enter last name" />
+      <el-input v-model="formData.lastName" placeholder="Enter last name" @blur="formatLastName" maxlength="70" show-word-limit />
     </el-form-item>
 
-    <el-form-item label="Birth Date" prop="birthDate">
-      <el-date-picker
-        v-model="formData.birthDate"
-        type="date"
-        placeholder="Select birth date"
-        format="YYYY-MM-DD"
-        value-format="YYYY-MM-DD"
-        @change="calculateAge"
-        style="width: 100%"
-      />
-    </el-form-item>
+    <el-row :gutter="20">
+      <el-col :span="12">
+        <el-form-item label="Birth Date" prop="birthDate" class="birth-date">
+          <el-date-picker
+            v-model="formData.birthDate"
+            type="date"
+            placeholder="Select birth date"
+            format="YYYY-MM-DD"
+            value-format="YYYY-MM-DD"
+            @change="calculateAge"
+            style="width: 100%"
+            :disabled-date="disabledDates"
+          />
+        </el-form-item>
+      </el-col>
 
-    <el-form-item label="Age" prop="age">
-      <el-input v-model="formData.age" type="number" readonly />
-    </el-form-item>
+      <el-col :span="12">
+        <el-form-item label="Age" prop="age">
+          <el-input v-model="formData.age" type="number" readonly />
+        </el-form-item>
+      </el-col>
+    </el-row>
 
     <el-form-item label="Address" prop="address">
-      <el-input v-model="formData.address" type="textarea" rows="3" placeholder="Enter address" />
+      <el-input v-model="formData.address" type="textarea" rows="3" placeholder="Enter address" maxlength="500" show-word-limit />
     </el-form-item>
 
     <el-form-item label="Course" prop="course">
-      <el-select v-model="formData.course" placeholder="Select a course" style="width: 100%">
+      <el-select v-model="formData.course" placeholder="Select a course" fit-input-width>
         <el-option
           v-for="course in availableCourses"
           :key="course"
@@ -71,6 +79,7 @@ import type { Student } from '@/stores/student'
 import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { ElForm, type FormItemRule } from 'element-plus'
+import { validateNameField, validateAddressField, formatName } from '@/composables/formatting'
 
 // Interface for form data
 interface FormData {
@@ -122,15 +131,48 @@ const rules: Record<string, FormItemRule[]> = {
   firstName: [
     { required: true, message: 'First name is required', trigger: 'blur' },
     { min: 2, message: 'First name must be at least 2 characters', trigger: 'blur' },
+    { max: 70, message: 'First name cannot exceed 70 characters', trigger: 'blur' },
+    { validator: (rule, value, callback) => {
+      if (value && !validateNameField(value)) {
+        callback(new Error('First name can only contain letters'))
+      } else {
+        callback()
+      }
+    }, trigger: 'blur' }
+  ],
+  middleInitial: [
+    { validator: (rule, value, callback) => {
+      if (value && !validateNameField(value)) {
+        callback(new Error('Middle initial can only contain letters'))
+      } else {
+        callback()
+      }
+    }, trigger: 'blur' }
   ],
   lastName: [
     { required: true, message: 'Last name is required', trigger: 'blur' },
     { min: 2, message: 'Last name must be at least 2 characters', trigger: 'blur' },
+    { max: 70, message: 'Last name cannot exceed 70 characters', trigger: 'blur' },
+    { validator: (rule, value, callback) => {
+      if (value && !validateNameField(value)) {
+        callback(new Error('Last name can only contain letters'))
+      } else {
+        callback()
+      }
+    }, trigger: 'blur' }
   ],
   birthDate: [{ required: true, message: 'Birth date is required', trigger: 'change' }],
   address: [
     { required: true, message: 'Address is required', trigger: 'blur' },
     { min: 5, message: 'Address must be at least 5 characters', trigger: 'blur' },
+    { max: 500, message: 'Address cannot exceed 500 characters', trigger: 'blur' },
+    { validator: (rule, value, callback) => {
+      if (value && !validateAddressField(value)) {
+        callback(new Error('Address cannot contain special characters'))
+      } else {
+        callback()
+      }
+    }, trigger: 'blur' }
   ],
   course: [{ required: true, message: 'Course is required', trigger: 'change' }],
   age: [
@@ -231,6 +273,32 @@ watch(
     }
   },
 )
+
+// Format name fields with proper capitalization
+const formatFirstName = () => {
+  if (formData.firstName) {
+    formData.firstName = formatName(formData.firstName)
+  }
+}
+
+const formatMiddleInitial = () => {
+  if (formData.middleInitial) {
+    formData.middleInitial = formatName(formData.middleInitial)
+  }
+}
+
+const formatLastName = () => {
+  if (formData.lastName) {
+    formData.lastName = formatName(formData.lastName)
+  }
+}
+
+// Disable future dates and dates before January 1, 1900
+const disabledDates = (time: Date) => {
+  const minDate = new Date('1949-12-31').getTime()
+  const now = Date.now()
+  return time.getTime() > now || time.getTime() < minDate
+}
 
 // Reset form to initial state
 const resetForm = () => {
@@ -347,8 +415,13 @@ const validateAndSubmit = () => {
 :deep(.el-select) {
   width: 100%;
 }
+
 :deep(.el-input__wrapper) {
   min-height: 40px;
+}
+
+.birth-date:deep(.el-form-item__error){
+  padding-top: 12px;
 }
 
 @media (max-width: 576px) {
@@ -365,6 +438,7 @@ const validateAndSubmit = () => {
     width: 100%;
     height: 44px;
     font-size: 16px;
+    margin: 0;
   }
   
   :deep(.el-form-item) {

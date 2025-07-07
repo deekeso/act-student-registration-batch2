@@ -11,7 +11,7 @@
       <el-row :gutter="20" class="filter-row">
         <el-col :xs="24" :sm="8" class="filter-group">
           <el-form-item label="Filter by Course:">
-            <el-select v-model="courseFilter" placeholder="All Courses" clearable>
+            <el-select v-model="courseFilter" placeholder="All Courses" clearable fit-input-width>
               <el-option label="All Courses" value="" />
               <!-- Lists courses from the store -->
               <el-option

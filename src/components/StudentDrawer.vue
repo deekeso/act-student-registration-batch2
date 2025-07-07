@@ -4,7 +4,7 @@
     v-model="drawerVisible"
     :title="studentId ? 'Edit Student' : 'Add New Student'"
     :size="drawerSize"
-    :before-close="handleClose"
+    :before-close="handleBeforeClose"
     destroy-on-close
     class="student-drawer"
   >
@@ -18,11 +18,22 @@
       />
     </template>
   </el-drawer>
+
+  <!-- Confirmation Modal for exiting form -->
+  <confirmation-modal
+    :show="showExitConfirmation"
+    title="Confirm Exit"
+    message="Are you sure you want to exit? Any unsaved changes will be lost."
+    confirm-button-text="Exit"
+    @confirm="confirmExit"
+    @cancel="cancelExit"
+  />
 </template>
 
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import StudentForm from './StudentForm.vue'
+import ConfirmationModal from './ConfirmationModal.vue'
 
 // Props for drawer visibility and student ID
 const props = defineProps({
@@ -74,9 +85,29 @@ onUnmounted(() => {
   window.removeEventListener('resize', handleResize)
 })
 
-// Handle drawer close event
+// State for exit confirmation modal
+const showExitConfirmation = ref(false)
+
+// Handle before drawer close event - show confirmation
+const handleBeforeClose = () => {
+  showExitConfirmation.value = true
+  return false // Prevent drawer from closing automatically
+}
+
+// Handle drawer close event after confirmation
 const handleClose = () => {
   emit('close')
+}
+
+// Confirm exit from form
+const confirmExit = () => {
+  showExitConfirmation.value = false
+  emit('close')
+}
+
+// Cancel exit from form
+const cancelExit = () => {
+  showExitConfirmation.value = false
 }
 
 // Handle student saved event

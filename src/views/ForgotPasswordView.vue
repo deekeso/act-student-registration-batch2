@@ -112,6 +112,7 @@
           <el-button
             type="primary"
             @click="handleResetPassword"
+            @keyup.enter="handleResetPassword"
             class="login-btn"
             size="large"
             :loading="loading"

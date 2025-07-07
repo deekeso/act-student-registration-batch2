@@ -35,7 +35,7 @@
 
         <el-form-item>
           <el-button
-            type="primary"
+            native-type="submit"
             @click="handleLogin"
             class="login-btn"
             size="large"

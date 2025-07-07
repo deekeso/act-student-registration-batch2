@@ -27,6 +27,7 @@
     </div>
 
     <!-- Card actions -->
+    <template #footer>
     <div class="card-footer">
       <el-button type="primary" :icon="Edit" plain @click="$emit('edit', student.id)">
         Edit
@@ -35,6 +36,7 @@
         Delete
       </el-button>
     </div>
+    </template>
   </el-card>
 </template>
 
@@ -81,6 +83,13 @@ const formattedBirthDate = computed(() => {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
 }
 
+:deep(.el-card__body) {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+}
+
 .student-card:hover {
   transform: translateY(-5px);
 }
@@ -102,6 +111,11 @@ const formattedBirthDate = computed(() => {
 .course-badge {
   white-space: nowrap;
   overflow: hidden;
+  width: auto;
+}
+
+:deep(.el-tag__content) {
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
@@ -122,9 +136,7 @@ const formattedBirthDate = computed(() => {
   display: flex;
   justify-content: flex-end;
   gap: 6px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border-color);
+  margin-top: auto;
 }
 
 @media (max-width: 576px) {
@@ -136,8 +148,21 @@ const formattedBirthDate = computed(() => {
     flex-direction: column;
   }
 
+  .course-badge {
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 275px;
+}
+
+  :deep(.el-tag__content) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
   .card-footer .el-button {
+    align-items: baseline;
     width: 100% !important;
+    margin: 0 !important;
   }
 }
 </style>

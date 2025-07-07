@@ -56,6 +56,7 @@ const dialogVisible = computed({
 })
 
 const handleConfirm = () => {
+  dialogVisible.value = false
   emit('confirm')
 }
 
@@ -78,7 +79,7 @@ const handleClose = () => {
 
 @media (max-width: 576px) {
   :deep(.el-dialog) {
-    width: 90% !important;
+    width: 100% !important;
     height: 100% !important;
   }
 
@@ -88,6 +89,7 @@ const handleClose = () => {
 
   .dialog-footer .el-button {
     width: 100%;
+    margin: 0 !important;
   }
 }
 </style>

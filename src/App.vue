@@ -36,7 +36,7 @@
         <!-- Menu items -->
         <el-menu-item index="/">Home</el-menu-item>
         <el-menu-item index="/students">Students</el-menu-item>
-        <el-menu-item @click="logout">
+        <el-menu-item @click="showLogoutConfirmation = true">
           <el-icon><SwitchButton /></el-icon>
           <span>Logout</span>
         </el-menu-item>
@@ -80,6 +80,16 @@
     <el-footer v-if="!isLoginPage && !isForgotPasswordPage" class="app-footer">
       <p>&copy; {{ currentYear }} Regiplus Student Registration System</p>
     </el-footer>
+
+    <!-- Logout Confirmation Modal -->
+    <confirmation-modal
+      :show="showLogoutConfirmation"
+      title="Confirm Logout"
+      message="Are you sure you want to logout?"
+      confirm-button-text="Logout"
+      @confirm="logout"
+      @cancel="showLogoutConfirmation = false"
+    />
   </div>
 </template>
 
@@ -88,6 +98,7 @@ import { RouterView } from 'vue-router'
 import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from './stores/auth'
+import ConfirmationModal from './components/ConfirmationModal.vue'
 import { SwitchButton, Menu, House, User } from '@element-plus/icons-vue'
 
 import upperRightShape from './assets/upper-right-shape.svg'
@@ -106,15 +117,19 @@ const activeRoute = computed(() => route.path) // Gets current route path
 
 // Function to handle logout, sends user back to login page
 const logout = () => {
+  showLogoutConfirmation.value = false
   authStore.logout()
   router.push('/login')
 }
+
+// State for logout confirmation modal
+const showLogoutConfirmation = ref(false)
 
 // Function to handle menu selection in the drawer
 const handleSelect = (index: string) => {
   drawerOpen.value = false
   if (index === 'logout') {
-    logout()
+    showLogoutConfirmation.value = true
   } else {
     router.push(index)
   }
