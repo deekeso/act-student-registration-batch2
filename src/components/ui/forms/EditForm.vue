@@ -14,7 +14,7 @@
           <el-input
             id="lastName"
             type="text"
-            v-model="state.lastName"
+            v-model="lastNameUpper"
             style="width: 100%"
             placeholder="ex. Dela Cruz"
             maxlength="30"
@@ -26,7 +26,7 @@
           <el-input
             id="firstName"
             type="text"
-            v-model="state.firstName"
+            v-model="firstNameUpper"
             style="width: 100%"
             placeholder="ex. Juan"
             maxlength="30"
@@ -38,7 +38,7 @@
           <el-input
             id="middleInitial"
             type="text"
-            v-model="state.middleInitial"
+            v-model="middleInitialUpper"
             style="width: 100%"
             placeholder="ex. S"
             maxlength="1"
@@ -81,10 +81,11 @@
           <el-input
             id="streetAddress"
             type="text"
-            v-model="state.streetAddress"
+            v-model="streetAddressUpper"
             style="width: 100%"
             placeholder="ex. 123 Main Street"
             maxlength="50"
+            @paste="handleStreetPaste"
           />
         </el-form-item>
         <div class="">
@@ -92,17 +93,18 @@
             <el-input
               id="barangay"
               type="text"
-              v-model="state.barangay"
+              v-model="barangayUpper"
               style="width: 100%"
               placeholder="ex. Barangay 1"
               maxlength="50"
+              @paste="handleBarangayPaste"
             />
           </el-form-item>
           <el-form-item label="City/Municipality" prop="city" required>
             <el-input
               id="city"
               type="text"
-              v-model="state.city"
+              v-model="cityUpper"
               style="width: 100%"
               placeholder="ex. Manila"
               @keypress="onlyLetters"
@@ -116,7 +118,7 @@
             <el-input
               id="province"
               type="text"
-              v-model="state.province"
+              v-model="provinceUpper"
               style="width: 100%"
               placeholder="ex. Metro Manila"
               @keypress="onlyLetters"
@@ -176,7 +178,7 @@ import type { FormInstance } from 'element-plus'
 import { useStudentActions } from '@/composables/useStudentActions'
 import type { Student } from '@/types/Students'
 import { courses } from '@/constants/index.ts'
-import { formRules, entryRestriction } from '@/composables/formRules'
+import { formRules, entryRestriction, useUpperCaseModel } from '@/composables/formRules'
 import { useBirthdayPicker, useBirthdayAutoAge, defaultBirthdayView } from '@/composables/birthday'
 import { ElMessageBox, ElMessage } from 'element-plus'
 
@@ -194,10 +196,19 @@ const emit = defineEmits<{
 // Define state for the form
 const formRef = ref<FormInstance | null>(null)
 const { state, submitForm } = useStudentActions(formRef)
-const { onlyLetters, onlyDigits, sanitizeLetters, sanitizeZipCode } = entryRestriction()
+const { onlyLetters, onlyDigits, sanitizeLetters, sanitizeZipCode, sanitizeInput } =
+  entryRestriction()
 const { disabledDate } = useBirthdayPicker()
 useBirthdayAutoAge(state)
 const rules = formRules
+
+const lastNameUpper = useUpperCaseModel(state, 'lastName')
+const firstNameUpper = useUpperCaseModel(state, 'firstName')
+const middleInitialUpper = useUpperCaseModel(state, 'middleInitial')
+const streetAddressUpper = useUpperCaseModel(state, 'streetAddress')
+const barangayUpper = useUpperCaseModel(state, 'barangay')
+const cityUpper = useUpperCaseModel(state, 'city')
+const provinceUpper = useUpperCaseModel(state, 'province')
 
 const handlelastNamePaste = (event: ClipboardEvent) => {
   state.lastName = sanitizeLetters(event, 30)
@@ -221,6 +232,14 @@ const handleCityPaste = (event: ClipboardEvent) => {
 
 const handleProvincePaste = (event: ClipboardEvent) => {
   state.province = sanitizeLetters(event, 50)
+}
+
+const handleStreetPaste = (event: ClipboardEvent) => {
+  state.streetAddress = sanitizeInput(event, 50)
+}
+
+const handleBarangayPaste = (event: ClipboardEvent) => {
+  state.barangay = sanitizeInput(event, 50)
 }
 
 // Watch for changes in the editingStudent prop and populate form

@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 import type { FormItemRule } from 'element-plus'
 
 function nameValidator(rule: FormItemRule, value: string, callback: (error?: Error) => void) {
@@ -144,7 +144,15 @@ export const entryRestriction = () => {
     event.preventDefault()
     const pastedText = event.clipboardData?.getData('text') || ''
     // Keep only letters, ñ/Ñ, spaces, periods, apostrophes, hyphens
-    const sanitized = pastedText.replace(/[^a-zA-ZñÑ\s.'-]/g, '')
+    const sanitized = pastedText.replace(/[^a-zA-ZñÑ\s.'-]/g, '').toUpperCase()
+    return maxLength ? sanitized.slice(0, maxLength) : sanitized
+  }
+
+  const sanitizeInput = (event: ClipboardEvent, maxLength?: number) => {
+    event.preventDefault()
+    const pastedText = event.clipboardData?.getData('text') || ''
+    // Keep only letters, ñ/Ñ, spaces, periods, apostrophes, hyphens
+    const sanitized = pastedText.replace(/[^a-zA-ZñÑ\s.'-]/g, '').toUpperCase()
     return maxLength ? sanitized.slice(0, maxLength) : sanitized
   }
 
@@ -153,6 +161,7 @@ export const entryRestriction = () => {
     onlyLetters,
     sanitizeZipCode,
     sanitizeLetters,
+    sanitizeInput,
   }
 }
 
@@ -173,4 +182,16 @@ export function formatAddress(student: {
   ].filter((part) => part && part.trim())
 
   return parts.join(', ')
+}
+
+export function useUpperCaseModel<T extends object, K extends keyof T>(state: T, field: K) {
+  return computed({
+    get: () => state[field],
+    set: (val: string) => {
+      // Only set if the field is a string
+      if (typeof state[field] === 'string') {
+        state[field] = val.toUpperCase() as T[K]
+      }
+    },
+  })
 }
