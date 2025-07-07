@@ -12,6 +12,7 @@
             placeholder="ex. Dela Cruz"
             maxlength="30"
             @keypress="onlyLetters"
+            @paste="handlelastNamePaste"
           />
         </el-form-item>
         <el-form-item label="First Name" prop="firstName" required>
@@ -23,6 +24,7 @@
             placeholder="ex. Juan"
             maxlength="30"
             @keypress="onlyLetters"
+            @paste="handlefirstNamePaste"
           />
         </el-form-item>
         <el-form-item label="Middle Initial" prop="middleInitial">
@@ -34,6 +36,7 @@
             placeholder="ex. S"
             maxlength="1"
             @keypress="onlyLetters"
+            @paste="handlemiddleNamePaste"
           />
         </el-form-item>
       </div>
@@ -97,6 +100,7 @@
               placeholder="ex. Manila"
               @keypress="onlyLetters"
               maxlength="50"
+              @paste="handleCityPaste"
             />
           </el-form-item>
         </div>
@@ -110,6 +114,7 @@
               placeholder="ex. Metro Manila"
               @keypress="onlyLetters"
               maxlength="50"
+              @paste="handleProvincePaste"
             />
           </el-form-item>
           <el-form-item label="Zip Code" prop="zipCode">
@@ -122,9 +127,7 @@
               maxlength="4"
               minlength="4"
               @keypress="onlyDigits"
-              @click.right.prevent
-              @copy.prevent
-              @paste.prevent
+              @paste="handleZipCodePaste"
             />
           </el-form-item>
         </div>
@@ -176,7 +179,7 @@ const props = defineProps<{
 }>()
 
 const rules = formRules
-const { onlyLetters, onlyDigits } = entryRestriction()
+const { onlyLetters, onlyDigits, sanitizeZipCode, sanitizeLetters } = entryRestriction()
 const { disabledDate } = useBirthdayPicker()
 const emit = defineEmits<{
   (e: 'submit', data: Student): void
@@ -187,6 +190,30 @@ const emit = defineEmits<{
 const formRef = ref<FormInstance | null>(null)
 const { state, submitForm, resetForm } = useStudentActions(formRef)
 useBirthdayAutoAge(state)
+
+const handlelastNamePaste = (event: ClipboardEvent) => {
+  state.lastName = sanitizeLetters(event, 30)
+}
+
+const handlefirstNamePaste = (event: ClipboardEvent) => {
+  state.firstName = sanitizeLetters(event, 30)
+}
+
+const handlemiddleNamePaste = (event: ClipboardEvent) => {
+  state.middleInitial = sanitizeLetters(event, 1)
+}
+
+const handleZipCodePaste = (event: ClipboardEvent) => {
+  state.zipCode = sanitizeZipCode(event, 4)
+}
+
+const handleCityPaste = (event: ClipboardEvent) => {
+  state.city = sanitizeLetters(event, 50)
+}
+
+const handleProvincePaste = (event: ClipboardEvent) => {
+  state.province = sanitizeLetters(event, 50)
+}
 
 // If initialData is provided, assign it to the state
 if (props.initialData) {

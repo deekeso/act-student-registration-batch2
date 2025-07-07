@@ -133,9 +133,26 @@ export const entryRestriction = () => {
     }
   }
 
+  const sanitizeZipCode = (event: ClipboardEvent, maxLength: number = 4) => {
+    event.preventDefault()
+    const pastedText = event.clipboardData?.getData('text') || ''
+    // Keep only digits, truncate to maxLength
+    return pastedText.replace(/[^0-9]/g, '').slice(0, maxLength)
+  }
+
+  const sanitizeLetters = (event: ClipboardEvent, maxLength?: number) => {
+    event.preventDefault()
+    const pastedText = event.clipboardData?.getData('text') || ''
+    // Keep only letters, ñ/Ñ, spaces, periods, apostrophes, hyphens
+    const sanitized = pastedText.replace(/[^a-zA-ZñÑ\s.'-]/g, '')
+    return maxLength ? sanitized.slice(0, maxLength) : sanitized
+  }
+
   return {
     onlyDigits,
     onlyLetters,
+    sanitizeZipCode,
+    sanitizeLetters,
   }
 }
 
