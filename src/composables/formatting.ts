@@ -1,13 +1,23 @@
 export const validateNameField = (value: string): boolean => {
   // Allow letters, spaces, and hyphens for compound names
   const nameRegex = /^[A-Za-z\s-]+$/;
-  return nameRegex.test(value);
+  
+  // Check if the value contains at least one letter
+  const containsLetter = /[A-Za-z]/.test(value);
+  
+  // Return true only if the value matches the regex AND contains at least one letter
+  return nameRegex.test(value) && containsLetter;
 };
 
 export const validateAddressField = (value: string): boolean => {
   // Allow letters, numbers, spaces, periods, commas, hyphens, and hash symbols (ex. apt. numbers)
   const addressRegex = /^[A-Za-z0-9\s.,#-]+$/;
-  return addressRegex.test(value);
+  
+  // Check if the value contains at least one alphanumeric character (letter or number)
+  const containsAlphanumeric = /[A-Za-z0-9]/.test(value);
+  
+  // Return true only if the value matches the regex AND contains at least one alphanumeric character
+  return addressRegex.test(value) && containsAlphanumeric;
 };
 
 

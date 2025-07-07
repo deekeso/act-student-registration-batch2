@@ -80,7 +80,7 @@
         <student-card
           :student="student"
           @edit="openEditStudentDrawer"
-          @delete="openDeleteConfirmation"
+          @delete="openDeleteConfirmation(student.id)"
         />
       </el-col>
     </el-row>
@@ -212,19 +212,31 @@ const handleStudentSaved = () => {
 }
 
 const openDeleteConfirmation = (studentId: number) => {
+  console.log('Opening delete confirmation for student ID:', studentId)
   studentToDelete.value = studentId
   showDeleteConfirmation.value = true
 }
 
 const confirmDelete = () => {
-  if (studentToDelete.value) {
-    studentStore.deleteStudent(studentToDelete.value)
+  console.log('Confirming delete for student ID:', studentToDelete.value)
+  if (studentToDelete.value !== null) {
+    const success = studentStore.deleteStudent(studentToDelete.value)
+    console.log('Delete operation success:', success)
+    
     showDeleteConfirmation.value = false
     studentToDelete.value = null
-    ElMessage({
-      message: 'Student deleted successfully!',
-      type: 'success',
-    })
+    
+    if (success) {
+      ElMessage({
+        message: 'Student deleted successfully!',
+        type: 'success',
+      })
+    } else {
+      ElMessage({
+        message: 'Failed to delete student. Student not found.',
+        type: 'error',
+      })
+    }
   }
 }
 

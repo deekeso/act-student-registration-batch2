@@ -4,7 +4,7 @@
     :title="title"
     :close-on-click-modal="false"
     :show-close="true"
-    width="30%"
+    width="50%"
     @close="handleClose"
   >
     <span>{{ message }}</span>
@@ -56,8 +56,9 @@ const dialogVisible = computed({
 })
 
 const handleConfirm = () => {
-  dialogVisible.value = false
   emit('confirm')
+  // Set to false after emitting to ensure the parent component receives the event
+  dialogVisible.value = false
 }
 
 const handleCancel = () => {
