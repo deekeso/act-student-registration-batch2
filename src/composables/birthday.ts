@@ -6,10 +6,10 @@ export const disabledDate = (date: Date) => {
   return date > new Date()
 }
 /**
- * Returns a function to disable dates for users younger than 12 years old.
+ * Returns a function to disable dates for users younger than 18 years old.
  */
 export function useBirthdayPicker() {
-  // Disable dates after today minus 12 years
+  // Disable dates after today minus 18 years
   const disabledDate = (date: Date) => {
     const today = new Date()
     const minDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate() + 1)
@@ -20,7 +20,16 @@ export function useBirthdayPicker() {
 
 export function formatDate(date: string | Date) {
   if (!date) return ''
-  const d = new Date(date)
+
+  let d: Date
+
+  if (typeof date === 'string') {
+    // Parse date string as local date to avoid timezone issues
+    const [year, month, day] = date.split('-').map(Number)
+    d = new Date(year, month - 1, day) // month is 0-indexed
+  } else {
+    d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  }
 
   // Handle timezone issues by using local date methods
   const year = d.getFullYear()
@@ -37,7 +46,8 @@ export function useBirthdayAutoAge(state: { birthDate: string | Date; age: numbe
     () => state.birthDate,
     (newBirthDate) => {
       if (newBirthDate) {
-        const birth = new Date(newBirthDate)
+        const normalizedDate = formatDate(newBirthDate)
+        const birth = new Date(normalizedDate)
         const today = new Date()
         let age = today.getFullYear() - birth.getFullYear()
         const m = today.getMonth() - birth.getMonth()

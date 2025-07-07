@@ -55,6 +55,8 @@
             placeholder=""
             :disabled-date="disabledDate"
             :default-value="defaultBirthdayView"
+            format="YYYY-MM-DD"
+            value-format="YYYY-MM-DD"
             @keydown.prevent
             required
           />

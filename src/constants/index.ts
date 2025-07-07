@@ -1,9 +1,9 @@
 export const courses = [
-  { value: 'BSIT', label: 'Bachelor of Science in Information Technology' },
-  { value: 'BSCS', label: 'Bachelor of Science in Computer Science' },
-  { value: 'BST', label: 'Bachelor of Science in Tourism' },
-  { value: 'BSHRM', label: 'Bachelor of Science in Hotel and Restaurant Management' },
-  { value: 'BSN', label: 'Bachelor of Science in Nursing' },
+  { value: 'BSIT', label: '(BSIT) Bachelor of Science in Information Technology' },
+  { value: 'BSCS', label: '(BSCS) Bachelor of Science in Computer Science' },
+  { value: 'BST', label: '(BST) Bachelor of Science in Tourism' },
+  { value: 'BSHRM', label: '(BSHRM) Bachelor of Science in Hotel and Restaurant Management' },
+  { value: 'BSN', label: '(BSN) Bachelor of Science in Nursing' },
 ]
 
 export const students = [

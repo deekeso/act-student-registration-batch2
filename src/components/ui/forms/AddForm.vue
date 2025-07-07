@@ -48,6 +48,8 @@
             placeholder=""
             :disabled-date="disabledDate"
             :default-value="defaultBirthdayView"
+            format="YYYY-MM-DD"
+            value-format="YYYY-MM-DD"
             @keydown.prevent
             required
           />
@@ -120,6 +122,9 @@
               maxlength="4"
               minlength="4"
               @keypress="onlyDigits"
+              @click.right.prevent
+              @copy.prevent
+              @paste.prevent
             />
           </el-form-item>
         </div>
@@ -208,7 +213,7 @@ const handleSubmit = async () => {
     } else {
       console.error('Form submission failed:', result)
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      ElMessage.error('Failed to add student!')
+      ElMessage.error('Failed to add student: A student with identical details already exists.')
     }
   } catch {
     // User cancelled, do nothing
