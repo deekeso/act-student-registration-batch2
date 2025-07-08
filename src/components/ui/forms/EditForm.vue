@@ -314,7 +314,7 @@ const handleSubmit = async () => {
       emit('submit', result.data) // Emit the data to the parent component
     } else {
       console.error('Form submission failed:', result, Error) // Log the error
-      ElMessage.error('Failed to edit student!')
+      ElMessage.error(result.error || 'Failed to add student!')
     }
   } catch {
     // User cancelled, do nothing
