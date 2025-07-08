@@ -48,16 +48,16 @@ const emit = defineEmits<{
 }
 
 /* Responsive design */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .search-bar {
     width: 90vw;
     padding: 0 0.5rem;
   }
-}
+} */
 
 @media (max-width: 480px) {
-  .search-bar {
-    width: 95vw;
-  }
+  /* .search-bar {
+    /* width: 100%;
+  } */
 }
 </style>

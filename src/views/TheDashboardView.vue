@@ -11,10 +11,16 @@ import TheDashboard from '@/components/interface/TheDashboard.vue'
 <style scoped>
 .main {
   width: 100vw;
+  height: 100vh;
   gap: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: white;
+  position: fixed;
+  display: flex;
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
 }
 </style>

@@ -29,8 +29,14 @@
 
         <div class="button-row">
           <el-dropdown @command="handleSort" trigger="click">
-            <el-button color="#2148c0" :icon="Filter" class="filter-button" dark>
-              Filter <el-icon class="el-icon--right"><arrow-down /></el-icon>
+            <el-button
+              color="#2148c0"
+              :icon="Filter"
+              class="filter-button"
+              dark
+              style="width: 100%"
+            >
+              {{ filterLabel }} <el-icon class="el-icon--right"><arrow-down /></el-icon>
             </el-button>
             <template #dropdown>
               <el-dropdown-menu>
@@ -39,7 +45,7 @@
               </el-dropdown-menu>
             </template>
           </el-dropdown>
-          <AddButton @open="isAddDrawerOpen = true" style="height: 40px; width: 100px" />
+          <AddButton @open="isAddDrawerOpen = true" style="height: 40px; width: 100%" />
         </div>
       </div>
       <div class="div3">
@@ -64,6 +70,12 @@ import { Filter, ArrowDown } from '@element-plus/icons-vue'
 import { useStudentStore } from '@/stores/studentsStore.ts'
 import TheHeader from '@/components/ui/TheHeader.vue'
 import { useSearchFilter } from '@/composables/filter'
+
+const filterLabel = computed(() => {
+  if (currentSort.value === 'lastName-asc') return 'Last Name (A-Z)'
+  if (currentSort.value === 'lastName-desc') return 'Last Name (Z-A)'
+  return 'Filter'
+})
 
 const store = useStudentStore() // Pinia store instance for students
 const isAddDrawerOpen = ref(false) // Add drawer visibility state
@@ -161,6 +173,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.body {
+  background-color: #fff;
+}
+
 .header {
   width: 100%;
   height: fit-content;
@@ -168,9 +184,6 @@ onMounted(() => {
 }
 
 .dashboard-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   width: 80vw;
   min-height: 100vh;
   padding-top: 2rem;
@@ -225,7 +238,6 @@ onMounted(() => {
 
 .parent {
   width: 100%;
-  max-width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -233,31 +245,30 @@ onMounted(() => {
 
 .div1 {
   display: flex;
-  min-width: 50vw;
+  width: 100%;
   gap: 1rem;
   align-items: center;
   background-color: #264eca;
   border-radius: 10px;
   padding: 12px;
+  justify-content: center;
 }
 
 .div3 {
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
   box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
-  .dashboard-container > *:not(:first-child) {
-    padding-left: 1rem;
-    padding-right: 1rem;
+  .div3 {
+    /* flex-direction: column;
+    margin: 0; */
   }
 
   .div1 {
     flex-direction: column;
+    padding: 12px;
   }
 
   .search-container {
@@ -295,14 +306,14 @@ onMounted(() => {
 }
 
 @media (max-width: 480px) {
-  .dashboard-container > *:not(:first-child) {
+  /* .dashboard-container > *:not(:first-child) {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
-  }
+  } */
 
   .div1 {
-    flex-direction: column;
-    padding: 2rem 0px;
+    /* flex-direction: column; */
+    /* padding: 12px; */
   }
 
   .add_Students {

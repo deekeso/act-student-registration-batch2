@@ -6,7 +6,6 @@
       placeholder="Search by course"
       clearable
       filterable
-      style="width: 100%"
       fit-input-width
     >
       <el-option
@@ -67,17 +66,17 @@ const emit = defineEmits<{
   border-radius: 10px;
 }
 
-/* Responsive design */
+/* Responsive design
 @media (max-width: 768px) {
   .course-search-bar {
-    width: 90vw;
+    /* width: 90vw;
     padding: 0 0.5rem;
   }
-}
+} */
 
 @media (max-width: 480px) {
-  .course-search-bar {
-    width: 95vw;
-  }
+  /* .course-search-bar {
+    /* width: 95vw;
+  } */
 }
 </style>

@@ -1,5 +1,17 @@
 <template>
   <div class="table-container">
+    <div class="pagination">
+      <el-pagination
+        :layout="paginationLayout"
+        :total="data.length"
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        :page-sizes="[10, 20, 50]"
+        :pager-count="pagerCount"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
     <el-table :data="paginatedData">
       <!-- <el-table-column prop="id" label="id" /> -->
       <el-table-column align="center" prop="course" label="Course" />
@@ -61,31 +73,7 @@
         <div style="text-align: center; color: #888; padding: 2rem">No data to display</div>
       </template>
     </el-table>
-    <div class="pagination">
-      <el-pagination
-        :layout="paginationLayout"
-        :total="data.length"
-        v-model:current-page="currentPage"
-        v-model:page-size="pageSize"
-        :page-sizes="[10, 20, 50]"
-        :pager-count="pagerCount"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
-    </div>
   </div>
-  <!-- <div class="pagination">
-    <el-pagination
-      :layout="paginationLayout"
-      :total="data.length"
-      v-model:current-page="currentPage"
-      v-model:page-size="pageSize"
-      :page-sizes="[10, 20, 50]"
-      :pager-count="pagerCount"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
-  </div> -->
 </template>
 
 <script lang="ts" setup>
@@ -106,8 +94,8 @@ const screenWidth = ref(window.innerWidth)
 const paginationLayout = computed(() => {
   if (screenWidth.value < 480) {
     // Mobile: Only show prev/next buttons and current page
-    return 'prev, pager, next'
-  } else if (screenWidth.value < 768) {
+    return 'prev, next, pager'
+  } else if (screenWidth.value < 770) {
     // Tablet: Show total and navigation
     return 'total, prev, pager, next'
   } else {
@@ -206,10 +194,11 @@ const handleDelete = async (student: Student) => {
   border: 3px solid rgb(38, 78, 198);
   height: 100vh;
   margin-top: 20px;
+  max-width: 80vw;
 }
 
 .pagination {
-  margin: 40px;
+  margin-top: 20px;
   display: flex;
   justify-content: center;
 }
@@ -269,10 +258,6 @@ const handleDelete = async (student: Student) => {
   .el-table {
     width: 95vw;
   }
-
-  .pagination {
-    margin: 20px 10px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -287,7 +272,17 @@ const handleDelete = async (student: Student) => {
   }
 
   .pagination {
-    margin: 15px 5px;
+    margin: 20px 0px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .pagination :deep(.el-pagination) {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    gap: 8px;
   }
 
   /* Make pagination buttons smaller on mobile */
@@ -330,6 +325,94 @@ const handleDelete = async (student: Student) => {
 
   .pagination :deep(.el-pagination .el-pagination__total) {
     font-size: 13px;
+  }
+}
+
+.pagination :deep(.el-pagination) {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px 0 rgba(33, 72, 192, 0.08);
+  padding: 8px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pagination :deep(.el-pagination__total),
+.pagination :deep(.el-pagination__sizes),
+.pagination :deep(.el-pagination__jump) {
+  color: #264eca;
+  font-weight: 500;
+}
+
+.pagination :deep(.el-pagination .el-pager li) {
+  border-radius: 10px;
+  margin: 0 2px;
+  font-weight: 600;
+  color: #2148c0;
+  border: 1.5px solid transparent;
+  transition: all 0.2s;
+  z-index: 1;
+}
+
+.pagination :deep(.el-pagination .el-pager li.is-active) {
+  background: #2148c0;
+  color: #fff;
+  border-color: #2148c0;
+  box-shadow: 0 2px 8px 0 rgba(33, 72, 192, 0.18);
+  font-size: 1.15rem;
+  font-weight: 800;
+  transform: scale(1.15);
+  z-index: 2;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pagination :deep(.el-pagination .el-pager li:hover) {
+  background: #264eca;
+  color: #fff;
+  border-color: #264eca;
+}
+
+.pagination :deep(.el-pagination .btn-prev),
+.pagination :deep(.el-pagination .btn-next) {
+  border-radius: 8px;
+  color: #2148c0;
+  background: #f4f7fe;
+  border: 1.5px solid #e0e6f7;
+  transition: all 0.2s;
+}
+
+.pagination :deep(.el-pagination .btn-prev:hover),
+.pagination :deep(.el-pagination .btn-next:hover) {
+  background: #2148c0;
+  color: #fff;
+  border-color: #2148c0;
+}
+
+.pagination :deep(.el-pagination__sizes .el-select .el-input__wrapper) {
+  border-radius: 8px;
+  border: 1.5px solid #2148c0;
+  background: #f4f7fe;
+  color: #2148c0;
+  font-weight: 500;
+}
+
+.pagination :deep(.el-pagination__sizes .el-select .el-input__wrapper:hover) {
+  border-color: #264eca;
+}
+
+.pagination :deep(.el-pagination__jump input) {
+  border-radius: 8px;
+  border: 1.5px solid #2148c0;
+  background: #f4f7fe;
+  color: #2148c0;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .pagination :deep(.el-pagination) {
+    padding: 8px 8px;
+    gap: 4px;
   }
 }
 </style>

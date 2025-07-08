@@ -110,6 +110,9 @@ const handleForgotPassword = (event: Event) => {
 </script>
 
 <style scoped>
+.body {
+  background: url('/src/assets/login-bg.jpg');
+}
 .login-container {
   height: 100vh;
   width: 100vw;

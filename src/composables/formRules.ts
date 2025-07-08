@@ -5,6 +5,8 @@ function nameValidator(rule: FormItemRule, value: string, callback: (error?: Err
   if (!value) return callback(new Error('This field is required'))
   if (!/^[A-Za-zñÑ\s'-]+$/.test(value)) {
     callback(new Error('Only letters, spaces, apostrophes, and hyphens allowed'))
+  } else if (/\s{2,}/.test(value)) {
+    callback(new Error('No consecutive spaces allowed'))
   } else if (/^\s|\s$/.test(value)) {
     callback(new Error('No leading or trailing spaces allowed'))
   } else if ((value.match(/[A-Za-zñÑ]/g) || []).length < 2) {
@@ -50,7 +52,9 @@ function birthDateValidator(rule: FormItemRule, value: string, callback: (error?
 
 function addressValidator(rule: FormItemRule, value: string, callback: (error?: Error) => void) {
   if (!value) return callback(new Error('This field is required'))
-  if (/^\s|\s$/.test(value)) {
+  if (/\s{2,}/.test(value)) {
+    callback(new Error('No consecutive spaces allowed'))
+  } else if (/^\s|\s$/.test(value)) {
     callback(new Error('No leading or trailing spaces allowed'))
   } else if ((value.match(/[A-Za-zñÑ]/g) || []).length < 4) {
     callback(new Error('Must contain at least 4 letters'))
@@ -63,6 +67,8 @@ function spaceChecker(rule: FormItemRule, value: string, callback: (error?: Erro
   if (!value) {
     // Allow empty input (0 characters)
     callback()
+  } else if (/\s{2,}/.test(value)) {
+    callback(new Error('No consecutive spaces allowed'))
   } else if (/^\s|\s$/.test(value)) {
     callback(new Error('No leading or trailing spaces allowed'))
   } else if ((value.match(/[A-Za-zñÑ]/g) || []).length < 4) {
@@ -90,7 +96,9 @@ export function passwordValidator(
   callback: (error?: Error) => void,
 ) {
   if (!value) return callback(new Error('New password is required'))
-  if (/^\s|\s$/.test(value)) {
+  if (/\s{2,}/.test(value)) {
+    callback(new Error('No consecutive spaces allowed'))
+  } else if (/^\s|\s$/.test(value)) {
     callback(new Error('No leading or trailing spaces allowed'))
   } else if ((value.match(/[A-Za-zñÑ]/g) || []).length < 8) {
     callback(new Error('Must contain at least 8 letters'))
