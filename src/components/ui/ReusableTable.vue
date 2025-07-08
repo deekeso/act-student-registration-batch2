@@ -61,8 +61,20 @@
         <div style="text-align: center; color: #888; padding: 2rem">No data to display</div>
       </template>
     </el-table>
+    <div class="pagination">
+      <el-pagination
+        :layout="paginationLayout"
+        :total="data.length"
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        :page-sizes="[10, 20, 50]"
+        :pager-count="pagerCount"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
   </div>
-  <div class="pagination">
+  <!-- <div class="pagination">
     <el-pagination
       :layout="paginationLayout"
       :total="data.length"
@@ -73,7 +85,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-  </div>
+  </div> -->
 </template>
 
 <script lang="ts" setup>
@@ -180,14 +192,11 @@ const handleDelete = async (student: Student) => {
 
 <style scoped>
 .table-container {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   top: 0;
-  margin-top: 40px;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
 }
 
 .el-table {
@@ -196,7 +205,6 @@ const handleDelete = async (student: Student) => {
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   border: 3px solid rgb(38, 78, 198);
   height: 100vh;
-  min-width: 600px;
 }
 
 .pagination {
