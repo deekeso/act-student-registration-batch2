@@ -205,6 +205,7 @@ const handleDelete = async (student: Student) => {
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   border: 3px solid rgb(38, 78, 198);
   height: 100vh;
+  margin-top: 20px;
 }
 
 .pagination {
