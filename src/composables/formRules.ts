@@ -19,11 +19,17 @@ function middleInitialValidator(
   value: string,
   callback: (error?: Error) => void,
 ) {
-  if (!/^[A-Za-zñÑ\s-]{0,1}$/.test(value)) {
+  if (value.trim() === '') {
+    // Allow empty string (no middle initial), but not spaces
+    if (value !== '') {
+      callback(new Error('Space is not allowed'))
+      return
+    }
+  } else if (!/^[A-Za-zñÑ-]{1}$/.test(value)) {
     callback(new Error('Only 1 letter allowed'))
-  } else {
-    callback()
+    return
   }
+  callback()
 }
 
 function birthDateValidator(rule: FormItemRule, value: string, callback: (error?: Error) => void) {
@@ -184,6 +190,7 @@ export function formatAddress(student: {
   return parts.join(', ')
 }
 
+// auto uppercase function for forms
 export function useUpperCaseModel<T extends object, K extends keyof T>(state: T, field: K) {
   return computed({
     get: () => state[field],
