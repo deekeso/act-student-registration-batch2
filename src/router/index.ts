@@ -20,24 +20,51 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const publicRoutes = ['login', 'forgetpassword', 'home', 'notfound']
+  const guestRoutes = ['login', 'forgetpassword']
+
   const routeName = to.name?.toString() || ''
 
   const token = localStorage.getItem('token')
   const loggedInAdmin = localStorage.getItem('loggedInAdmin')
-  const isAuthenticated = !!(token && loggedInAdmin)
 
-  if (!publicRoutes.includes(routeName) && !isAuthenticated) {
-    console.log('User not authenticated')
-    return next({ name: 'login' })
+  let isValidAdmin = false
+  try {
+    if (loggedInAdmin) {
+      const parsedAdmin = JSON.parse(loggedInAdmin)
+      isValidAdmin = !!(parsedAdmin && parsedAdmin.username && parsedAdmin.loginTime)
+    }
+  } catch (error) {
+    console.error('Invalid admin data:', error)
+    localStorage.removeItem('token')
+    localStorage.removeItem('loggedInAdmin')
   }
 
-  if (routeName === 'login' && isAuthenticated) {
-    console.log('Already authenticated, redirecting to dashboard')
-    return next({ name: 'studentList' })
+  const isAuthenticated = !!(token && isValidAdmin)
+
+  console.log('Admin route check:', {
+    routeName,
+    isAuthenticated,
+    hasToken: !!token,
+    hasValidAdmin: isValidAdmin,
+  })
+
+  if (!isAuthenticated) {
+    if (guestRoutes.includes(routeName)) {
+      return next()
+    } else {
+      console.log('Non-authenticated user trying to access admin route, redirecting to login')
+      return next({ name: 'login' })
+    }
   }
 
-  next()
+  if (isAuthenticated) {
+    if (guestRoutes.includes(routeName)) {
+      console.log('Authenticated admin trying to access guest route, redirecting to home')
+      return next({ name: 'home' })
+    } else {
+      return next()
+    }
+  }
 })
 
 export default router

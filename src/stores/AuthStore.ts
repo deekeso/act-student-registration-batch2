@@ -9,26 +9,44 @@ export const useAuthenticationStore = defineStore('auth', () => {
     password: '',
   })
 
+  const isLoading = ref(false)
+
   function handleLogin() {
+    localStorage.setItem('token', generateToken())
     localStorage.setItem(
       'loggedInAdmin',
       JSON.stringify({
-        username: admin.value.username,
-        password: admin.value.password,
+        username: admin.value.username.trim(),
+        loginTime: new Date().toISOString(),
       }),
     )
-    localStorage.setItem('token', '12341234')
 
-    admin.value.username = ''
-    admin.value.password = ''
+    console.log('Admin logged in successfully:', {
+      username: admin.value.username.trim(),
+      loginTime: new Date().toISOString(),
+    })
+
+    return true
   }
+
+  function generateToken() {
+    return 'admin_token_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now()
+  }
+
   const isAuthenticated = computed(() => {
     try {
       const token = localStorage.getItem('token')
       const savedLoggedInAdmin = localStorage.getItem('loggedInAdmin')
-      return !!(token && savedLoggedInAdmin)
+
+      if (!token || !savedLoggedInAdmin) {
+        return false
+      }
+      const parsedAdmin = JSON.parse(savedLoggedInAdmin)
+      return !!(token && parsedAdmin && parsedAdmin.username && parsedAdmin.loginTime)
     } catch (error) {
-      console.log(error)
+      console.error('Auth validation error:', error)
+      localStorage.removeItem('token')
+      localStorage.removeItem('loggedInAdmin')
       return false
     }
   })
@@ -36,9 +54,15 @@ export const useAuthenticationStore = defineStore('auth', () => {
   function logout() {
     localStorage.removeItem('token')
     localStorage.removeItem('loggedInAdmin')
-    ElMessage('Logout successful')
+    ElMessage.success('Admin logout successful')
     window.location.href = '/login'
   }
 
-  return { admin, handleLogin, isAuthenticated, logout }
+  return {
+    admin,
+    isLoading,
+    handleLogin,
+    isAuthenticated,
+    logout,
+  }
 })
