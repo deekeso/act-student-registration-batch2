@@ -1,16 +1,13 @@
 <template>
-  <div class="container">
-    <div class="search-bar">
-      <el-input v-model="nameFilter" placeholder="Search by name" clearable  :prefix-icon="Search"  />
-
-      <el-select v-model="courseFilter" placeholder="Filter by course" fit-input-width  clearable>
-        <el-option v-for="course in courses" :key="course" :label="course" :value="course" />
-      </el-select>
-    </div>
-    <the-header></the-header>
-    <ul v-if="filteredStudents" class="card-list">
-      <the-card
-        v-for="student in filteredStudents"
+  <Header />
+  <main class="container">
+     <student-search
+      v-model:nameFilter="nameFilter"
+      v-model:courseFilter="courseFilter"
+    />
+    <ul v-if="filteredStudents.length" class="card-list">
+      <student-card
+        v-for="student in filteredStudents.slice(0, showMore)"
         :key="student.id"
         :id="student.id"
         :firstname="student.firstname"
@@ -20,113 +17,98 @@
         :birthdate="student.birthdate"
         :course="student.course"
         :address="student.address"
+        @open-drawer="openDrawerApp"
       />
-      
     </ul>
-
-    <el-empty v-if="!filteredStudents.length" description="No Students Found" />
-  </div>
+    <student-drawer v-model:visible="isDrawerVisible" :title="`Edit Student Information`">
+      <student-form :student="selectStudent" @on-drawer-close="closeDrawerApp"/> 
+    </student-drawer>
+    <div class="center">
+       <el-empty v-if="!filteredStudents.length" description="No Students Found" />
+      <el-button v-if="!nameFilter && !courseFilter && filteredStudents.length > showMore" color="#2148c0" @click="showMore += 4">Show More</el-button>
+    </div>
+  </main>
 </template>
 
 <script lang="ts" setup>
-import { TheCard, TheHeader } from '@/components/ui'
-import { useAuth } from '@/composables/useAuth'
-import { onMounted, watch, ref, computed } from 'vue'
+import { TheCard as StudentCard, TheHeader as Header, TheDrawer as StudentDrawer, TheSearchBar as StudentSearch } from '@/components/ui'
+import { StudentForm } from '@/components'
+// import { useAuth } from '@/composables/useAuth'
+import {  watch, ref, computed } from 'vue'
 import { useStudents } from '@/stores/students'
-import { courses } from '@/constants'
-import { Search } from '@element-plus/icons-vue'
+import type { Users } from "@/types"
 
+
+const showMore = ref<number>(12)
+
+const isDrawerVisible = ref(false);
+const selectStudent = ref<Users>({})
+
+function openDrawerApp(student: Users){
+    isDrawerVisible.value = true
+    selectStudent.value = { ...student };
+    console.log(selectStudent.value)
+}
+
+function closeDrawerApp(){
+  isDrawerVisible.value = false
+  selectStudent.value = {}
+}
+
+// students store
 const studentsStore = useStudents()
 
-// holds the value of name filter
 const nameFilter = ref('')
-
-// holds the value of course filter
 const courseFilter = ref('')
 
-// Update store filters
-watch(nameFilter, (val) => {
-  val = val.trim();
-  studentsStore.setFilterName(val)
-})
-watch(courseFilter, (val) => {
-  studentsStore.setFilterCourse(val)
-})
+watch(nameFilter, (val) => studentsStore.setFilterName(val))
+watch(courseFilter, (val) => studentsStore.setFilterCourse(val))
 
 const filteredStudents = computed(() => studentsStore.allStudents)
 
-const { checkAuth } = useAuth()
-
-onMounted(() => {
-  checkAuth()
-})
 </script>
 
 <style scoped>
 .container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.center {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
 }
 
-
-
-
-:deep(.el-input) {
-  width: 300px;
-  margin-bottom: 10px;
-}
-
-:deep(.el-select) {
-  margin-left: 10px;
-  text-overflow: ellipsis;
-}
-
-
-.search-bar {
-  width:  700px;
-  margin-top: 10rem;
-  display: flex;
-  gap: 4px;
-  justify-content: center;
-}
 
 .card-list {
-  --grid-cols: 4;
-  max-width: 1440px;
   display: grid;
-  grid-template-columns: repeat(var(--grid-cols), 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  width: 100%;
   background-color: #fff;
-  padding: 4px;
   border-radius: 4px;
   margin-bottom: 32px;
 }
 
-/* search-bar */
-@media (max-width: 560px) {
-  .search-bar {
-    flex-direction: column;
-  }
 
-  .search-bar input {
-    width: 100%;
-  }
-}
 
 /* for grid column */
 @media (max-width: 1460px) {
-  .container {
-    padding: 20px;
-  }
-
   .card-list {
     --grid-cols: 4;
   }
 }
 
 @media (max-width: 1255px) {
+  .container {
+    padding: 20px;
+  }
   .card-list {
     --grid-cols: 3;
   }
@@ -146,21 +128,4 @@ onMounted(() => {
 }
 
 
-
-/* search-bar */
-@media (max-width: 560px) {
-  .search-bar {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  :deep(.el-input) {
-    width: 100%;
-  }
-
-  :deep(.el-select) {
-    width: 100%;
-    margin: 0px;
-  }
-}
 </style>
