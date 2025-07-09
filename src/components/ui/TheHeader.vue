@@ -27,19 +27,8 @@
     </div>
   </nav>
 
-  <the-drawer v-model:visible="drawer">
-    <student-form
-      :firstname="''"
-      :lastname="''"
-      :middlename="''"
-      :age="0"
-      :birthdate="''"
-      :address="''"
-      :course="''"
-      :BtnLabel="'Add User'"
-      :BtnDelete="false"
-      :OnAdd="true"
-    ></student-form>
+  <the-drawer v-model:visible="drawer" :title="`Add New Student`">
+    <student-form :BtnLabel="'Add User'" :BtnDelete="false" :OnAdd="true" />
   </the-drawer>
 </template>
 
