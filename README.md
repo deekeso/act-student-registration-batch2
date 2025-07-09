@@ -82,6 +82,13 @@ student-registration/
 | `/forgot-password` | `ForgotPasswordPage.vue` | Reset Password Page     |
 | `/dashboard`       | `Dashboard.vue`          | Display of all students |
 
+## Key Components
+| Component            | Description                                             | Key Features                                                                 |
+| -------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `TheSearchBar.vue`   | Input field for searching students or data in real-time | - Debounced input<br>- Emits search queries<br>- Dynamic filtering           |
+| `TheDrawer.vue`      | Slide-out panel for student form                        | - Toggleable visibilit <br>- Smooth UI transition |
+| `TheCard.vue`        | Display student information                             | - Display student information                                                |
+| `StudentForm.vue`    | Form for adding or editing student details              | - Two-way data binding<br>- Input validation<br>- Emits submit/cancel events |
 
 
 ## Demo
