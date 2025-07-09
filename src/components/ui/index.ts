@@ -2,4 +2,5 @@
 import TheCard from './TheCard.vue'
 import TheDrawer from './TheDrawer.vue'
 import TheHeader from './TheHeader.vue'
-export {  TheCard, TheDrawer, TheHeader }
+import TheSearchBar from './TheSearchBar.vue'
+export {  TheCard, TheDrawer, TheHeader, TheSearchBar }
