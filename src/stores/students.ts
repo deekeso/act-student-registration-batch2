@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { Users } from '@/types'
+import type { Students } from '@/types'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { v4 as uuidv4 } from "uuid"
 
@@ -7,13 +7,13 @@ import { v4 as uuidv4 } from "uuid"
 export const useStudents = defineStore('students', {
   // Defines the default state for the store.
   state: () => ({
-    students: JSON.parse(localStorage.getItem('students') || '[]') as Users[],
+    students: JSON.parse(localStorage.getItem('students') || '[]') as Students[],
     filterCourse: '',
     filterName: '',
   }),
 
   getters: {
-    allStudents: (state): Users[] => {
+    allStudents: (state): Students[] => {
     return state.students.filter((student) => {
       const matchCourse = state.filterCourse
         ? student.course?.toLowerCase() === state.filterCourse.toLowerCase()
@@ -46,7 +46,7 @@ export const useStudents = defineStore('students', {
 
   actions: {
     getLocalStorage(){
-      return JSON.parse(localStorage.getItem('students') || '[]') as Users[]
+      return JSON.parse(localStorage.getItem('students') || '[]') as Students[]
     },
     setFilterCourse(course: string) {
       this.filterCourse = course
@@ -55,7 +55,7 @@ export const useStudents = defineStore('students', {
     setFilterName(name: string) {
       this.filterName = name
     },
-    async onAddStudents(studentData: Users) {
+    async onAddStudents(studentData: Students) {
       const newStudent = {
         ...studentData,
         id: uuidv4(),
@@ -86,7 +86,7 @@ export const useStudents = defineStore('students', {
       }
     },
 
-   isDuplicateStudent(newStudent: Users, excludeId?: string): boolean {
+   isDuplicateStudent(newStudent: Students, excludeId?: string): boolean {
     return this.students.some(student => {
       if (excludeId && student.id === excludeId) return false; // Exclude current student
       return this.onExistingData(student, newStudent);
@@ -94,7 +94,7 @@ export const useStudents = defineStore('students', {
   },
 
 
-    onExistingData(oldStudentData: Users, newStudentData: Users) {
+    onExistingData(oldStudentData: Students, newStudentData: Students) {
       return (
         oldStudentData.firstname === newStudentData.firstname &&
         oldStudentData?.middlename === newStudentData?.middlename &&
@@ -105,7 +105,7 @@ export const useStudents = defineStore('students', {
         // oldStudentData.course === newStudentData.course
       );
     },
-    async onUpdateStudentInfo(studentData: Users) {
+    async onUpdateStudentInfo(studentData: Students) {
       const index = this.students.findIndex(student => student.id === studentData.id);
 
       if (index === -1) {
@@ -149,7 +149,7 @@ export const useStudents = defineStore('students', {
       try {
         console.log('argument id: ' + id)
         
-        this.students = this.students.filter((student: Users) => student.id !== id)
+        this.students = this.students.filter((student: Students) => student.id !== id)
         this.SaveLocalStorage()
         ElMessage.success('Successfully Deleted')
       } catch (error) {
