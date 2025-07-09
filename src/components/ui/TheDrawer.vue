@@ -4,7 +4,7 @@
       class="drawer"
       :model-value="visible"
       @update:model-value="emit('update:visible', $event)"
-      title="Student Information"
+      :title="title"
       direction="rtl"
       custom-class="drawer"
       :size="`${size}%`"
@@ -15,23 +15,23 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, onMounted, onUnmounted, nextTick, ref } from 'vue'
+import { defineProps, onMounted, onUnmounted, nextTick, ref, defineEmits } from 'vue'
 
 defineProps<{
   visible: boolean
+  title: string
 }>()
-const emit = defineEmits(['update:visible'])
 
 const size = ref<number>(30)
 
+const emit = defineEmits(['update:visible'])
 
-// The `resize()` function is responsible for adjusting the size of the drawer component based on the
-// window width. Here's a breakdown of how it works:
+
 function resize() {
-  if( window.innerWidth > 1000  &&  window.innerWidth < 1400){
+  if( window.innerWidth > 1280  &&  window.innerWidth < 1400){
     size.value = 30
   }
-  else if (window.innerWidth >= 500  && window.innerWidth < 1000) {
+  else if (window.innerWidth >= 500  && window.innerWidth <= 1280) {
     size.value = 50
   } 
  
@@ -40,8 +40,7 @@ function resize() {
   }
 }
 
-//`nextTick(() => { window.addEventListener('resize', resize) })` is ensuring that the `resize` function, which adjusts the size of the drawer component
-// based on the window width, is only added as an event listener after the next DOM update cycle.
+
 onMounted(() => {
   
   nextTick(() => {
@@ -49,9 +48,7 @@ onMounted(() => {
   })
 })
 
-// `onUnmounted(() => {
-// window.removeEventListener('resize', resize) })` is removing the event listener for the `resize`
-// function from the `window` object when the component is unmounted.
+
 onUnmounted(() => {
   window.removeEventListener('resize', resize)
 })
