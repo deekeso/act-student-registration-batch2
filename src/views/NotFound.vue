@@ -9,7 +9,7 @@ import router from '../router/index';
     <div class="page-body">
       <h1>404 NOT FOUND HAHAHAHAHHHA</h1>
       <div class="router-link">
-        <router-link to="/">Go back</router-link>
+        <router-link to="/login">Go back</router-link>
       </div>
     </div>
   </div>

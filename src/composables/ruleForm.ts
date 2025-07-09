@@ -70,10 +70,19 @@ const validateAddress = (_rule: unknown, value: string, callback: (error?: Error
 }
 
 export const studentFormRules: FormRules = {
-  firstName: [{ validator: validateName('first name'), trigger: 'blur' }],
-  middleInitial: [{ validator: validateMiddleInitial, trigger: 'blur' }],
-  lastName: [{ validator: validateName('last name'), trigger: 'blur' }],
-  birthDay: [{ required: true, message: 'Please select birthday', trigger: 'change' }],
+  firstName: [
+    { required: true, message: 'Please select first name', trigger: 'blur' },
+    { validator: validateName('first name'), trigger: 'blur' },
+  ],
+  middleInitial: [
+    { required: true, message: 'Please select middle initial', trigger: 'blur' },
+    { validator: validateMiddleInitial, trigger: 'blur' },
+  ],
+  lastName: [
+    { required: true, message: 'Please select last name', trigger: 'blur' },
+    { validator: validateName('last name'), trigger: 'blur' },
+  ],
+  birthDay: [{ required: true, message: 'Please select birthday', trigger: ['blur', 'change'] }],
   age: [
     { required: true, message: 'Please input age', trigger: 'blur' },
     { required: true, type: 'number', message: 'Age must be a number', trigger: 'blur' },

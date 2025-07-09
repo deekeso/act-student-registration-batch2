@@ -177,7 +177,15 @@ async function onEditSubmit() {
       </el-form-item>
 
       <el-form-item label="Birthday" prop="birthDay">
-        <el-input v-model="editStudentInfo.birthDay" type="date" placeholder="Birthday"></el-input>
+        <el-date-picker
+          v-model="editStudentInfo.birthDay"
+          type="date"
+          placeholder="Pick a day"
+          size="default"
+          style="width: 100%"
+          format="YYYY-MM-DD"
+          value-format="YYYY-MM-DD"
+        />
       </el-form-item>
 
       <el-form-item label="Age" prop="age">
