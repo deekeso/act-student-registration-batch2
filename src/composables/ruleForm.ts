@@ -88,7 +88,10 @@ export const studentFormRules: FormRules = {
     { required: true, type: 'number', message: 'Age must be a number', trigger: 'blur' },
     { validator: validateCollegeAge, trigger: 'blur' },
   ],
-  address: [{ validator: validateAddress, trigger: 'blur' }],
+  address: [
+    { required: true, message: 'Please enter address', trigger: 'blur' },
+    { validator: validateAddress, trigger: 'blur' },
+  ],
   courses: [
     { required: true, message: 'Please select a course', trigger: 'blur' },
     {
