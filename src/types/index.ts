@@ -13,18 +13,18 @@ interface LoginRuleForm {
   confirmpassword?: string
 }
 
-interface Users {
-  id: string
-  firstname: string
-  middlename: string
-  lastname: string
-  birthdate: string
-  age: number
-  address: string
-  course: string
+interface Students {
+  id?: string
+  firstname?: string
+  middlename?: string
+  lastname?: string
+  birthdate?: string
+  age?: number
+  address?: string
+  course?: string
 }
 
-interface UsersRuleForm {
+interface StudentRuleForm {
   firstname: string
   middlename?: string
   lastname: string
@@ -34,4 +34,4 @@ interface UsersRuleForm {
   course: string
 }
 
-export type { Credentials, LoginRuleForm, Users, UsersRuleForm }
+export type { Credentials, LoginRuleForm, Students, StudentRuleForm }
