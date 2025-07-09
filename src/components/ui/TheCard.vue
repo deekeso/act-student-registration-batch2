@@ -35,7 +35,7 @@
 <script lang="ts" setup>
 import { defineProps, computed, defineEmits } from 'vue'
 import { ElCard } from 'element-plus'
-import type { Users } from '@/types'
+import type { Students } from '@/types'
 import { Edit, Calendar, School, MapLocation, User, IceTea } from '@element-plus/icons-vue'
 import { capitalizeEachWord } from '@/utils/capitalize'
 
@@ -55,7 +55,7 @@ const fullname = computed(() => {
 // display address 
 const address = computed(() => `${capitalizeEachWord(props.address ?? '')}`)
 // define props
-const props = defineProps<Users>()
+const props = defineProps<Students>()
 
 
 const openDrawer = () => {

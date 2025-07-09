@@ -86,13 +86,7 @@ const ruleForm = reactive<LoginRuleForm>({
 })
 
 
-/* validates the password string security rules.
-*  @params { any } rule - The validation rule object.
-*  @params { string } value - password string to validate | must have uppercase, number, symbol for password.
-*  @params { Function } callback - Callback function to call with error or sucess.
-*  @returns {void}
-*/
-const passwordValidator = (rule: any, value: string, callback: any) => {
+const passwordValidator = (rule: any, value: string, callback: (error?: string | Error) => void) => {
   const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/
   if (!value) {
     return callback(new Error('Password is required.'))
@@ -105,13 +99,8 @@ const passwordValidator = (rule: any, value: string, callback: any) => {
 }
 
 
-/* validates the confirm password if it matches the password
-*  @params { any } rule - The validation rule object.
-*  @params { string } value - confirm password string to validate if its matches the 
-*  @params { Function } callback - Callback function to call with error or sucess
-*  @returns {void}
-*/
-const matchPassword = (rule: any, value: string, callback: any) => {
+
+const matchPassword = (rule: any, value: string, callback: (error?: string | Error) => void) => {
   if (!value) {
     return callback(new Error('Password is required.'))
   } else if (value !== ruleForm.password) {
@@ -145,16 +134,6 @@ const rules = reactive<FormRules<LoginRuleForm>>({
 })
 
 
-/**
- * Handles form submission after validating input fields.
- *
- * @param {FormInstance | undefined} formEl - The form instance to validate.
- * If undefined, submission is aborted.
- *
- * Behavior:
- * - If `props.confirmpassword` exists, it triggers the forgot password flow.
- * - Otherwise, it attempts login using the provided credentials.
- */
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl)  { return }
 

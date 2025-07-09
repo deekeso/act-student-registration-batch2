@@ -97,7 +97,7 @@
 <script lang="ts" setup>
 import { reactive, ref, defineProps, watch, defineEmits } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import type { Users, UsersRuleForm } from '@/types'
+import type { Students, StudentRuleForm } from '@/types'
 import { Edit, Delete, Refresh } from '@element-plus/icons-vue'
 import { courses } from '@/constants'
 import { useStudents } from '@/stores/students'
@@ -115,7 +115,7 @@ const emits = defineEmits(['on-drawer-close'])
 
 // Student form props
 interface StudentFormProps {
-  student?: Users
+  student?: Students
   BtnDelete?: boolean
   BtnLabel?: string
   OnAdd?: boolean
@@ -132,7 +132,7 @@ const props = withDefaults(defineProps<StudentFormProps>(), {
 // Reference to the form instance used for validation and submission
 const ruleFormRef = ref<FormInstance>()
 
-const ruleForm = reactive<Users>({
+const ruleForm = reactive<Students>({
   id: '',
   firstname: '',
   middlename: '',
@@ -270,7 +270,7 @@ const addressValidator = (rule: string, value: string, callback: (error?: string
 }
 
 // validate the user inputs
-const rules = reactive<FormRules<UsersRuleForm>>({
+const rules = reactive<FormRules<StudentRuleForm>>({
   // firstname validators
   firstname: [
     { required: true, message: 'firstname is required', trigger: 'blur' },

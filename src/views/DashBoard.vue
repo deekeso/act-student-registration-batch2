@@ -100,6 +100,9 @@ const filteredStudents = computed(() => studentsStore.allStudents)
 
 /* for grid column */
 @media (max-width: 1460px) {
+  .container {
+    padding: 20px;
+  }
   .card-list {
     --grid-cols: 4;
   }
