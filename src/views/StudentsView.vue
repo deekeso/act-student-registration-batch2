@@ -174,9 +174,9 @@ const filteredStudents = computed(() => {
 
   // Filter by search query
   if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
+    const query = searchQuery.value.toLowerCase().trim()
     result = result.filter((student) => {
-      const fullName = `${student.name}`.toLowerCase()
+      const fullName = `${student.name}`.toLowerCase().trim()
       return fullName.includes(query)
     })
   }

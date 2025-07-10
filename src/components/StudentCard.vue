@@ -103,6 +103,7 @@ const formattedBirthDate = computed(() => {
 }
 
 .card-title {
+  min-height: 44px;
   margin: 0;
   font-size: 1.1rem;
   color: black;
@@ -142,6 +143,10 @@ const formattedBirthDate = computed(() => {
 @media (max-width: 576px) {
   .card-header {
     flex-direction: column;
+  }
+
+  .card-title {
+    min-height: auto;
   }
 
   .card-footer {
