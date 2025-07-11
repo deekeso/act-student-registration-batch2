@@ -109,9 +109,36 @@ const ruleForm = reactive<RuleForm>({
 })
 
 const rules = {
-  username: [
-    { required: true, message: 'Please enter a username', trigger: 'blur' },
-    { min: 3, max: 20, message: 'Username must be between 3 and 20 characters', trigger: 'blur', },
+  firstName: [
+    { required: true, message: 'First name is required', trigger: 'blur' },
+    {
+      pattern: /^[A-Za-z\s'-]+$/,
+      message: 'Only letters, spaces, hyphens, and apostrophes allowed',
+      trigger: 'blur'
+    },
+    {min: 2, max: 244, message: 'First name should be at least 2 characters'},
+  ],
+  middleInitial: [
+    {
+      pattern: /^[A-Za-z\s'-]+$/,
+      message: 'Only letters, spaces, hyphens, and apostrophes allowed',
+      trigger: 'blur'
+    }
+  ],
+  lastName: [
+    { required: true, message: 'Last name is required', trigger: 'blur', },
+    { min: 2, max: 30, message: 'Last name exceeds maximum characters', trigger: 'blur' },
+    {
+      pattern: /^[A-Za-z\s'-]+$/,
+      message: 'Only letters, spaces, hyphens, and apostrophes allowed',
+      trigger: 'blur'
+    }
+  ],
+  course: [
+    { required: true, message: 'Course is required', trigger: 'change' }
+  ],
+  birthDate: [
+    { required: true, message: 'Birthday is required', trigger: 'change' }
   ],
   password: [
     { required: true, message: 'Password is required', trigger: 'blur' },
@@ -123,70 +150,19 @@ const rules = {
     {
       pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=<>?{}[\]~])[A-Za-z\d!@#$%^&*()_\-+=<>?{}[\]~]{8,}$/,
       message: 'Use at least 8 characters with a capital letter, number, and symbol.'
-    },
-  ],
-  firstName: [
-    { required: true, message: 'Please enter your first name', trigger: 'blur' },
-    { min: 2, max: 244, message: 'First name should be at least 2 characters', trigger: 'blur' },
-  ],
- middleInitial: [
-  {
-    validator: (rule, value, callback) => {
-      if (!value) {
-        return callback(); // not required
-      }
-
-      const onlyLetters = /^[A-Za-z]+$/;
-
-      if (!onlyLetters.test(value)) {
-        return callback(new Error('Middle name must contain letters only'));
-      }
-
-      if (value.length > 15) {
-        return callback(new Error('Middle name must be 1 to 3 characters'));
-      }
-
-      callback(); // ✅ valid
-    },
-    trigger: 'blur',
-  }
-],
- lastName: [
-  {
-    required: true,
-    validator: (rule, value, callback) => {
-      const trimmed = value?.trim() || '';
-      if (!trimmed) {
-        return callback(new Error('Please enter your last name'));
-      }
-
-      const onlyLetters = /^[A-Za-z\s\-']+$/; // allows letters, spaces, hyphens, apostrophes
-
-      if (!onlyLetters.test(trimmed)) {
-        return callback(new Error('Last name must contain letters only'));
-      }
-
-      callback(); // ✅ valid
-    },
-    trigger: 'blur',
-  },
-  { min: 6, max: 30, message: 'Last name exceeds maximum characters', trigger: 'blur' }
-]
-,
-  birthDate: [
-    { required: true, message: 'Please select your birth date', trigger: 'change' },
-  ],
-  age: [
-    { required: true, message: 'Please enter your age', trigger: 'blur' },
-    { type: 'number', min: 17, max: 120, message: 'Age must be between 17 and 120', trigger: 'blur' },
+    }
   ],
   address: [
-    { required: true, message: 'Please enter your address', trigger: 'blur' },
-    { min: 3, max: 60, message: 'Address exceeds maximum allowed characters', trigger: 'blur' },
+    { required: true, message: 'Address is required', trigger: 'blur' },
+    {min: 5, max: 100, message: 'Address exceeds maximum inputs', triggers: 'blur'},
   ],
-  course: [
-    { required: true, message: 'Please select a course', trigger: 'change' },
+  age: [
+    { type: 'number', min: 17, max: 90, message: 'Age must be between 17 and 90', trigger: 'blur' }
   ],
+  username: [
+    { required: true, message: 'Please enter a username', trigger: 'blur' },
+    { min: 3, max: 20, message: 'Username must be between 3 and 20 characters', trigger: 'blur', },
+  ]
 }
 const isSubmitting = ref(false)
 const courseOptions = courses;

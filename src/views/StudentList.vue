@@ -777,6 +777,8 @@
                 </div>
               </template>
             </el-dialog>
+
+          
 </template>
 
 
@@ -1784,6 +1786,31 @@ loadStudents()
 .registration-drawer,
 .edit-drawer {
   border-radius: 16px 0 0 16px;
+}
+
+/* Responsive Drawer */
+.edit-drawer {
+  /* Default for desktop */
+  --drawer-width: 40vw;
+}
+
+.edit-drawer .el-drawer__body {
+  padding: 24px;
+}
+
+@media (max-width: 900px) {
+  .edit-drawer {
+    --drawer-width: 70vw;
+  }
+}
+
+@media (max-width: 600px) {
+  .edit-drawer {
+    --drawer-width: 100vw;
+  }
+  .edit-drawer .el-drawer__body {
+    padding: 12px;
+  }
 }
 
 .edit-drawer .drawer-content {
