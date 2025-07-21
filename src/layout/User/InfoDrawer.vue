@@ -43,7 +43,6 @@
               type="date"
               style="width: 100%"
               :disabled-date="disabledDate"
-              :default-value="defaultBirthdayView"
               format="YYYY-MM-DD"
               value-format="YYYY-MM-DD"
               @keydown.prevent
@@ -98,7 +97,8 @@ import {
   lettersNumbersOnly,
 } from '@/composables/formValidationFunctions'
 import { ElMessage } from 'element-plus';
-import { useBirthdayPicker, useBirthdayAutoAge, defaultBirthdayView } from '@/composables/formBirthday'
+import { useBirthdayAutoAge, useBirthdayPicker } from '@/composables/formBirthday';
+// import { useBirthdayPicker, useBirthdayAutoAge, defaultBirthdayView } from '@/composables/formBirthday'
 
 const userFormRef = ref()
 const props = defineProps<{ visible: boolean }>()

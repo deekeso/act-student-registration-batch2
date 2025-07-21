@@ -3,7 +3,6 @@ import {
   validateLastName,
   validateFirstName,
   validateMiddleName,
-  validateBirthday,
   validateStreet,
   validateBarangay,
   validateCity,
@@ -55,16 +54,16 @@ export const userFormRules = {
       trigger: ['blur', 'change'],
     }
   ],
-  birthDate: [
-    {
-      validator: (_rule: string, value: string, callback: ValidatorCallback) => {
-        const res = validateBirthday(value);
-        if (res.valid) callback();
-        else callback(new Error(res.message));
-      },
-      trigger: ['blur', 'change'],
-    }
-  ],
+  // birthDate: [
+  //   {
+  //     validator: (_rule: string, value: string, callback: ValidatorCallback) => {
+  //       const res = validateBirthday(value);
+  //       if (res.valid) callback();
+  //       else callback(new Error(res.message));
+  //     },
+  //     trigger: ['blur', 'change'],
+  //   }
+  // ],
   street: [
     {
       validator: (_rule: string, value: string, callback: ValidatorCallback) => {
