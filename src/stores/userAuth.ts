@@ -21,7 +21,7 @@ export const useAuthStore = defineStore('auth', {
       email: '',
       username: '',
       password: '',
-      userInfo: null,
+      userInfo: {} as User | null,
     }) as LoginState,
 
   actions: {

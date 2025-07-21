@@ -43,6 +43,7 @@
               type="date"
               style="width: 100%"
               :disabled-date="disabledDate"
+              :default-value="defaultBirthdayView"
               format="YYYY-MM-DD"
               value-format="YYYY-MM-DD"
               @keydown.prevent
@@ -97,8 +98,7 @@ import {
   lettersNumbersOnly,
 } from '@/composables/formValidationFunctions'
 import { ElMessage } from 'element-plus';
-import { useBirthdayAutoAge, useBirthdayPicker } from '@/composables/formBirthday';
-// import { useBirthdayPicker, useBirthdayAutoAge, defaultBirthdayView } from '@/composables/formBirthday'
+import { defaultBirthdayView, useBirthdayAutoAge, useBirthdayPicker } from '@/composables/formBirthday';
 
 const userFormRef = ref()
 const props = defineProps<{ visible: boolean }>()
@@ -130,9 +130,9 @@ useBirthdayAutoAge(form)
 watch(
   () => props.visible,
   (val) => {
-  if (val) {
-    authStore.loadUserInfo()
-    const user = authStore.userInfo
+    if (val) {
+      authStore.loadUserInfo()
+      const user = authStore.userInfo
       if (user) {
         form.username = user.username || ''
         form.email = user.email || ''
@@ -140,7 +140,7 @@ watch(
         form.lastName = user.name?.lastName || ''
         form.firstName = user.name?.firstName || ''
         form.middleName = user.name?.middleName || ''
-        form.birthDate = user.birthDate || ''
+        form.birthDate = user.birthDate || '' 
         form.age = user.age || 0
         form.street = user.address?.street || ''
         form.barangay = user.address?.barangay || ''
@@ -179,7 +179,7 @@ async function onSubmit() {
         barangay: form.barangay,
         city: form.city,
         province: form.province,
-        zipCode: Number(form.zipCode) || 0,
+        zipCode: Number(form.zipCode),
         landmark: form.landmark,
       },
     });

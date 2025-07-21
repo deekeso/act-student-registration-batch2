@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue'
+import { ref, toRef, watch } from 'vue'
 
 export const birthday = ref('')
 
@@ -42,24 +42,23 @@ export function formatDate(date: string | Date) {
 
 // Auto-calculate age based on birthday
 export function useBirthdayAutoAge(state: { birthDate: string | Date; age: number | string }) {
-  watch(
-    () => state.birthDate,
-    (newBirthDate) => {
-      if (newBirthDate) {
-        const normalizedDate = formatDate(newBirthDate)
-        const birth = new Date(normalizedDate)
-        const today = new Date()
-        let age = today.getFullYear() - birth.getFullYear()
-        const m = today.getMonth() - birth.getMonth()
-        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
-          age--
-        }
-        state.age = age
-      } else {
-        state.age = ''
+  const birthDateRef = toRef(state, 'birthDate')
+
+  watch(birthDateRef, (newBirthDate) => {
+    if (newBirthDate) {
+      const normalizedDate = formatDate(newBirthDate)
+      const birth = new Date(normalizedDate)
+      const today = new Date()
+      let age = today.getFullYear() - birth.getFullYear()
+      const m = today.getMonth() - birth.getMonth()
+      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+        age--
       }
-    },
-  )
+      state.age = age
+    } else {
+      state.age = ''
+    }
+  })
 }
 
 export const defaultBirthdayView = new Date(new Date().setFullYear(new Date().getFullYear() - 18))

@@ -10,7 +10,7 @@
           @update:quantity="(q) => quantity = q"
         >
         <template #actions="{ product, quantity }">
-          <ProductInfoBtn :product="product" :quantity="quantity" />
+          <ProductInfoBtn :product="product" :quantity="quantity" @open-dialog="() => console.log('Dialog event received in ProductCard')" />
         </template>
         </ProductCard>
       </div>
@@ -31,6 +31,7 @@ import ProductCard from '@/components/cards/ProductCard.vue'
 const productsStore = useProductsStore()
 const quantity = ref(1)
 const props = defineProps<{ id: string | number }>()
+defineEmits(['open-dialog'])
 
 const product = computed(() => productsStore.products.find((p) => p.id === Number(props.id)))
 </script>

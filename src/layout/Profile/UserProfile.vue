@@ -47,14 +47,7 @@
                 v-model="form.birthDate"
                 type="date"
                 style="width: 100%"
-                :picker-options="{
-                  disabledDate(date: Date) {
-                    return (
-                      date < minDate ||
-                      date > maxDate
-                    );
-                  }
-                }"
+                :disabled-date="disabledDate"
                 format="YYYY-MM-DD"
                 value-format="YYYY-MM-DD"
                 @keydown.prevent
@@ -111,6 +104,7 @@ import {
 } from '@/composables/formValidationFunctions'
 import { ElMessage } from 'element-plus';
 import MainLayout from '../MainLayout.vue';
+import { useBirthdayAutoAge, useBirthdayPicker } from '@/composables/formBirthday'
 
 const userFormRef = ref()
 const authStore = useAuthStore()
@@ -131,6 +125,10 @@ const form = reactive({
   zipCode: 0,
   landmark: '',
 })
+
+useBirthdayAutoAge(form)
+const { disabledDate } = useBirthdayPicker()
+
 
 // Load user info on mount
 onMounted(() => {
@@ -153,10 +151,6 @@ onMounted(() => {
     form.landmark = user.address?.landmark || ''
   }
 })
-
-const today = new Date();
-const minDate = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate());
-const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
 
 // Submit handler
 async function onSubmit() {

@@ -5,7 +5,8 @@
       <div class="checkout">
         <div class="checkout-container">
           <div class="user-container">
-            <div class="user-info">
+            <!-- Personal Information -->
+            <div class="user-info" v-if="authStore.userInfo?.contactNumber !== 0">
               <div class="user-info-name">
                 <p>Name:</p>
                 <span>
@@ -18,6 +19,11 @@
               </div>
               <div class="user-info-email"><p>Email:</p><span>{{ authStore.userInfo?.email }}</span></div>
               <div class="user-info-contact"><p>Contact Number:</p><span>{{ authStore.userInfo?.contactNumber }}</span></div>
+            </div>
+
+            <!-- User Information Form -->
+            <div v-else>
+              <p>Please fill in your personal information.</p>
             </div>
             <el-icon @click="openDrawer" class="editpen-icon"><EditPen /></el-icon>
           </div>
@@ -62,8 +68,10 @@
             <span>Total:</span>
             <span> ₱ {{ checkoutStore.allTotal }}</span>
           </div>
-          <ProductCheckoutBtn type="payment" />
-          <ProductCheckoutBtn type="place-order" />
+          <div v-if="!authStore.userInfo?.address">
+            <ProductCheckoutBtn type="payment" />
+            <ProductCheckoutBtn type="place-order" />
+          </div>
         </div>
       </div>
     </div>
@@ -93,8 +101,10 @@ function updateQuantity(productId: number, quantity: number) {
   checkoutStore.updateQuantity(productId, quantity)
 }
 
+
 onMounted(() => {
   checkoutStore.loadCheckout()
+  authStore.loadUserInfo()
 })
 
 // drawer
@@ -126,12 +136,15 @@ function openDrawer() {
 /* personal info */
 .editpen-icon {
   cursor: pointer;
+  color: gray;
+  font-size: x-large;
 }
 
 /* user */
 .user-container {
   background-color: #d9d9d9;
   display: flex;
+  justify-content: space-between;
   margin: 10px 0;
   border-radius: 20px;
   padding: 20px;

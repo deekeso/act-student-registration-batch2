@@ -11,6 +11,7 @@
         v-model="checkAll"
         :indeterminate="isIndeterminate"
         @change="handleCheckAllChange"
+        v-if="cartItems.length"
       >
         Check All
       </el-checkbox>
@@ -36,7 +37,7 @@
       </ul>
 
       <!-- To checkout summary -->
-       <div class="to-checkout">
+       <div class="to-checkout" v-if="selectedIds.length > 0">
           <TextStyle variant="section-header">Summary</TextStyle>
           <div>
             <span>Items:</span>

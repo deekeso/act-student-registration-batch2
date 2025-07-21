@@ -99,19 +99,19 @@ export function validateMiddleName(middleName: string): { valid: boolean; messag
 }
 
 // Birthday: must be 18 to 100 years old
-// export function validateBirthday(birthDate: string): { valid: boolean; message: string } {
-//   if (!birthDate) return { valid: false, message: 'Birthday is required.' };
-//   const date = new Date(birthDate);
-//   const today = new Date();
-//   let age = today.getFullYear() - date.getFullYear();
-//   const m = today.getMonth() - date.getMonth();
-//   if (m < 0 || (m === 0 && today.getDate() < date.getDate())) {
-//     age--;
-//   }
-//   if (age < 18) return { valid: false, message: 'You must be at least 18 years old.' };
-//   if (age > 100) return { valid: false, message: 'You must be younger than 100 years old.' };
-//   return { valid: true, message: '' };
-// }
+export function validateBirthday(birthDate: string): { valid: boolean; message: string } {
+  if (!birthDate) return { valid: false, message: 'Birthday is required.' };
+  const date = new Date(birthDate);
+  const today = new Date();
+  let age = today.getFullYear() - date.getFullYear();
+  const m = today.getMonth() - date.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < date.getDate())) {
+    age--;
+  }
+  if (age < 18) return { valid: false, message: 'You must be at least 18 years old.' };
+  if (age > 100) return { valid: false, message: 'You must be younger than 100 years old.' };
+  return { valid: true, message: '' };
+}
 
 // Address fields: street & barangay - letters/numbers/space/ñ/Ñ, min 5, max 50
 const addressRegex = /^[a-zA-Z0-9 ñÑ]+(?: [a-zA-Z0-9 ñÑ]+)*$/;

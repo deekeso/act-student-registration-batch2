@@ -13,9 +13,10 @@
   >
   <el-button
     v-else-if="type === 'checkoutSelect'"
-    size="large"
     @click="handleCheckoutSelect"
     :disabled="!selectedItems || selectedItems.length === 0"
+    round
+    claass="checkout-btn"
     >Checkout</el-button
   >
 </template>
@@ -69,5 +70,13 @@ function handleCheckoutSelect() {
   font-size: 20px;
   color: red;
   cursor: pointer;
+}
+
+/* .checkout-btn {
+} */
+
+.el-button, .el-button.is-round {
+  width: 100%;
+  margin-top: 10px;
 }
 </style>
