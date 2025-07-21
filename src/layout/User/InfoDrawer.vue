@@ -42,14 +42,8 @@
               v-model="form.birthDate"
               type="date"
               style="width: 100%"
-              :picker-options="{
-                disabledDate(date: Date) {
-                  return (
-                    date < minDate ||
-                    date > maxDate
-                  );
-                }
-              }"
+              :disabled-date="disabledDate"
+              :default-value="defaultBirthdayView"
               format="YYYY-MM-DD"
               value-format="YYYY-MM-DD"
               @keydown.prevent
@@ -104,6 +98,7 @@ import {
   lettersNumbersOnly,
 } from '@/composables/formValidationFunctions'
 import { ElMessage } from 'element-plus';
+import { useBirthdayPicker, useBirthdayAutoAge, defaultBirthdayView } from '@/composables/formBirthday'
 
 const userFormRef = ref()
 const props = defineProps<{ visible: boolean }>()
@@ -126,6 +121,10 @@ const form = reactive({
   zipCode: 0,
   landmark: '',
 })
+
+// Use birthday picker and auto-age
+const { disabledDate } = useBirthdayPicker()
+useBirthdayAutoAge(form)
 
 // Load user info when drawer opens
 watch(
@@ -154,10 +153,6 @@ watch(
   },
   { immediate: true },
 )
-
-const today = new Date();
-const minDate = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate());
-const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
 
 // Submit handler
 async function onSubmit() {

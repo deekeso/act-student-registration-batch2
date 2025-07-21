@@ -1,18 +1,22 @@
 <template>
   <MainLayout>
-    <div v-if="product">
-      <h2>{{ product.name }}</h2>
-      <img :src="product.image" alt="Product image" />
-      <p>{{ product.description }}</p>
-      <p>Price: ₱{{ product.price }}</p>
-      <p v-if="product.oldPrice">Old Price: ₱{{ product.oldPrice }}</p>
-      <p>Rating: {{ product.rating }}</p>
-      <el-input-number v-model="quantity" :min="1" />
-      <ProductInfoBtn :product="product" :quantity="quantity" />
-      <!-- Add more details as needed -->
-    </div>
-    <div v-else>
-      <p>Product not found.</p>
+    <div class="info-container">
+      <div v-if="product">
+        <ProductCard
+          :product="product"
+          :quantity="quantity"
+          variant="info"
+          :show-quantity="true"
+          @update:quantity="(q) => quantity = q"
+        >
+        <template #actions="{ product, quantity }">
+          <ProductInfoBtn :product="product" :quantity="quantity" />
+        </template>
+        </ProductCard>
+      </div>
+      <div v-else>
+        <p>Product not found.</p>
+      </div>
     </div>
   </MainLayout>
 </template>
@@ -22,6 +26,7 @@ import { useProductsStore } from '@/stores/products'
 import { computed, ref } from 'vue'
 import MainLayout from '../MainLayout.vue'
 import ProductInfoBtn from './ProductInfoBtn.vue'
+import ProductCard from '@/components/cards/ProductCard.vue'
 
 const productsStore = useProductsStore()
 const quantity = ref(1)
@@ -30,4 +35,12 @@ const props = defineProps<{ id: string | number }>()
 const product = computed(() => productsStore.products.find((p) => p.id === Number(props.id)))
 </script>
 
-<style scoped></style>
+<style scoped>
+.info-container {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+</style>

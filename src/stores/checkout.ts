@@ -80,17 +80,17 @@ export const useCheckoutStore = defineStore('checkout', {
   },
 
   getters: {
-    // total price for all items to checkout
+    // total price for all items to order
     subTotal: (state) =>
       state.checkoutItems.reduce(
         (total, item) => total + (item.product.price || 0) * item.quantity,
         0,
       ),
 
-    //  total number of items to checkout
+    //  total number of items to order
     totalItems: (state) => state.checkoutItems.reduce((total, item) => total + item.quantity, 0),
 
-    // total price for all items to checkout + shipping (₱40)
+    // total price for all items to order + shipping (₱40)
     allTotal: (state) =>
       state.checkoutItems.reduce(
         (total, item) => total + (item.product.price || 0) * item.quantity,

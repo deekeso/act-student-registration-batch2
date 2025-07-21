@@ -1,7 +1,7 @@
 <template>
   <div class="add-buy-btn">
-    <el-button @click="handleAddToCart">Add to Cart</el-button>
-    <el-button @click="handleBuyNow">Buy Now</el-button>
+    <el-button @click="handleAddToCart" class="add-btn" round>Add to Cart</el-button>
+    <el-button @click="handleBuyNow" class="buy-btn" round>Buy Now</el-button>
   </div>
 </template>
 
@@ -33,4 +33,8 @@ function handleBuyNow() {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+/* .add-buy-btn {
+  margin-top: auto;
+} */
+</style>

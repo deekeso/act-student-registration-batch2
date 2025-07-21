@@ -70,7 +70,7 @@ const computedStyle = computed(() => ({
 }
 
 .text-style--card-title {
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
 }
 

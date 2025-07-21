@@ -104,6 +104,7 @@ const handleRegister = () => {
       },
       userCart: [],
       userId: 0,
+      userOrders: [],
     }
 
     const result = authStore.userRegistration(form.email, form.username, form.password, userData)

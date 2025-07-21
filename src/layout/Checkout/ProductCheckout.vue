@@ -6,7 +6,7 @@
         <div class="checkout-container">
           <div class="user-container">
             <div class="user-info">
-              <div class="user-info-name"> 
+              <div class="user-info-name">
                 <p>Name:</p>
                 <span>
                 {{ authStore.userInfo?.name?.lastName}}, {{ authStore.userInfo?.name?.firstName }} {{ authStore.userInfo?.name?.middleName }}
@@ -24,25 +24,17 @@
 
           <!-- checkout item container -->
           <div class="checkout-content" v-for="item in checkoutItems" :key="item.product.id">
-            <img :src="item.product.image" :alt="item.product.name" class="item-image" />
-            <div class="item-details">
-              <TextStyle variant="card-title">{{ item.product.name }}</TextStyle>
-              <div>
-                <TextStyle variant="card-price">₱{{ item.product.price }}</TextStyle>
-                <TextStyle v-if="item.product.oldPrice" variant="card-old-price">
-                  ₱{{ item.product.oldPrice }}
-                </TextStyle>
-              </div>
-              <TextStyle variant="default"> x{{ item.quantity }} item </TextStyle>
-              <div class="quantity-wrap">
-                <el-input-number
-                  v-model="item.quantity"
-                  :min="1"
-                  @change="updateQuantity(item.product.id, item.quantity)"
-                />
-              </div>
-              <ProductCheckoutBtn type="remove" :product-id="item.product.id" />
-            </div>
+            <ProductCard
+              :product="item.product"
+              :quantity="item.quantity"
+              variant="checkout"
+              :show-quantity="true"
+              @update:quantity="(q) => updateQuantity(item.product.id, q)"
+            >
+              <template #actions="{ product }">
+                <ProductCheckoutBtn type="remove" :product-id="product.id" />
+              </template>
+            </ProductCard>
           </div>
         </div>
       </div>
@@ -88,6 +80,7 @@ import MainLayout from '../MainLayout.vue'
 import { EditPen } from '@element-plus/icons-vue'
 import InfoDrawer from '../User/InfoDrawer.vue'
 import { useAuthStore } from '@/stores/userAuth'
+import ProductCard from '@/components/cards/ProductCard.vue'
 
 const authStore = useAuthStore()
 authStore.loadUserInfo()
@@ -135,11 +128,6 @@ function openDrawer() {
   cursor: pointer;
 }
 
-/* checkout */
-/* .checkout-container {
-  /* style
-} */
-
 /* user */
 .user-container {
   background-color: #d9d9d9;
@@ -162,52 +150,6 @@ function openDrawer() {
   display: flex;
   flex-direction: row;
   gap: 10px;
-}
-
-/* item */
-.checkout-content {
-  background-color: #d9d9d9;
-  display: flex;
-  flex-direction: row;
-  padding: 20px;
-  border-radius: 20px;
-  align-items: center;
-  margin: 12px;
-}
-.item-image {
-  padding: 2px;
-  border-radius: 10px;
-  height: 150px;
-  /* box-shadow:; */
-}
-
-.item-details {
-  padding: 6px;
-  display: flex;
-  flex-direction: column;
-  margin: 5px;
-  gap: 2px;
-}
-
-:deep(.el-input__wrapper) {
-  border-radius: 20px;
-  background-color: #cecece;
-  box-shadow: none;
-}
-.el-input-number {
-  width: 120px;
-}
-
-:deep(.el-input-number__decrease) {
-  border-radius: 20px;
-}
-
-:deep(.el-input-number__increase) {
-  border-radius: 20px;
-}
-
-.quantity-wrap {
-  margin: 5px 0;
 }
 
 /* item summary */

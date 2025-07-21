@@ -1,4 +1,5 @@
 import type { CartItem } from './CartItem'
+import type { Order } from './order'
 
 export interface User {
   userId: number
@@ -22,4 +23,5 @@ export interface User {
     landmark?: string
   }
   userCart?: CartItem[]
+  userOrders?: Order[]
 }

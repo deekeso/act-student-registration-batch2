@@ -3,12 +3,13 @@
   <el-button v-else-if="type === 'checkout'" size="small" @click="handleCheckout"
     >Checkout</el-button
   >
-  <el-button
+  <el-icon
     v-else-if="type === 'remove'"
     type="danger"
-    size="small"
+    size="medium"
     @click="removeFromCart(productId)"
-    >Remove</el-button
+    class="delete-icon"
+    ><Delete /></el-icon
   >
   <el-button
     v-else-if="type === 'checkoutSelect'"
@@ -25,6 +26,7 @@ import { useCheckoutStore } from '@/stores/checkout'
 import type { CartItem } from '@/types/CartItem'
 import type { Product } from '@/types/Product'
 import { useRouter } from 'vue-router'
+import { Delete } from '@element-plus/icons-vue';
 
 const props = defineProps<{
   type: 'continue' | 'checkout' | 'remove' | 'checkoutSelect'
@@ -62,4 +64,10 @@ function handleCheckoutSelect() {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.delete-icon {
+  font-size: 20px;
+  color: red;
+  cursor: pointer;
+}
+</style>

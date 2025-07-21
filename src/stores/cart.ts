@@ -61,9 +61,15 @@ export const useCartStore = defineStore('cart', {
     },
   },
   getters: {
+    cartTotalPerItem: (state) => (productId: number) => {
+      const item = state.cartItems.find((i) => i.product.id === productId)
+      return item ? (item.product.price || 0) * item.quantity : 0
+    },
     cartCount: (state) => state.cartItems.length, // Returns the number of items currently in the cart.
     cartTotal: (state) =>
-      state.cartItems.reduce((total, item) => total + (item.product.price || 0), 0), // Calculates the total price of all items in the cart by adding up their price values.
+      state.cartItems.reduce((total, item) => total + (item.product.price || 0) * item.quantity,
+        0,
+      ), // Calculates the total price of all items in the cart by adding up their price values.
   },
   persist: true,
 })

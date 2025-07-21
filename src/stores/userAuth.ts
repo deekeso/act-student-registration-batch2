@@ -84,6 +84,7 @@ export const useAuthStore = defineStore('auth', {
         userId: newUserId,
         password: CryptoJS.SHA256(userData.password!).toString(),
         userCart: [],
+        userOrders: [],
       }
 
       // add new user
@@ -122,7 +123,7 @@ export const useAuthStore = defineStore('auth', {
     loadUserInfo() {
       const currentUser = localStorage.getItem('currentUser')
       const users = JSON.parse(localStorage.getItem('Users') || '[]')
-      this.userInfo = users.find((u: User) => u.username === currentUser) || null 
+      this.userInfo = users.find((u: User) => u.username === currentUser) || null
     },
 
     userUpdateInfo(data: Partial<User>) {

@@ -12,20 +12,18 @@
           <div class="orders-content">
             <span>Status: {{ order.status }}</span>
             <div v-for="item in order.items" :key="item.product.id" class="order-block">
-              <div class="order-header"></div>
-              <div class="order-items">
-                <img :src="item.product.image" :alt="item.product.name" class="item-image" />
-                <div class="item-details">
-                  <h3>{{ item.product.name }}</h3>
-                  <p class="item-price">₱{{ item.product.price }} x{{ item.quantity }}</p>
-                </div>
-              </div>
+              <ProductCard
+                :product="item.product"
+                :quantity="item.quantity"
+                variant="order"
+                :show-quantity="false"
+              />
             </div>
-            <p>
+            <!-- <p>
               Total {{ ordersStore.orderTotalItem(order) }} item: ₱{{
                 ordersStore.orderSubTotal(order)
               }}
-            </p>
+            </p> -->
           </div>
         </li>
       </ul>
@@ -42,6 +40,7 @@ import { ref } from 'vue'
 import OrderDrawer from './OrderDrawer.vue'
 import type { Order } from '@/types/order'
 import ProductCartBtn from '../Cart/ProductCartBtn.vue'
+import ProductCard from '@/components/cards/ProductCard.vue'
 
 const ordersStore = useOrdersStore()
 const drawerVisible = ref(false)
@@ -52,3 +51,13 @@ function openDrawer(order: Order) {
   drawerVisible.value = true
 }
 </script>
+
+<style scoped>
+.orders-container {
+  width: 80vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+</style>

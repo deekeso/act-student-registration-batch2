@@ -4,7 +4,8 @@
       <h1 @click="home">LazPlus</h1>
       <SearchBar />
       <el-button @click="productCart" link>Cart</el-button>
-      <el-button @click="productOrdered" link>Order</el-button>
+      <el-button v-if="authStore.isLoggedIn" @click="productOrdered" link>Order</el-button>
+      <el-button v-if="authStore.isLoggedIn" @click="userProfile" link>{{ currentUser }}</el-button>
       <el-button v-if="!authStore.isLoggedIn" link @click="$emit('open-dialog')">Login</el-button>
       <el-button v-if="!authStore.isLoggedIn" link @click="$emit('open-register-dialog')"
         >Sign up</el-button
@@ -21,6 +22,7 @@ import { useAuthStore } from '@/stores/userAuth'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const currentUser = localStorage.getItem('currentUser')
 
 function home() {
   router.push('/home')
@@ -32,6 +34,10 @@ function productCart() {
 
 function productOrdered() {
   router.push('/product/ordered')
+}
+
+function userProfile() {
+  router.push('/profile')
 }
 </script>
 
