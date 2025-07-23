@@ -6,7 +6,17 @@
         <div class="checkout-container">
           <div class="user-container">
             <!-- Personal Information -->
-            <div class="user-info" v-if="authStore.userInfo?.contactNumber !== 0">
+            <div class="user-info"
+              v-if="
+                authStore.userInfo?.name?.lastName &&
+                authStore.userInfo?.name?.firstName &&
+                authStore.userInfo?.address?.street &&
+                authStore.userInfo?.address?.city &&
+                authStore.userInfo?.address?.zipCode &&
+                authStore.userInfo?.email &&
+                authStore.userInfo?.contactNumber
+              "
+            >
               <div class="user-info-name">
                 <p>Name:</p>
                 <span>
@@ -68,7 +78,7 @@
             <span>Total:</span>
             <span> ₱ {{ checkoutStore.allTotal }}</span>
           </div>
-          <div v-if="!authStore.userInfo?.address">
+          <div v-if="authStore.userInfo?.address">
             <ProductCheckoutBtn type="payment" />
             <ProductCheckoutBtn type="place-order" />
           </div>

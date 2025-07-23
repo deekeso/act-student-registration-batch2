@@ -64,7 +64,8 @@ function onQuantityChange(val: number) {
 
 <style scoped>
 .product-card {
-  background-color: #d9d9d9;
+  background-color: #D9D9D9;
+  border: 2px solid #f5f5f5;
   display: flex;
   flex-direction: row;
   padding: 20px;
@@ -137,4 +138,20 @@ function onQuantityChange(val: number) {
   justify-content: end;
 }
 
+@media  (max-width: 435px) {
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    }
+  .item-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0  0 12px 0;
+  }
+  .item-details {
+    line-height: 18px;  
+  }
+}
 </style>

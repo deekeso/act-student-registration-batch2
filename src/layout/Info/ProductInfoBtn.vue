@@ -18,7 +18,6 @@ const props = defineProps<{
   quantity: number
 }>()
 
-const emit = defineEmits(['open-dialog'])
 const authStore = useAuthStore()
 const cartStore = useCartStore()
 const router = useRouter()
@@ -30,8 +29,7 @@ function handleAddToCart() {
     cartStore.addToCart(props.product, props.quantity)
     ElMessage.success('Item added to cart successfully!')
   } else {
-    emit('open-dialog')  // properly emits to parent
-    console.log('User not logged in, opening login dialog.');
+    ElMessage.info('Please Login or Sign up')
   }
 }
 
@@ -40,7 +38,7 @@ function handleBuyNow() {
     checkoutStore.addItemToCheckout(props.product, props.quantity)
     router.push('/product/checkout')
   } else {
-    emit('open-dialog')
+    ElMessage.info('Please Login or Sign up')
   }
 }
 </script>

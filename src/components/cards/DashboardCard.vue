@@ -37,8 +37,10 @@ function handleCardClick() {
 
 <style scoped>
 .el-card {
-  border-radius: 10px;
   height: 100%;
+  background-color: #F5F5F5;
+  border: 2px solid #D9D9D9;
+  border-radius: 10px;
 }
 :deep(.el-card__footer) {
   display: flex;

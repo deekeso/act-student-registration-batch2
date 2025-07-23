@@ -1,14 +1,12 @@
 <template>
   <header>
     <NavigationBar
-@open-dialog="() => { console.log('Dialog should open!'); loginDialogVisible = true }"
+      @open-dialog="() => { console.log('Dialog should open!'); loginDialogVisible = true }"
       @open-register-dialog="registerDialogVisible = true"
     />
   </header>
   <main>
-    <div @open-dialog="loginDialogVisible = true">
-      <slot />
-    </div>  
+    <slot />
   </main>
   <footer></footer>
   <UserLogin :visible="loginDialogVisible" @update:visible="loginDialogVisible = $event" />

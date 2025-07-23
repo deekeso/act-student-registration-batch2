@@ -44,8 +44,7 @@ const handleNext = () => {
 
 <style scoped>
 .carousel-banner {
-  position: absolute;
-  width: 998px;
+  position: relative;
 }
 
 .carousel-image {
@@ -78,6 +77,6 @@ const handleNext = () => {
 }
 
 .el-carousel {
-  border-radius: 15px;
+  /* border-radius: 15px; */
 }
 </style>

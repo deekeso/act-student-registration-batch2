@@ -5,22 +5,30 @@
         <div class="banner">
           <TheBanner />
         </div>
-        <div class="header">
-          <TextStyle variant="section-header" color="">Just For You</TextStyle>
-        </div>
-        <div class="dashboard-card">
-          <el-row :gutter="0">
-            <el-col :span="7" v-for="product in products.slice(0, 6)" :key="product.id">
+        <div class="dashboard-content">
+          <div class="header">
+            <TextStyle variant="section-header" color="">Just For You</TextStyle>
+          </div>
+          <div class="dashboard-card">
+            <div class="card-grid">
               <DashboardCard
-                :id="product.id!"
+                v-for="product in products.slice(0, visibleCount)"
+                :key="product.id"
+                :id="product.id"
                 :image="product.image || ''"
                 :name="product.name || ''"
                 :price="product.price ?? 0"
                 :oldPrice="product.oldPrice"
                 :rating="product.rating ?? 0"
               />
-            </el-col>
-          </el-row>
+            </div>
+
+            <div v-if="products.length > 15" style="text-align: center; margin-top: 20px;">
+              <el-button @click="toggleVisible" >
+                {{ visibleCount === 10 ? 'Show More' : 'Show Less' }}
+              </el-button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -28,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { useProductsStore } from '@/stores/products'
 import { products as productsData } from '@/constants'
 import TheBanner from '@/layout/Dashboard/TheBanner.vue'
@@ -46,37 +54,72 @@ onMounted(() => {
 })
 
 const products = computed(() => productsStore.products)
+const visibleCount = ref(10)
+
+const toggleVisible = () => {
+  visibleCount.value = visibleCount.value === 10 ? products.value.length : 10
+}
 </script>
 
 <style scoped>
 .dashboard-outer {
-  width: 100%;
-  display: flex;
+  align-items: center;
   justify-content: center;
+  display: flex;
 }
 
 .dashboard {
-  margin: 20px 0;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 1200px;
+    overflow: hidden;
+
+
 }
 
 .banner {
+}
+
+.dashboard-content {
+  padding : 0 2rem;
   display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
   align-items: center;
-  height: 344px;
+  justify-content: center;
 }
 
 .header {
-  margin: 20px 10px;
+  margin: 20px 0;
+  display: flex;
 }
 
 .dashboard-card {
-  margin-top: 0;
-  position: static;
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.el-button {
+  background-color: #1E90FF;
+  color: white;
+  border-radius: 10px;
+  width: 350px;
+  height: 50px;
+  margin-bottom: 20px;
+}
+
+@media  (max-width: 435px) {
+
+  .card-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  
+  
+}
+
 </style>
