@@ -1,5 +1,5 @@
 <template>
-  <el-button v-if="type === 'continue'" size="small" @click="goHome">Continue Shopping</el-button>
+  <el-button v-if="type === 'continue'" size="small" @click="goHome" class="continue-btn">Continue Shopping</el-button>
   <el-button v-else-if="type === 'checkout'" size="small" @click="handleCheckout"
     >Checkout</el-button
   >
@@ -78,5 +78,20 @@ function handleCheckoutSelect() {
 .el-button, .el-button.is-round {
   width: 100%;
   margin-top: 10px;
+}
+
+.continue-btn{
+  background-color: #1E90FF;
+  color: white;
+  border-radius: 10px;
+  width: 350px;
+  height: 50px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 375px) {
+  .continue-btn {
+    width: 250px;
+  }
 }
 </style>

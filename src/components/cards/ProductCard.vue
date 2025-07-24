@@ -65,7 +65,11 @@ function onQuantityChange(val: number) {
 <style scoped>
 .product-card {
   background-color: #D9D9D9;
-  border: 2px solid #f5f5f5;
+  border: 1px solid #D9D9D9;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(46, 46, 46, 0.08);
+  padding: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   flex-direction: row;
   padding: 20px;
@@ -74,6 +78,12 @@ function onQuantityChange(val: number) {
   margin: 12px 0;
   width: 100%;
 }
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(46, 46, 46, 0.12);
+}
+
 /* Product details */
 .item-image {
   border-radius: 10px;
@@ -151,7 +161,7 @@ function onQuantityChange(val: number) {
     margin: 0  0 12px 0;
   }
   .item-details {
-    line-height: 18px;  
+    line-height: 18px;
   }
 }
 </style>

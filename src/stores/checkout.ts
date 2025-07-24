@@ -35,7 +35,7 @@ export const useCheckoutStore = defineStore('checkout', {
         const newOrder: Order = {
           orderId: Date.now(),
           items: [...this.checkoutItems],
-          status: 'pending',
+          status: 'Pending',
           timeline: [{ status: 'Order placed', date: new Date().toISOString() }],
         }
 

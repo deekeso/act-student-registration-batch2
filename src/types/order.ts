@@ -3,6 +3,6 @@ import type { CartItem } from './CartItem'
 export interface Order {
   orderId: number
   items: CartItem[]
-  status: 'pending' | 'completed'
+  status: 'Pending' | 'Completed'
   timeline: { status: string; date: string }[]
 }

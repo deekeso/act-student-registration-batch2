@@ -25,6 +25,7 @@ const props = defineProps({
         'listing-info-description',
         'default',
         'empty',
+        'quantity'
       ].includes(v),
   },
   tag: {
@@ -130,7 +131,12 @@ const computedStyle = computed(() => ({
 
 .text-style--listing-info-description {
   font-size: 16px;
-  color: #888;
+  color: #808080;
+}
+
+.text-style--quantity {
+  color: #808080;
+  font-size: 13px;
 }
 
 .text-style--empty {

@@ -3,7 +3,7 @@
     <div class="navbar">
       <h1 @click="home" class="navbar-title">LazPlus</h1>
       <SearchBar />
-      <el-button @click="productCart" link class="cart">
+      <el-button v-if="authStore.isLoggedIn" @click="productCart" link class="cart">
         <el-icon><ShoppingCart /></el-icon>
         <span class="button-text">Cart</span>
       </el-button>
@@ -23,7 +23,7 @@
         <el-icon><Edit /></el-icon>
         <span class="button-text">Sign up</span>
       </el-button>
-      <el-button v-if="authStore.isLoggedIn" link @click="authStore.userLogout">
+      <el-button v-if="authStore.isLoggedIn" link @click="logout">
         <el-icon><SwitchButton /></el-icon>
         <span class="button-text">Logout</span>
       </el-button>
@@ -36,10 +36,15 @@ import { useRouter } from 'vue-router'
 import SearchBar from './SearchBar.vue'
 import { useAuthStore } from '@/stores/userAuth'
 import { Document, Edit, Lock, ShoppingCart, SwitchButton, User } from '@element-plus/icons-vue'
+import { computed, onMounted } from 'vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
-const currentUser = localStorage.getItem('currentUser')
+const currentUser = computed(() => authStore.username)
+
+onMounted(() => {
+  authStore.loadUserInfo()
+})
 
 function home() {
   router.push('/home')
@@ -55,6 +60,11 @@ function productOrdered() {
 
 function userProfile() {
   router.push('/profile')
+}
+
+function logout() {
+  authStore.userLogout()
+  router.push('/home')
 }
 </script>
 
@@ -132,7 +142,7 @@ function userProfile() {
 
 @media (max-width: 575px) {
   .navbar {
-    gap: 1rem; 
+    gap: 1rem;
     padding: 16px;
   }
 
@@ -150,7 +160,7 @@ function userProfile() {
   }
 
   .el-button .el-icon {
-    font-size: 20px; 
+    font-size: 20px;
   }
 
   /* Disable hover effect on smaller screens */

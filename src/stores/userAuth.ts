@@ -7,6 +7,7 @@ import {
 } from '@/composables/userValidation'
 import type { User } from '@/types/user'
 import { useCartStore } from './cart'
+import { useOrdersStore } from './orders'
 
 interface LoginState {
   email: string
@@ -22,7 +23,8 @@ export const useAuthStore = defineStore('auth', {
       username: '',
       password: '',
       userInfo: {} as User | null,
-    }) as LoginState,
+      isLoggedIn: !!localStorage.getItem('isLoggedIn'),
+    }) as LoginState & { isLoggedIn: boolean },
 
   actions: {
     userLogin(username: string, password: string) {
@@ -46,10 +48,15 @@ export const useAuthStore = defineStore('auth', {
         this.username = username
         this.password = password
         this.email = user.email
+        this.isLoggedIn = true
 
         // load cart for the user
         const cartStore = useCartStore()
         cartStore.loadFromCartUser()
+
+        // load orders for the user
+        const ordersStore = useOrdersStore()
+        ordersStore.loadFromUserOrders()
 
         return { success: true, message: 'Login successful', username }
       } else {
@@ -110,6 +117,9 @@ export const useAuthStore = defineStore('auth', {
       localStorage.removeItem('currentUser')
       localStorage.removeItem('isLoggedIn')
 
+      const ordersStore = useOrdersStore()
+      ordersStore.clearOrderOnLogout()
+
       const cartStore = useCartStore()
       cartStore.clearCartOnLogout()
 
@@ -117,13 +127,24 @@ export const useAuthStore = defineStore('auth', {
       this.email = ''
       this.username = ''
       this.password = ''
+      this.isLoggedIn = false
       return { success: true, message: 'Logged out' }
     },
 
     loadUserInfo() {
       const currentUser = localStorage.getItem('currentUser')
       const users = JSON.parse(localStorage.getItem('Users') || '[]')
-      this.userInfo = users.find((u: User) => u.username === currentUser) || null
+      const user = users.find((u: User) => u.username === currentUser) || null
+      this.userInfo = user
+      if (user) {
+        this.username = user.username
+        this.email = user.email
+        this.password = ''
+      } else {
+        this.username = ''
+        this.email = ''
+        this.password = ''
+      }
     },
 
     userUpdateInfo(data: Partial<User>) {
@@ -171,9 +192,6 @@ export const useAuthStore = defineStore('auth', {
         validateUsernameField(state.username).valid &&
         validatePasswordField(state.password).valid
       )
-    },
-    isLoggedIn: () => {
-      return !!localStorage.getItem('isLoggedIn')
     },
   },
 })

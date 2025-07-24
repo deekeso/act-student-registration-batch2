@@ -1,8 +1,98 @@
 <template>
-  <el-drawer :model-value="visible" @close="onClose" title="Personal Information" size="30%">
+  <el-drawer :model-value="visible" @close="onClose" title="Personal Information" size="100%" v-if="isMobile">
     <el-form label-position="top" @submit.prevent="onSubmit" ref="userFormRef"
-  :model="form"
-  :rules="userFormRules">
+      :model="form"
+      :rules="userFormRules"
+    >
+      <div class="user-form">
+        <div class="name">
+          <h3>Account Information</h3>
+          <el-form-item label="Username" prop="username">
+            <el-input v-model="form.username" style="width: 100%" readonly />
+          </el-form-item>
+          <el-form-item label="Email" prop="email">
+            <el-input v-model="form.email" style="width: 100%" readonly />
+          </el-form-item>
+          <el-form-item label="Contact Number" prop="contactNumber">
+            <el-input
+              v-model="form.contactNumber"
+              @keypress="numberOnly"
+              maxlength="10"
+              style="width: 100%"
+              placeholder="9123456789"
+            />
+          </el-form-item>
+        </div>
+        <div class="personal-info">
+          <h3>Personal Information</h3>
+          <h3>Name</h3>
+          <el-form-item label="Last Name" prop="lastName">
+            <el-input v-model="form.lastName" @keypress="lettersOnly" maxlength="30" style="width: 100%"  @input="form.lastName = form.lastName.toUpperCase()"/>
+          </el-form-item>
+          <el-form-item label="First Name" prop="firstName">
+            <el-input v-model="form.firstName" @keypress="lettersOnly" maxlength="30" style="width: 100%" @input="form.firstName = form.firstName.toUpperCase()" />
+          </el-form-item>
+          <el-form-item label="Middle Name" prop="middleName">
+            <el-input v-model="form.middleName" @keypress="lettersOnly" maxlength="30" style="width: 100%" @input="form.middleName = form.middleName.toUpperCase()" />
+          </el-form-item>
+        </div>
+        <div class="birthday">
+          <h3>Birthday</h3>
+          <el-form-item label="Birthday" prop="birthDate">
+            <el-date-picker
+              v-model="form.birthDate"
+              type="date"
+              style="width: 100%"
+              :disabled-date="disabledDate"
+              :default-value="defaultBirthdayView"
+              format="YYYY-MM-DD"
+              value-format="YYYY-MM-DD"
+              @keydown.prevent
+            />
+          </el-form-item>
+          <el-form-item label="Age">
+            <el-input
+              v-model="form.age"
+              id="age"
+              type="number"
+              style="width: 100%"
+              placeholder=""
+              readonly
+            />
+          </el-form-item>
+        </div>
+
+        <div class="address">
+          <h3>Address</h3>
+          <el-form-item label="Blk./Lot/No./Street" prop="street">
+            <el-input v-model="form.street" @keypress="lettersNumbersOnly" maxlength="50" style="width: 100%" @input="form.street = form.street.toUpperCase()"/>
+          </el-form-item>
+          <el-form-item label="Barangay" prop="barangay">
+            <el-input v-model="form.barangay" @keypress="lettersNumbersOnly" maxlength="50" style="width: 100%" @input="form.barangay = form.barangay.toUpperCase()" />
+          </el-form-item>
+          <el-form-item label="City" prop="city">
+            <el-input v-model="form.city" @keypress="lettersOnly" maxlength="50" style="width: 100%" @input="form.city = form.city.toUpperCase()" />
+          </el-form-item>
+          <el-form-item label="Province" prop="province">
+            <el-input v-model="form.province" @keypress="lettersOnly" maxlength="50" style="width: 100%" @input="form.province = form.province.toUpperCase()" />
+          </el-form-item>
+          <el-form-item label="Zip Code" prop="zipCode">
+            <el-input v-model="form.zipCode" @keypress="numberOnly" maxlength="4" style="width: 100%" />
+          </el-form-item>
+          <el-form-item label="Landmark" prop="landmark">
+            <el-input v-model="form.landmark" @keypress="lettersNumbersOnly" maxlength="50" style="width: 100%" @input="form.landmark = form.landmark.toUpperCase()" />
+          </el-form-item>
+        </div>
+        <el-button type="primary" @click="onSubmit">Submit</el-button>
+      </div>
+    </el-form>
+  </el-drawer>
+
+  <el-drawer :model-value="visible" @close="onClose" title="Personal Information" size="30%" v-else>
+    <el-form label-position="top" @submit.prevent="onSubmit" ref="userFormRef"
+      :model="form"
+      :rules="userFormRules"
+    >
       <div class="user-form">
         <div class="name">
           <h3>Account Information</h3>
@@ -90,7 +180,7 @@
 
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/userAuth';
-import { reactive, ref, watch } from 'vue'
+import { onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { userFormRules } from '@/composables/formValidation';
 import {
   numberOnly,
@@ -140,7 +230,7 @@ watch(
         form.lastName = user.name?.lastName || ''
         form.firstName = user.name?.firstName || ''
         form.middleName = user.name?.middleName || ''
-        form.birthDate = user.birthDate || '' 
+        form.birthDate = user.birthDate || ''
         form.age = user.age || 0
         form.street = user.address?.street || ''
         form.barangay = user.address?.barangay || ''
@@ -196,6 +286,21 @@ function onClose() {
   userFormRef.value.resetFields();
   emit('close');
 }
+
+const isMobile = ref(window.innerWidth <= 1100)
+
+function updateIsMobile() {
+  isMobile.value = window.innerWidth <= 1100
+}
+
+onMounted(() => {
+  window.addEventListener('resize', updateIsMobile)
+  updateIsMobile()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateIsMobile)
+})
 </script>
 
 <style scoped>

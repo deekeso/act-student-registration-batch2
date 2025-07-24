@@ -4,7 +4,6 @@
     @update:model-value="$emit('update:visible', $event)"
     title="Login"
     width="500"
-    :before-close="handleClose"
   >
     <el-form label-position="top">
       <el-form-item label="Username" prop="username" :error="usernameError">
@@ -38,7 +37,7 @@
 import { validatePasswordField, validateUsernameField } from '@/composables/userValidation'
 import { useAuthStore } from '@/stores/userAuth'
 import { Lock, User } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
 
 defineProps<{ visible: boolean }>()
@@ -69,18 +68,6 @@ const handleLogin = () => {
       ElMessage.error(result.message)
     }
   }
-}
-
-// disabled button
-
-const handleClose = (done: () => void) => {
-  ElMessageBox.confirm('Are you sure to close this dialog?')
-    .then(() => {
-      done()
-    })
-    .catch(() => {
-      // catch error
-    })
 }
 </script>
 

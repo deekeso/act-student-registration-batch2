@@ -1,57 +1,64 @@
 <template>
   <MainLayout>
     <div class="cart-container">
-      <TextStyle variant="section-header">Shopping Cart</TextStyle>
+      <div class="checkItems">
+        <el-empty v-if="!cartItems.length" description="No cart items">
+          <ProductCartBtn type="continue"/>
+        </el-empty>
+        <el-checkbox
+          v-model="checkAll"
+          :indeterminate="isIndeterminate"
+          @change="handleCheckAllChange"
+          v-if="cartItems.length"
+        >
+          Check All
+        </el-checkbox>
+        <div class="scrollable-list">
+          <ul>
+            <el-checkbox-group v-model="selectedIds">
+              <li v-for="item in cartItems" :key="item.product.id">
+                <el-checkbox :value="item.product.id" size="large">
+                  {{ item.product.name }}
+                </el-checkbox>
 
-      <el-empty v-if="!cartItems.length" description="No cart items">
-        <ProductCartBtn type="continue" />
-      </el-empty>
+                <!-- product.name, product.description, product.price, product.oldPrice  -->
+                <ProductCard
+                  :product="item.product"
+                  :quantity="item.quantity"
+                  :show-quantity="true"
+                  @update:quantity="(q: number) => updateQuantity(item.product.id, q)"
+                >
+                  <template #actions="{ product }">
+                    <ProductCartBtn type="remove" :product-id="product.id" />
+                  </template>
+                </ProductCard>
+              </li>
+            </el-checkbox-group>
+          </ul>
+        </div>
+        <ProductCartBtn type="checkoutSelect" :selected-items="selectedItems" v-if="cartItems.length > 3" />
+      </div>
 
-      <el-checkbox
-        v-model="checkAll"
-        :indeterminate="isIndeterminate"
-        @change="handleCheckAllChange"
-        v-if="cartItems.length"
-      >
-        Check All
-      </el-checkbox>
-      <ul>
-        <el-checkbox-group v-model="selectedIds">
-          <li v-for="item in cartItems" :key="item.product.id">
-            <el-checkbox :value="item.product.id" size="large">
-              {{ item.product.name }}
-            </el-checkbox>
-            <!-- product.name, product.description, product.price, product.oldPrice  -->
-            <ProductCard
-              :product="item.product"
-              :quantity="item.quantity"
-              :show-quantity="true"
-              @update:quantity="(q: number) => updateQuantity(item.product.id, q)"
-            >
-              <template #actions="{ product }">
-                <ProductCartBtn type="remove" :product-id="product.id" />
-              </template>
-            </ProductCard>
-          </li>
-        </el-checkbox-group>
-      </ul>
 
-      <!-- To checkout summary -->
-       <div class="to-checkout" v-if="selectedIds.length > 0">
-          <TextStyle variant="section-header">Summary</TextStyle>
-          <div>
-            <span>Items:</span>
-            <div v-for="item in selectedItems" :key="item.product.id">
-              <span>{{ item.product.name }} x {{ item.quantity }}</span>
-              <span>₱ {{ cartStore.cartTotalPerItem(item.product.id) }}</span>
-            </div>
+        <!-- To checkout summary -->
+      <div class="to-checkout" v-if="selectedIds.length > 0 && cartItems.length > 0">
+        <TextStyle variant="section-header">Summary</TextStyle>
+        <div class="items">
+          <span>Items:</span>
+          <div v-for="item in selectedItems" :key="item.product.id" class="product-summary">
             <div>
-              <span>Total:</span>
-            <span> ₱ {{ selectedItemsTotal }}</span>
+              <TextStyle variant="listing-info-description">{{ truncateText (item.product.name!, 15) }}</TextStyle>
+              <TextStyle variant="quantity">x {{ item.quantity }}</TextStyle>
             </div>
-            <ProductCartBtn type="checkoutSelect" :selected-items="selectedItems" />
+            <span>₱ {{ cartStore.cartTotalPerItem(item.product.id) }}</span>
           </div>
-       </div>
+          <div class="total">
+            <span>Total:</span>
+            <span> ₱ {{ selectedItemsTotal }}</span>
+          </div>
+          <ProductCartBtn type="checkoutSelect" :selected-items="selectedItems" />
+        </div>
+      </div>
     </div>
   </MainLayout>
 </template>
@@ -63,6 +70,7 @@ import TextStyle from '@/components/TextStyle.vue'
 import ProductCartBtn from '@/layout/Cart/ProductCartBtn.vue'
 import MainLayout from '../MainLayout.vue'
 import ProductCard from '@/components/cards/ProductCard.vue'
+import { truncateText } from '@/composables/text'
 
 //cart
 const cartStore = useCartStore()
@@ -97,19 +105,131 @@ function updateQuantity(productId: number, quantity: number) {
 
 <style scoped>
 .cart-container {
-  width: 80vw;
-  min-height: 100vh;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  gap: 24px;
+}
+
+.checkItems {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+  padding: 24px;
+  background-color: #F5F5F5;
+  border: 1px solid #D9D9D9;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(46, 46, 46, 0.05);
+  height: auto;
+  min-height: 60vh;
+}
+
+.scrollable-list {
+  max-height: 65vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #D9D9D9 #F5F5F5;
+}
+
+.scrollable-list::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollable-list::-webkit-scrollbar-track {
+  background: #F5F5F5;
+}
+.scrollable-list::-webkit-scrollbar-thumb {
+  background: #D9D9D9;
+  border-radius: 4px;
+}
+.scrollable-list::-webkit-scrollbar-thumb:hover {
+  background: #2E2E2E;
+}
+
+.el-checkbox {
+  display: flex;
+  align-items: center;
+  background-color: #F5F5F5;
+  border: 1px solid #D9D9D9;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 8px 0;
+  color: #1A1A1A;
+  transition: all 0.3s ease;
+}
+
+.el-checkbox:hover {
+  background-color: #EDEDED;
+  box-shadow: 0 2px 8px rgba(46, 46, 46, 0.1);
+}
+
+.el-checkbox.el-checkbox--large {
+  width: 100%;
+  background-color: #F5F5F5;
+  border: 1px solid #D9D9D9;
+  padding: 12px;
+  border-radius: 8px;
+  color: #1A1A1A;
+  font-weight: 500;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+li {
+  margin-bottom: 16px;
+  overflow-wrap: break-word;
 }
 
 .to-checkout {
-  background-color: #d9d9d9;
-  border-radius: 20px;
-  margin: 20px;
-  padding: 20px;
-  max-width: fit-content;
+  flex: 1;
+  background-color: #D9D9D9;
+  border-radius: 12px;
+  margin: 16px 0;
+  padding: 24px;
   height: fit-content;
+  box-shadow: 0 4px 12px rgba(46, 46, 46, 0.05);
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.product-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #2e2e2e52;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .cart-container {
+    flex-direction: column;
+    padding: 16px;
+  }
+  .checkItems {
+    padding: 16px;
+  }
+  .to-checkout {
+    margin: 16px 0;
+  }
 }
 </style>

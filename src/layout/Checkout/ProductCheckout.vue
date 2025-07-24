@@ -1,84 +1,99 @@
 <template>
   <MainLayout>
-    <div class="parent-checkout">
-      <TextStyle variant="section-header" class="checkOutHeader">Checkout</TextStyle>
-      <div class="checkout">
-        <div class="checkout-container">
-          <div class="user-container">
-            <!-- Personal Information -->
-            <div class="user-info"
-              v-if="
-                authStore.userInfo?.name?.lastName &&
-                authStore.userInfo?.name?.firstName &&
-                authStore.userInfo?.address?.street &&
-                authStore.userInfo?.address?.city &&
-                authStore.userInfo?.address?.zipCode &&
-                authStore.userInfo?.email &&
-                authStore.userInfo?.contactNumber
-              "
-            >
-              <div class="user-info-name">
-                <p>Name:</p>
-                <span>
-                {{ authStore.userInfo?.name?.lastName}}, {{ authStore.userInfo?.name?.firstName }} {{ authStore.userInfo?.name?.middleName }}
-                </span>
-              </div>
-              <div class="user-info-address">
-                <p>Address:</p>
-                <span>{{ authStore.userInfo?.address?.street }}, {{ authStore.userInfo?.address?.barangay }}, {{ authStore.userInfo?.address?.city }}, {{ authStore.userInfo?.address?.zipCode }}, {{ authStore.userInfo?.address?.landmark }} </span>
-              </div>
-              <div class="user-info-email"><p>Email:</p><span>{{ authStore.userInfo?.email }}</span></div>
-              <div class="user-info-contact"><p>Contact Number:</p><span>{{ authStore.userInfo?.contactNumber }}</span></div>
+    <div class="cart-container">
+      <div class="checkItems">
+        <div class="user-container">
+          <!-- Personal Information -->
+          <div class="user-info"
+            v-if="
+              authStore.userInfo?.name?.lastName &&
+              authStore.userInfo?.name?.firstName &&
+              authStore.userInfo?.address?.street &&
+              authStore.userInfo?.address?.city &&
+              authStore.userInfo?.address?.zipCode &&
+              authStore.userInfo?.email &&
+              authStore.userInfo?.contactNumber
+            "
+          >
+            <div class="user-info-name">
+              <TextStyle variant="listing-info-description">Name:</TextStyle>
+              <TextStyle variant="listing-info-description">
+                {{ authStore.userInfo?.name?.lastName }}, {{ authStore.userInfo?.name?.firstName }} {{ authStore.userInfo?.name?.middleName }}
+              </TextStyle>
             </div>
-
-            <!-- User Information Form -->
-            <div v-else>
-              <p>Please fill in your personal information.</p>
+            <div class="user-info-address">
+              <TextStyle variant="listing-info-description">Address:</TextStyle>
+              <TextStyle variant="listing-info-description">
+                {{ authStore.userInfo?.address?.street }}, {{ authStore.userInfo?.address?.barangay }}, {{ authStore.userInfo?.address?.city }}, {{ authStore.userInfo?.address?.zipCode }}, {{ authStore.userInfo?.address?.landmark }}
+              </TextStyle>
             </div>
-            <el-icon @click="openDrawer" class="editpen-icon"><EditPen /></el-icon>
+            <div class="user-info-email">
+              <TextStyle variant="listing-info-description">Email:</TextStyle>
+              <TextStyle variant="listing-info-description">{{ authStore.userInfo?.email }}</TextStyle>
+            </div>
+            <div class="user-info-contact">
+              <TextStyle variant="listing-info-description">Contact Number:</TextStyle>
+              <TextStyle variant="listing-info-description">{{ authStore.userInfo?.contactNumber }}</TextStyle>
+            </div>
           </div>
+          <!-- User Information Form -->
+          <div v-else>
+            <TextStyle variant="listing-info-description">Please fill in your personal information.</TextStyle>
+          </div>
+          <el-icon @click="openDrawer" class="editpen-icon"><EditPen /></el-icon>
+        </div>
 
-          <!-- checkout item container -->
-          <div class="checkout-content" v-for="item in checkoutItems" :key="item.product.id">
-            <ProductCard
-              :product="item.product"
-              :quantity="item.quantity"
-              variant="checkout"
-              :show-quantity="true"
-              @update:quantity="(q) => updateQuantity(item.product.id, q)"
-            >
-              <template #actions="{ product }">
-                <ProductCheckoutBtn type="remove" :product-id="product.id" />
-              </template>
-            </ProductCard>
+        <!-- Checkout item container -->
+        <div class="checkout-content">
+          <div class="scrollable-list">
+            <ul>
+              <li v-for="item in checkoutItems" :key="item.product.id">
+                <ProductCard
+                  :product="item.product"
+                  :quantity="item.quantity"
+                  variant="checkout"
+                  :show-quantity="true"
+                  @update:quantity="(q) => updateQuantity(item.product.id, q)"
+                >
+                  <template #actions="{ product }">
+                    <ProductCheckoutBtn type="remove" :product-id="product.id" />
+                  </template>
+                </ProductCard>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
 
       <!-- Summary -->
-      <div class="summary">
+      <div class="to-checkout" v-if="checkoutItems.length > 0">
         <TextStyle variant="section-header">Summary</TextStyle>
-        <div>
-          <div>
+        <div class="items">
+          <div class="items-header">
             <span>Items:</span>
-            <div v-for="item in checkoutItems" :key="item.product.id">
-              <span>{{ item.product.name }} x{{ item.quantity }}</span>
-              <span>₱ {{ checkoutStore.totalPerItem(item.product.id) }}</span>
+          </div>
+          <div v-for="item in checkoutItems" :key="item.product.id" class="product-summary">
+            <div>
+              <TextStyle variant="listing-info-description">{{ truncateText(item.product.name ?? '', 15) }}</TextStyle>
+              <TextStyle variant="quantity">x {{ item.quantity }}</TextStyle>
+            </div>
+            <TextStyle variant="listing-info-price">₱ {{ checkoutStore.totalPerItem(item.product.id) }}</TextStyle>
+          </div>
+          <div class="all">
+            <div class="subtotal">
+              <span>Subtotal:</span>
+              <TextStyle variant="listing-info-price">₱ {{ checkoutStore.subTotal }}</TextStyle>
+            </div>
+            <div class="shipping">
+              <span>Shipping Fee:</span>
+              <TextStyle variant="listing-info-price">₱ 40</TextStyle>
+            </div>
+            <div class="total">
+              <span>Total:</span>
+              <TextStyle variant="listing-info-price">₱ {{ checkoutStore.allTotal }}</TextStyle>
             </div>
           </div>
-          <div>
-            <span>Subtotal:</span>
-            <span> ₱ {{ checkoutStore.subTotal }}</span>
-          </div>
-          <div>
-            <span>Shipping Fee:</span>
-            <span> ₱40</span>
-          </div>
-          <div>
-            <span>Total:</span>
-            <span> ₱ {{ checkoutStore.allTotal }}</span>
-          </div>
-          <div v-if="authStore.userInfo?.address">
+          <div v-if="authStore.userInfo?.address" class="button-group">
             <ProductCheckoutBtn type="payment" />
             <ProductCheckoutBtn type="place-order" />
           </div>
@@ -99,6 +114,7 @@ import { EditPen } from '@element-plus/icons-vue'
 import InfoDrawer from '../User/InfoDrawer.vue'
 import { useAuthStore } from '@/stores/userAuth'
 import ProductCard from '@/components/cards/ProductCard.vue'
+import { truncateText } from '@/composables/text'
 
 const authStore = useAuthStore()
 authStore.loadUserInfo()
@@ -110,7 +126,6 @@ const checkoutItems = computed(() => checkoutStore.checkoutItems)
 function updateQuantity(productId: number, quantity: number) {
   checkoutStore.updateQuantity(productId, quantity)
 }
-
 
 onMounted(() => {
   checkoutStore.loadCheckout()
@@ -126,44 +141,46 @@ function openDrawer() {
 </script>
 
 <style scoped>
-.parent-checkout {
-  padding: 2rem;
+.cart-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
   display: flex;
   flex-direction: row;
-  width: 100vw;
-  justify-content: center;
-}
-.checkout {
-  display: flex;
-  flex-direction: row;
-  padding: 2rem;
+  gap: 24px;
 }
 
-/* header */
-.checkOutHeader {
+.checkItems {
+  flex: 2;
   display: flex;
-}
-/* personal info */
-.editpen-icon {
-  cursor: pointer;
-  color: gray;
-  font-size: x-large;
+  flex-direction: column;
+  margin-top: 16px;
+  padding: 24px;
+  background-color: #F5F5F5;
+  border: 1px solid #D9D9D9;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(46, 46, 46, 0.05);
+  height: auto;
+  min-height: 60vh;
 }
 
-/* user */
 .user-container {
-  background-color: #d9d9d9;
+  background-color: #f5f5f5;
+  border: 1px solid #D9D9D9;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(46, 46, 46, 0.05);
   display: flex;
   justify-content: space-between;
-  margin: 10px 0;
-  border-radius: 20px;
-  padding: 20px;
+  align-items: flex-start;
 }
 
 .user-info {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .user-info-name,
@@ -172,15 +189,117 @@ function openDrawer() {
 .user-info-contact {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 8px;
 }
 
-/* item summary */
-.summary {
-  background-color: #d9d9d9;
-  border-radius: 20px;
-  margin: 20px;
-  padding: 20px;
-  max-width: fit-content;
+.editpen-icon {
+  cursor: pointer;
+  color: #1E90FF;
+  font-size: 20px;
+  transition: color 0.3s ease;
+}
+
+.editpen-icon:hover {
+  color: #D9D9D9;
+}
+
+.scrollable-list {
+  max-height: 65vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #D9D9D9 #F5F5F5;
+}
+
+.scrollable-list::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollable-list::-webkit-scrollbar-track {
+  background: #F5F5F5;
+}
+.scrollable-list::-webkit-scrollbar-thumb {
+  background: #D9D9D9;
+  border-radius: 4px;
+}
+.scrollable-list::-webkit-scrollbar-thumb:hover {
+  background: #2E2E2E;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+li {
+  margin-bottom: 16px;
+  overflow-wrap: break-word;
+}
+
+.to-checkout {
+  flex: 1;
+  background-color: #D9D9D9;
+  border-radius: 12px;
+  margin: 16px 0;
+  padding: 24px;
+  height: fit-content;
+  box-shadow: 0 4px 12px rgba(46, 46, 46, 0.05);
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.items-header {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 12px;
+}
+
+.product-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.all {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-top: 16px;
+  padding-top: 12px;
+  font-weight: 600;
+}
+
+.subtotal,
+.shipping,
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.total {
+  border-top: 1px solid #2E2E2E; /* Solid separator for total */
+  padding-top: 12px;
+  font-weight: 600;
+}
+
+.button-group {
+  display: flex;
+  margin-top: 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .cart-container {
+    flex-direction: column;
+    padding: 16px;
+  }
 }
 </style>
