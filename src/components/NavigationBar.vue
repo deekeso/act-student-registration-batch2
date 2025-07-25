@@ -7,47 +7,51 @@
         <el-icon><ShoppingCart /></el-icon>
         <span class="button-text">Cart</span>
       </el-button>
-      <el-button v-if="authStore.isLoggedIn" @click="productOrdered" link>
+      <el-button v-if="authStore.isLoggedIn" @click="productOrdered" link class="order">
         <el-icon><Document /></el-icon>
         <span class="button-text">Order</span>
       </el-button>
-      <el-button v-if="authStore.isLoggedIn" @click="userProfile" link>
+      <el-button v-if="authStore.isLoggedIn" @click="userProfile" link class="user">
         <el-icon><User /></el-icon>
         <span class="button-text">{{ currentUser }}</span>
       </el-button>
-      <el-button v-if="!authStore.isLoggedIn" link @click="$emit('open-dialog')">
+      <el-button v-if="!authStore.isLoggedIn" link @click="loginDialogVisible = true" class="login">
         <el-icon><Lock /></el-icon>
         <span class="button-text">Login</span>
       </el-button>
-      <el-button v-if="!authStore.isLoggedIn" link @click="$emit('open-register-dialog')">
+      <el-button v-if="!authStore.isLoggedIn" link @click="$emit('open-register-dialog')" class="signup">
         <el-icon><Edit /></el-icon>
         <span class="button-text">Sign up</span>
       </el-button>
-      <el-button v-if="authStore.isLoggedIn" link @click="logout">
+      <el-button v-if="authStore.isLoggedIn" link @click="logout" class="logout">
         <el-icon><SwitchButton /></el-icon>
         <span class="button-text">Logout</span>
       </el-button>
     </div>
+    <UserLogin v-model:visible="loginDialogVisible" @login="handleLogin" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import SearchBar from './SearchBar.vue'
+import UserLogin from './dialog/UserLogin.vue'
 import { useAuthStore } from '@/stores/userAuth'
 import { Document, Edit, Lock, ShoppingCart, SwitchButton, User } from '@element-plus/icons-vue'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { ElLoading, ElMessage } from 'element-plus'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const currentUser = computed(() => authStore.username)
+const loginDialogVisible = ref(false)
 
 onMounted(() => {
   authStore.loadUserInfo()
 })
 
 function home() {
-  router.push('/home')
+  router.push('/')
 }
 
 function productCart() {
@@ -62,9 +66,36 @@ function userProfile() {
   router.push('/profile')
 }
 
-function logout() {
-  authStore.userLogout()
-  router.push('/home')
+async function handleLogin({ username, password }: { username: string, password: string }) {
+  const loadingInstance = ElLoading.service({ fullscreen: true, text: 'Logging in...' })
+  try {
+    const loginPromise = authStore.userLogin(username, password)
+    const timerPromise = new Promise(resolve => setTimeout(resolve, 1000))
+    const result = await loginPromise
+    await timerPromise
+
+    if (result.success) {
+      ElMessage.success(result.message)
+      loginDialogVisible.value = false
+      await authStore.loadUserInfo()
+    } else {
+      ElMessage.error(result.message)
+    }
+  } finally {
+    loadingInstance.close()
+  }
+}
+
+async function logout() {
+  const loadingInstance = ElLoading.service({ fullscreen: true, text: 'Logging out...' })
+  try {
+    await authStore.userLogout()
+    await authStore.loadUserInfo()
+    router.push('/')
+    await new Promise(resolve => setTimeout(resolve, 1000))
+  } finally {
+    loadingInstance.close()
+  }
 }
 </script>
 
@@ -103,13 +134,17 @@ function logout() {
 }
 
 /* Line hover effect for h1 and buttons */
-.navbar-title,
-:deep(.el-button) {
+.navbar-title, .cart, .order, .user, .login, .signup, .logout {
   transition: all 0.3s ease;
 }
 
 .navbar-title:hover::after,
-:deep(.el-button:hover)::after {
+.cart:hover::after,
+.order:hover::after,
+.user:hover::after,
+.login:hover::after,
+.signup:hover::after,
+.logout:hover::after  {
   content: '';
   position: absolute;
   bottom: -2px;
@@ -123,7 +158,12 @@ function logout() {
 }
 
 .navbar-title::after,
-:deep(.el-button)::after {
+.cart::after,
+.order::after,
+.user::after,
+.login::after,
+.signup::after,
+.logout::after {
   content: '';
   position: absolute;
   bottom: -2px;

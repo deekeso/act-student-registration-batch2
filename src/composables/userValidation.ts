@@ -80,3 +80,13 @@ export function validatePasswordField(password: string) {
   }
   return { valid: true, message: '' }
 }
+
+export function validateConfirmPasswordField(newPassword: string, confirmPassword: string) {
+  if (isEmpty(confirmPassword)) {
+    return { valid: false, message: 'Please confirm your password' }
+  }
+  if (newPassword !== confirmPassword) {
+    return { valid: false, message: 'Passwords do not match' }
+  }
+  return { valid: true, message: '' }
+}

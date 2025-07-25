@@ -4,6 +4,7 @@ import {
   validateEmailField,
   validateUsernameField,
   validatePasswordField,
+  validateConfirmPasswordField,
 } from '@/composables/userValidation'
 import type { User } from '@/types/user'
 import { useCartStore } from './cart'
@@ -100,8 +101,8 @@ export const useAuthStore = defineStore('auth', {
       // save credentials
       localStorage.setItem('Users', JSON.stringify(users))
       localStorage.setItem('lastUserId', String(newUserId))
-      localStorage.setItem('currentUser', username)
-      localStorage.setItem('isLoggedIn', 'true')
+      // localStorage.setItem('currentUser', username)
+      // localStorage.setItem('isLoggedIn', 'true')
 
       // update store
       this.email = email
@@ -116,6 +117,7 @@ export const useAuthStore = defineStore('auth', {
       // Remove session info from localStorage
       localStorage.removeItem('currentUser')
       localStorage.removeItem('isLoggedIn')
+      localStorage.removeItem('checkout')
 
       const ordersStore = useOrdersStore()
       ordersStore.clearOrderOnLogout()
@@ -171,13 +173,39 @@ export const useAuthStore = defineStore('auth', {
       return { success: false, message: 'User not found.' }
 
     },
-    //   if (!this.username) {
-    //     return { success: false, message: 'No user is currently logged in.' }
-    //   }
-    //   this.password = newPassword
-    //   this.saveCredentials()
-    //   return { success: true, message: 'Password updated successfully.' }
-    // },
+
+    resetPassword(username: string, email: string, newPassword: string, confirmPassword: string) {
+      // Validate fields
+      const usernameCheck = validateUsernameField(username)
+      if (!usernameCheck.valid) return { success: false, message: usernameCheck.message }
+
+      const emailCheck = validateEmailField(email)
+      if (!emailCheck.valid) return { success: false, message: emailCheck.message }
+
+      const passwordCheck = validatePasswordField(newPassword)
+      if (!passwordCheck.valid) return { success: false, message: passwordCheck.message }
+
+      const confirmPasswordCheck = validateConfirmPasswordField(newPassword, confirmPassword)
+      if (!confirmPasswordCheck.valid) return { success: false, message: confirmPasswordCheck.message }
+
+      // Find user
+      const users = JSON.parse(localStorage.getItem('Users') || '[]')
+      const userIndex = users.findIndex((u: User) => u.username === username && u.email === email)
+      if (userIndex === -1) {
+        return { success: false, message: 'User with provided username and email not found.' }
+      }
+
+      // Update password (hash it)
+      users[userIndex].password = CryptoJS.SHA256(newPassword).toString()
+      localStorage.setItem('Users', JSON.stringify(users))
+
+      // If the current user is resetting their own password, update store
+      if (localStorage.getItem('currentUser') === username) {
+        this.password = ''
+      }
+
+      return { success: true, message: 'Password reset successful.' }
+    },
   },
 
   getters: {

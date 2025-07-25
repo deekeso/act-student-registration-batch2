@@ -35,21 +35,20 @@
           />
         </div>
 
-        <div v-if="products.length > 15" style="text-align: center; margin-top: 20px;">
-          <el-button type="primary" @click="toggleVisible">
-            {{ visibleCount === 10 ? 'Show More' : 'Show Less' }}
+        <div v-if="products.length > defaultCount" style="text-align: center; margin-top: 20px;">
+          <el-button @click="toggleVisible">
+            {{ isShowingAll ? 'Show Less' : 'Show More' }}
           </el-button>
-            </div>
-          </div>
+        </div>
       </div>
     </div>
-    
+  </div>
   </MainLayout>
 </template>
 
 <script setup lang="ts">
 import { useProductsStore } from '@/stores/products'
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import MainLayout from '../MainLayout.vue'
 import ProductInfoBtn from './ProductInfoBtn.vue'
 import ProductCard from '@/components/cards/ProductCard.vue'
@@ -63,14 +62,44 @@ const props = defineProps<{ id: string | number }>()
 
 const product = computed(() => productsStore.products.find((p) => p.id === Number(props.id)))
 const products = computed(() => productsStore.products)
-const visibleCount = ref(10)
 
-const toggleVisible = () => {
-  visibleCount.value = visibleCount.value === 10 ? products.value.length : 10
+// Responsive default count
+function getVisibleCount() {
+  if (window.innerWidth <= 768) return 6
+  if (window.innerWidth <= 1024) return 8
+  return 10
 }
 
+const defaultCount = ref(getVisibleCount())
+const visibleCount = ref(getVisibleCount())
+
+// Track if all products are shown
+const isShowingAll = computed(() => visibleCount.value === products.value.length)
+
+function updateVisibleCount() {
+  const newDefaultCount = getVisibleCount()
+  defaultCount.value = newDefaultCount
+  // Adjust visibleCount if it's less than the new default or if not showing all
+  if (visibleCount.value < newDefaultCount && !isShowingAll.value) {
+    visibleCount.value = newDefaultCount
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('resize', updateVisibleCount)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateVisibleCount)
+})
+
+const toggleVisible = () => {
+  visibleCount.value = isShowingAll.value ? defaultCount.value : products.value.length
+}
+
+
 function handleNoProduct() {
-  router.push({ path: '/home' })
+  router.push({ path: '/' })
 }
 
 </script>
@@ -99,12 +128,6 @@ function handleNoProduct() {
 
 }
 
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-}
-
 .el-button {
   background-color: #1E90FF;
   color: white;
@@ -114,21 +137,39 @@ function handleNoProduct() {
   margin-bottom: 20px;
 }
 
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
 @media  (max-width: 435px) {
   .info-container {
     overflow: hidden;
     padding : 0 1rem;
   }
 
-  .card-grid {
-    grid-template-columns: repeat(1, 1fr);
-  }
-  
   .dashboard-card{
     overflow: hidden;
   }
   .el-button {
     width: 293px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .card-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 435px) {
+  .card-grid {
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 </style>

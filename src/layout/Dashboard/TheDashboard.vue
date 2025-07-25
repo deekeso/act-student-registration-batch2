@@ -20,12 +20,13 @@
                 :price="product.price ?? 0"
                 :oldPrice="product.oldPrice"
                 :rating="product.rating ?? 0"
+                :product="product"
               />
             </div>
 
-            <div v-if="products.length > 15" style="text-align: center; margin-top: 20px;">
-              <el-button @click="toggleVisible" >
-                {{ visibleCount === 10 ? 'Show More' : 'Show Less' }}
+            <div v-if="products.length > defaultCount" style="text-align: center; margin-top: 20px;">
+              <el-button @click="toggleVisible">
+                {{ isShowingAll ? 'Show Less' : 'Show More' }}
               </el-button>
             </div>
           </div>
@@ -36,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed, ref } from 'vue'
+import { onMounted, computed, ref, onBeforeUnmount } from 'vue'
 import { useProductsStore } from '@/stores/products'
 import { products as productsData } from '@/constants'
 import TheBanner from '@/layout/Dashboard/TheBanner.vue'
@@ -54,10 +55,38 @@ onMounted(() => {
 })
 
 const products = computed(() => productsStore.products)
-const visibleCount = ref(10)
+
+// Responsive default count
+function getVisibleCount() {
+  if (window.innerWidth <= 768) return 6
+  if (window.innerWidth <= 1024) return 8
+  return 10
+}
+const defaultCount = ref(getVisibleCount())
+const visibleCount = ref(getVisibleCount())
+
+// Track if all products are shown
+const isShowingAll = computed(() => visibleCount.value === products.value.length)
+
+function updateVisibleCount() {
+  const newDefaultCount = getVisibleCount()
+  defaultCount.value = newDefaultCount
+  // Adjust visibleCount if it's less than the new default or if not showing all
+  if (visibleCount.value < newDefaultCount && !isShowingAll.value) {
+    visibleCount.value = newDefaultCount
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('resize', updateVisibleCount)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateVisibleCount)
+})
 
 const toggleVisible = () => {
-  visibleCount.value = visibleCount.value === 10 ? products.value.length : 10
+  visibleCount.value = isShowingAll.value ? defaultCount.value : products.value.length
 }
 </script>
 
@@ -69,16 +98,11 @@ const toggleVisible = () => {
 }
 
 .dashboard {
-    overflow: hidden;
-
-
-}
-
-.banner {
+  overflow: hidden;
 }
 
 .dashboard-content {
-  padding : 0 2rem;
+  padding: 0 2rem;
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
@@ -98,12 +122,6 @@ const toggleVisible = () => {
   align-items: center;
 }
 
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-}
-
 .el-button {
   background-color: #1E90FF;
   color: white;
@@ -113,13 +131,25 @@ const toggleVisible = () => {
   margin-bottom: 20px;
 }
 
-@media  (max-width: 435px) {
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
 
+@media (max-width: 1024px) {
+  .card-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 435px) {
   .card-grid {
     grid-template-columns: repeat(1, 1fr);
   }
-  
-  
 }
-
 </style>

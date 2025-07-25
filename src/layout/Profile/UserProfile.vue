@@ -1,7 +1,6 @@
 <template>
   <MainLayout>
     <div class="user-profile">
-      <h2>User Profile</h2>
       <el-form label-position="top" @submit.prevent="onSubmit" ref="userFormRef"
         :model="form"
         :rules="userFormRules">
@@ -129,7 +128,6 @@ const form = reactive({
 useBirthdayAutoAge(form)
 const { disabledDate } = useBirthdayPicker()
 
-
 // Load user info on mount
 onMounted(() => {
   authStore.loadUserInfo()
@@ -194,15 +192,124 @@ async function onSubmit() {
 
 <style scoped>
 .user-profile {
-  padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  background-color: #F5F5F5;
   display: flex;
-  flex-direction: row;
-  width: 100vw;
-  justify-content: center;
+  flex-direction: column;
 }
+
 .user-form {
   display: flex;
   flex-direction: column;
-  padding: 2rem;
+  gap: 24px;
+  padding: 24px;
+  background-color: #D9D9D9;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(46, 46, 46, 0.05);
+}
+
+.name,
+.personal-info,
+.birthday,
+.address {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background-color: #F5F5F5;
+  border: 1px solid #D9D9D9;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(46, 46, 46, 0.08);
+}
+
+h3 {
+  color: #1A1A1A;
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0 0 12px 0;
+}
+
+:deep(.el-form-item__label) {
+  color: #1A1A1A;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+:deep(.el-input__wrapper) {
+  background-color: #FFFFFF;
+  border: 1px solid #D9D9D9;
+  border-radius: 8px;
+  padding: 8px;
+  transition: border-color 0.3s ease;
+}
+
+:deep(.el-input__wrapper:hover) {
+  border-color: #1E90FF;
+}
+
+:deep(.el-input__inner) {
+  color: #1A1A1A;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+:deep(.el-input__wrapper.is-disabled) {
+  background-color: #F5F5F5;
+  border-color: #D9D9D9;
+  opacity: 0.7;
+}
+
+:deep(.el-date-editor.el-input) {
+  width: 100%;
+}
+
+:deep(.el-date-editor .el-input__wrapper) {
+  background-color: #FFFFFF;
+  border: 1px solid #D9D9D9;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+:deep(.el-date-editor .el-input__wrapper:hover) {
+  border-color: #1E90FF;
+}
+
+:deep(.el-button) {
+  background-color: #1E90FF;
+  color: #FFFFFF;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  min-height: 44px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  align-self: flex-end;
+}
+
+:deep(.el-button:hover) {
+  background-color: #007BFF;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .user-profile {
+    padding: 16px;
+  }
+  .user-form {
+    padding: 16px;
+  }
+  .name,
+  .personal-info,
+  .birthday,
+  .address {
+    padding: 12px;
+  }
+  :deep(.el-button) {
+    width: 100%;
+    box-sizing: border-box;
+  }
 }
 </style>

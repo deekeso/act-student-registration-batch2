@@ -7,12 +7,13 @@ import ProductView from '@/views/ProductView.vue'
 import CartView from '@/views/CartView.vue'
 import CheckoutView from '@/views/CheckoutView.vue'
 import UserProfile from '@/layout/Profile/UserProfile.vue'
+import { useAuthStore } from '@/stores/userAuth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/home',
+      path: '/',
       name: 'home',
       component: HomeView,
     },
@@ -28,26 +29,50 @@ const router = createRouter({
       props: true,
     },
     {
+      // private
       path: '/product/cart',
       name: 'ProductCart',
       component: CartView,
     },
     {
+      // private
       path: '/product/checkout',
       name: 'ProductCheckout',
       component: CheckoutView,
     },
     {
+      // private
       path: '/product/ordered',
       name: 'ProductOrdered',
       component: ProductOrdered,
     },
     {
+      // private
       path: '/profile',
       name: 'UserProfile',
       component: UserProfile,
     }
   ],
+})
+
+router.beforeEach((to, from, next) => {
+
+  // private routes
+  const privateRoutes = [
+    'ProductCart',
+    'ProductCheckout',
+    'ProductOrdered',
+    'UserProfile'
+  ]
+
+  const authStore = useAuthStore()
+
+  // default page '/', 'home'
+  if (privateRoutes.includes(to.name as string) && !authStore.isLoggedIn) {
+    next({ name: 'home'})
+  } else {
+    next()
+  }
 })
 
 export default router

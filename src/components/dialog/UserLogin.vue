@@ -27,27 +27,37 @@
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button type="primary" @click="handleLogin"> Login </el-button>
+        <el-button v-if="!authStore.isLoggedIn" link @click="forgotPassword" class="password">
+          <el-icon><QuestionFilled /></el-icon>
+          <span class="button-text">Forgot Password</span>
+        </el-button>
+        <el-button @click="handleLogin" round type="primary"> Login </el-button>
       </div>
     </template>
   </el-dialog>
+  <UserPassword v-model:visible="forgotPasswordDialogVisible"/>
 </template>
 
 <script setup lang="ts">
 import { validatePasswordField, validateUsernameField } from '@/composables/userValidation'
 import { useAuthStore } from '@/stores/userAuth'
-import { Lock, User } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { Lock, QuestionFilled, User } from '@element-plus/icons-vue'
 import { ref } from 'vue'
+import UserPassword from './UserPassword.vue';
 
 defineProps<{ visible: boolean }>()
-defineEmits(['update:visible'])
+const emit = defineEmits(['update:visible', 'login'])
 
 const usernameError = ref('')
 const passwordError = ref('')
 
-// user store actions
 const authStore = useAuthStore()
+const forgotPasswordDialogVisible = ref(false)
+
+function forgotPassword() {
+   emit('update:visible', false)
+  forgotPasswordDialogVisible.value = true
+}
 
 const handleLogin = () => {
   const userNameCheck = validateUsernameField(authStore.username)
@@ -57,18 +67,14 @@ const handleLogin = () => {
   passwordError.value = passwordCheck.valid ? '' : passwordCheck.message
 
   if (userNameCheck.valid && passwordCheck.valid) {
-    const result = authStore.userLogin(authStore.username, authStore.password)
-    if (result.success) {
-      ElMessage.success(result.message)
-      authStore.username = ''
-      authStore.password = ''
-      usernameError.value = ''
-      passwordError.value = ''
-    } else {
-      ElMessage.error(result.message)
-    }
+    emit('login', { username: authStore.username, password: authStore.password })
   }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+</style>

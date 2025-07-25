@@ -4,6 +4,7 @@
       :src="product.image"
       :alt="product.name"
       :class="['item-image', { 'large-image': variant === 'info' }]"
+      style="width: 30%;"
     />
     <div class="item-details">
       <div class="product-title">

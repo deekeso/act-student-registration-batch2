@@ -41,7 +41,7 @@ const cartStore = useCartStore()
 const checkoutStore = useCheckoutStore()
 
 function goHome() {
-  router.push('/home')
+  router.push('/')
 }
 
 function removeFromCart(id?: number) {
