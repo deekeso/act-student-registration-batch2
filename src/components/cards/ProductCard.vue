@@ -4,7 +4,6 @@
       :src="product.image"
       :alt="product.name"
       :class="['item-image', { 'large-image': variant === 'info' }]"
-      style="width: 30%;"
     />
     <div class="item-details">
       <div class="product-title">
@@ -69,11 +68,9 @@ function onQuantityChange(val: number) {
   border: 1px solid #D9D9D9;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(46, 46, 46, 0.08);
-  padding: 16px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   flex-direction: row;
-  padding: 20px;
   border-radius: 20px;
   align-items: center;
   margin: 12px 0;
@@ -81,28 +78,28 @@ function onQuantityChange(val: number) {
 }
 
 .product-card:hover {
-  transform: translateY(-4px);
   box-shadow: 0 4px 12px rgba(46, 46, 46, 0.12);
 }
 
 /* Product details */
 .item-image {
-  border-radius: 10px;
+  border-radius: 10px 0 0 10px;
   height: 150px;
   margin-right: 16px;
+  /* width: 30%; */
+  aspect-ratio: 1/1;
 }
 
 .large-image {
   height: 250px;
-  width: 250px;
 }
 
 .item-details {
   display: flex;
   flex-direction: column;
-  gap: 10px;
   width: 100%;
-  line-height: 12px;
+  line-height: 18px;
+  padding-right: 10px;
 }
 
 .item-price {
@@ -147,6 +144,7 @@ function onQuantityChange(val: number) {
 .action-buttons {
   display: flex;
   justify-content: end;
+  margin-right: 16px;
 }
 
 @media  (max-width: 435px) {
@@ -154,15 +152,27 @@ function onQuantityChange(val: number) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    }
+  }
   .item-image {
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0  0 12px 0;
+    border-radius: 10px 10px 0 0;
+    width: 100%;
   }
   .item-details {
-    line-height: 18px;
+    line-height: 24px;
+    padding: 10px;
   }
+  .large-image {
+    width: 100% !important;
+  }
+  .action-buttons {
+  display: flex;
+  justify-content: start;
+  margin: 16px 0;
+  }
+
 }
 </style>

@@ -32,6 +32,7 @@
             :price="product.price ?? 0"
             :oldPrice="product.oldPrice"
             :rating="product.rating ?? 0"
+            :product="product"
           />
         </div>
 
@@ -62,6 +63,10 @@ const props = defineProps<{ id: string | number }>()
 
 const product = computed(() => productsStore.products.find((p) => p.id === Number(props.id)))
 const products = computed(() => productsStore.products)
+
+onMounted(() =>  {
+  productsStore.loadProducts()
+})
 
 // Responsive default count
 function getVisibleCount() {
@@ -112,12 +117,11 @@ function handleNoProduct() {
   margin : 0 2rem;
 }
 
-.info-inner {
-}
+/* .info-inner {
+} */
 
 .info-container {
   width: 100%;
-
 }
 
 .dashboard-card {
@@ -146,11 +150,9 @@ function handleNoProduct() {
 @media  (max-width: 435px) {
   .info-container {
     overflow: hidden;
-    padding : 0 1rem;
   }
 
   .dashboard-card{
-    overflow: hidden;
   }
   .el-button {
     width: 293px;

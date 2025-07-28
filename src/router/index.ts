@@ -8,6 +8,7 @@ import CartView from '@/views/CartView.vue'
 import CheckoutView from '@/views/CheckoutView.vue'
 import UserProfile from '@/layout/Profile/UserProfile.vue'
 import { useAuthStore } from '@/stores/userAuth'
+import ProductFiltered from '@/layout/Info/ProductFiltered.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +52,11 @@ const router = createRouter({
       path: '/profile',
       name: 'UserProfile',
       component: UserProfile,
+    },
+    {
+      path:'/products/category/:category',
+      name: 'ProductFiltered',
+      component: ProductFiltered,
     }
   ],
 })

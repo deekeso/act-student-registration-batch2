@@ -27,5 +27,9 @@ export const useProductsStore = defineStore('products', {
       console.log(product)
       return product
     },
+    filterProducts: (state) => (category: string) => {
+      if (!category) return state.products
+      return state.products.filter((product) => product.category === category)
+    }
   },
 })

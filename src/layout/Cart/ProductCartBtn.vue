@@ -94,4 +94,5 @@ function handleCheckoutSelect() {
     width: 250px;
   }
 }
+
 </style>

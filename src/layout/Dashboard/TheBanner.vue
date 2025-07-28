@@ -21,10 +21,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { ElCarousel } from 'element-plus'
-import banner1 from '@/assets/banner/banner1.webp'
 import NavigationBtn from '@/components/buttons/NavigationBtn.vue'
+import  banner2  from '@/assets/banner/banner2.png'
+import  banner3  from '@/assets/banner/banner3.png'
 
-const slides = [{ image: banner1 }, { image: banner1 }, { image: banner1 }]
+const slides = [{ image: banner2 }, { image: banner3 }]
 
 const carouselRef = ref<InstanceType<typeof ElCarousel> | null>(null)
 const carouselHeight = '344px'

@@ -1,5 +1,5 @@
 <template>
-  <el-card style="max-width: 230px" @click="handleCardClick" class="clickable-card">
+  <el-card @click="handleCardClick" class="clickable-card">
     <img :src="image" style="width: 100%; height: 200px;" />
     <template #footer>
       <div class="card-info">
@@ -65,6 +65,11 @@ function addToCart() {
   box-shadow: 0 2px 8px rgba(46, 46, 46, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.3s ease;
   cursor: pointer;
+  max-width: 230px;
+}
+
+:deep(.el-card__body) {
+  padding: 0;
 }
 
 .el-card:hover {
@@ -98,7 +103,6 @@ function addToCart() {
 @media (max-width: 768px) {
   .el-card {
     max-width: 100%;
-    padding: 8px;
   }
 }
 </style>

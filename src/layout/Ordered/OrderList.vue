@@ -98,7 +98,6 @@ li {
 }
 
 li:hover {
-  transform: translateY(-4px);
   box-shadow: 0 4px 12px rgba(46, 46, 46, 0.12);
 }
 

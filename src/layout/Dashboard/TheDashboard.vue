@@ -9,6 +9,9 @@
           <div class="header">
             <TextStyle variant="section-header" color="">Just For You</TextStyle>
           </div>
+          <div class="filter">
+            <FilterTags />
+          </div>
           <div class="dashboard-card">
             <div class="card-grid">
               <DashboardCard
@@ -44,6 +47,7 @@ import TheBanner from '@/layout/Dashboard/TheBanner.vue'
 import DashboardCard from '@/components/cards/DashboardCard.vue'
 import TextStyle from '@/components/TextStyle.vue'
 import MainLayout from '../MainLayout.vue'
+import FilterTags from '@/components/FilterTags.vue'
 
 const productsStore = useProductsStore()
 
@@ -111,8 +115,12 @@ const toggleVisible = () => {
 }
 
 .header {
-  margin: 20px 0;
+  margin: 20px 0 0 0;
   display: flex;
+}
+
+.filter {
+  margin: 0 0 20px 0;
 }
 
 .dashboard-card {
@@ -150,6 +158,14 @@ const toggleVisible = () => {
 @media (max-width: 435px) {
   .card-grid {
     grid-template-columns: repeat(1, 1fr);
+  }
+
+  .filter {
+    align-items: center;
+  }
+
+  .banner {
+    display: none;
   }
 }
 </style>
