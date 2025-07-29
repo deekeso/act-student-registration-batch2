@@ -125,11 +125,6 @@ onUnmounted(() => {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.drawer-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(46, 46, 46, 0.12);
-}
-
 .item-image {
   width: 80px;
   height: 80px;

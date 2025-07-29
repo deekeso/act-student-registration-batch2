@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <div class="info-outer">
+    <div class="info-outer ">
       <div class="info-inner">
       <div class="info-container">
         <div v-if="product">
@@ -114,22 +114,20 @@ function handleNoProduct() {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin : 0 2rem;
+  margin : 0 auto;
 }
 
 /* .info-inner {
 } */
 
-.info-container {
-  width: 100%;
-}
+/* .info-container {
+} */
 
 .dashboard-card {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
 }
 
 .el-button {

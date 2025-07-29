@@ -151,7 +151,7 @@ async function logout() {
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #FFD700;
+  background-color: #D9D9D9;
   transform: scaleX(1);
   transform-origin: bottom right;
   transition: transform 0.3s ease;
@@ -170,7 +170,7 @@ async function logout() {
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #FFD700;
+  background-color: #D9D9D9;
   transform: scaleX(0);
   transform-origin: bottom right;
   transition: transform 0.3s ease;

@@ -57,6 +57,10 @@ const router = createRouter({
       path:'/products/category/:category',
       name: 'ProductFiltered',
       component: ProductFiltered,
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: { name: 'home' },
     }
   ],
 })

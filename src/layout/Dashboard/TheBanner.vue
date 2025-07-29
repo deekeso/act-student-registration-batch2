@@ -28,7 +28,7 @@ import  banner3  from '@/assets/banner/banner3.png'
 const slides = [{ image: banner2 }, { image: banner3 }]
 
 const carouselRef = ref<InstanceType<typeof ElCarousel> | null>(null)
-const carouselHeight = '344px'
+const carouselHeight = '400px'
 
 const handlePrevious = () => {
   if (carouselRef.value) {
@@ -52,6 +52,7 @@ const handleNext = () => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 10px;
 }
 
 .navigation-buttons {
@@ -78,6 +79,6 @@ const handleNext = () => {
 }
 
 .el-carousel {
-  /* border-radius: 15px; */
+  border-radius: 10px;
 }
 </style>

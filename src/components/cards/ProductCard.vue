@@ -13,7 +13,7 @@
         <TextStyle variant="listing-info-description">{{ product.description }}</TextStyle>
       </div>
       <div v-if="variant === 'info'" class="product-rating">
-        <TextStyle variant="card-rating">⭐ {{ product.rating }}</TextStyle>
+        <TextStyle variant="listing-ratings">★ {{ product.rating }}</TextStyle>
       </div>
       <div>
         <TextStyle variant="card-price">₱{{ product.price }}</TextStyle>
@@ -67,8 +67,7 @@ function onQuantityChange(val: number) {
   background-color: #D9D9D9;
   border: 1px solid #D9D9D9;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(46, 46, 46, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(46, 46, 46, 0.1);
   display: flex;
   flex-direction: row;
   border-radius: 20px;
@@ -77,16 +76,11 @@ function onQuantityChange(val: number) {
   width: 100%;
 }
 
-.product-card:hover {
-  box-shadow: 0 4px 12px rgba(46, 46, 46, 0.12);
-}
-
 /* Product details */
 .item-image {
   border-radius: 10px 0 0 10px;
   height: 150px;
   margin-right: 16px;
-  /* width: 30%; */
   aspect-ratio: 1/1;
 }
 

@@ -80,13 +80,21 @@ function handleCheckoutSelect() {
   margin-top: 10px;
 }
 
-.continue-btn{
-  background-color: #1E90FF;
-  color: white;
+.continue-btn {
+  background-color: #e2e2e2;
+  color: #2e2e2e;
   border-radius: 10px;
   width: 350px;
   height: 50px;
   margin-bottom: 20px;
+  border: 1px solid #2e2e2e;
+}
+
+.continue-btn:hover {
+  background-color: #e2e2e2;
+  color: #2e2e2e;
+  border: 1px solid #2e2e2e;
+  box-shadow: 0 2px 8px rgba(46, 46, 46, 0.5);
 }
 
 @media (max-width: 375px) {

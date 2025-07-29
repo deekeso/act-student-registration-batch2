@@ -4,11 +4,16 @@
       <el-empty v-if="!ordersStore.orders.length" description="No orders">
         <ProductCartBtn type="continue" />
       </el-empty>
-
+      <el-tabs v-model="activeTab" @tab-click="handleTabClick" v-else>
+        <el-tab-pane label="Pending" name="Pending"></el-tab-pane>
+        <el-tab-pane label="Completed" name="Completed"></el-tab-pane>
+        <el-tab-pane label="All" name="all"></el-tab-pane>
+      </el-tabs>
       <ul>
-        <li v-for="order in ordersStore.orders" :key="order.orderId" @click="openDrawer(order)">
+        <li v-for="order in filteredOrders" :key="order.orderId" @click="openDrawer(order)">
           <div class="orders-content">
-            <span>Status: {{ order.status }}</span>
+            <!-- order-status span color to be Gray if pending, green if complete -->
+            <span>Status: <span :class="['order-status',  order.status.toLowerCase()]">{{ order.status }}</span></span>
             <div v-for="item in order.items" :key="item.product.id" class="order-block">
               <ProductCard
                 :product="item.product"
@@ -28,7 +33,7 @@
 <script setup lang="ts">
 import MainLayout from '../MainLayout.vue'
 import { useOrdersStore } from '@/stores/orders'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import OrderDrawer from './OrderDrawer.vue'
 import type { Order } from '@/types/order'
 import ProductCartBtn from '../Cart/ProductCartBtn.vue'
@@ -37,6 +42,7 @@ import ProductCard from '@/components/cards/ProductCard.vue'
 const ordersStore = useOrdersStore()
 const drawerVisible = ref(false)
 const selectedOrder = ref<Order | null>(null)
+const activeTab = ref('all')
 
 function openDrawer(order: Order) {
   selectedOrder.value = order
@@ -49,6 +55,20 @@ function onStatusChange(newStatus: 'Pending' | 'Completed') {
     ordersStore._syncOrderToUser()
   }
 }
+
+function handleTabClick() {
+  // No additional logic needed, as filteredOrders reacts to activeTab
+}
+
+// Filter orders based on active tab
+const filteredOrders = computed(() => {
+  if (activeTab.value === 'all') {
+    return [...ordersStore.orders].reverse()
+  }
+  return [...ordersStore.orders]
+  .filter(order => order.status === activeTab.value)
+  .reverse()
+})
 </script>
 
 <style scoped>
@@ -63,11 +83,29 @@ function onStatusChange(newStatus: 'Pending' | 'Completed') {
   border-radius: 12px;
 }
 
+.el-tabs {
+  margin-bottom: 16px;
+}
+
+::v-deep(.el-tabs__item.is-active) {
+  color: #2E2E2E;
+  font-weight: 600;
+}
+
+::v-deep(.el-tabs__item:hover) {
+  color: #555555;
+  font-weight: 600;
+}
+
+::v-deep(.el-tabs__active-bar) {
+  background-color: #2E2E2E;
+}
+
 ul {
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 90vh;
+  max-height: 74vh;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #D9D9D9 #F5F5F5;
@@ -102,9 +140,36 @@ li:hover {
 }
 
 .orders-content > span {
-  color: #1A1A1A;
+  color: #818181;
   font-weight: 600;
   font-size: 16px;
+}
+
+.order-status {
+  font-weight: 600;
+  font-size: 14px;
+  margin-left: 4px;
+}
+
+.order-status.pending {
+  color: #555555;
+  background-color: #d9d9d98e;
+  padding: 6px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 10px;
+  border: 1px solid #c4c4c4;
+}
+
+.order-status.completed {
+  color: #28a745;
+  background-color: #caf7d579;
+  padding: 6px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 10px;
+  border: 1px solid #66c47c;
+
 }
 
 .order-block {
@@ -120,6 +185,9 @@ li:hover {
   li {
     padding: 12px;
   }
+  .el-tabs--card > .el-tabs__header .el-tabs__item {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
 }
-
 </style>

@@ -13,7 +13,7 @@
             <FilterTags />
           </div>
           <div class="dashboard-card">
-            <div class="card-grid">
+            <div class="card-grid fade">
               <DashboardCard
                 v-for="product in products.slice(0, visibleCount)"
                 :key="product.id"
@@ -114,6 +114,13 @@ const toggleVisible = () => {
   justify-content: center;
 }
 
+.banner {
+  margin-top: 4px;
+  border: 1px solid #d9d9d9;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(46, 46, 46, 0.2);
+}
+
 .header {
   margin: 20px 0 0 0;
   display: flex;
@@ -131,12 +138,21 @@ const toggleVisible = () => {
 }
 
 .el-button {
-  background-color: #1E90FF;
-  color: white;
+  background-color: #e2e2e2;
+  color: #2e2e2e;
   border-radius: 10px;
   width: 350px;
   height: 50px;
   margin-bottom: 20px;
+  border: 1px solid #2e2e2e;
+}
+
+
+.el-button:hover {
+  background-color: #e2e2e2;
+  color: #2e2e2e;
+  border: 1px solid #2e2e2e;
+  box-shadow: 0 2px 8px rgba(46, 46, 46, 0.5);
 }
 
 .card-grid {

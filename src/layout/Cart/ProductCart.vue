@@ -16,7 +16,7 @@
         <div class="scrollable-list">
           <ul>
             <el-checkbox-group v-model="selectedIds">
-              <li v-for="item in cartItems" :key="item.product.id">
+              <li v-for="item in [...cartItems].reverse()" :key="item.product.id">
                 <el-checkbox :value="item.product.id" size="large">
                   {{ item.product.name }}
                 </el-checkbox>
@@ -39,22 +39,38 @@
         <ProductCartBtn type="checkoutSelect" :selected-items="selectedItems" v-if="cartItems.length > 3" />
       </div>
 
-
-        <!-- To checkout summary -->
+      <!-- To checkout summary -->
       <div class="to-checkout" v-if="selectedIds.length > 0 && cartItems.length > 0">
         <TextStyle variant="section-header">Summary</TextStyle>
         <div class="items">
           <span>Items:</span>
-          <div v-for="item in selectedItems" :key="item.product.id" class="product-summary">
-            <div>
-              <TextStyle variant="listing-info-description">{{ truncateText (item.product.name!, 15) }}</TextStyle>
-              <TextStyle variant="quantity">x {{ item.quantity }}</TextStyle>
+          <div class="product-summary-container">
+            <div
+              v-for="item in [...displayedItems].reverse()"
+              :key="item.product.id"
+              class="product-summary"
+            >
+              <div>
+                <TextStyle variant="listing-info-description">
+                  {{ truncateText(item.product.name!, 15) }}
+                </TextStyle>
+                <TextStyle variant="quantity"> x{{ item.quantity }}</TextStyle>
+              </div>
+              <span>₱ {{ cartStore.cartTotalPerItem(item.product.id) }}</span>
             </div>
-            <span>₱ {{ cartStore.cartTotalPerItem(item.product.id) }}</span>
+            <el-button
+              v-if="selectedItems.length > defaultItemLimit"
+              @click="toggleShowMore"
+              class="toggle-button"
+              text
+              type="info"
+            >
+              {{ isExpanded ? 'Show Less' : 'Show More' }}
+            </el-button>
           </div>
           <div class="total">
             <span>Total:</span>
-            <span> ₱ {{ selectedItemsTotal }}</span>
+            <span>₱ {{ selectedItemsTotal }}</span>
           </div>
           <ProductCartBtn type="checkoutSelect" :selected-items="selectedItems" />
         </div>
@@ -72,11 +88,11 @@ import MainLayout from '../MainLayout.vue'
 import ProductCard from '@/components/cards/ProductCard.vue'
 import { truncateText } from '@/composables/text'
 
-//cart
+// Cart
 const cartStore = useCartStore()
 const cartItems = computed(() => cartStore.cartItems)
 
-// checkbox
+// Checkbox
 const selectedIds = ref<number[]>([])
 const checkAll = ref(false)
 const isIndeterminate = computed(
@@ -89,17 +105,32 @@ const selectedItems = computed(() =>
 const selectedItemsTotal = computed(() =>
   selectedItems.value.reduce(
     (total, item) => total + cartStore.cartTotalPerItem(item.product.id),
-    0
-  )
+    0,
+  ),
 )
 
 function handleCheckAllChange(val: boolean) {
   selectedIds.value = val ? cartItems.value.map((item) => item.product.id) : []
 }
 
-// quantity
+// Quantity
 function updateQuantity(productId: number, quantity: number) {
   cartStore.updateQuantity(productId, quantity)
+}
+
+// Collapsible summary
+const defaultItemLimit = 3 // Number of items to show by default
+const isExpanded = ref(false)
+
+const displayedItems = computed(() => {
+  if (isExpanded.value || selectedItems.value.length <= defaultItemLimit) {
+    return selectedItems.value
+  }
+  return selectedItems.value.slice(0, defaultItemLimit)
+})
+
+function toggleShowMore() {
+  isExpanded.value = !isExpanded.value
 }
 </script>
 
@@ -203,11 +234,20 @@ li {
   margin-top: 16px;
 }
 
+.product-summary-container {
+  margin-top: 12px;
+}
+
 .product-summary {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+}
+
+.toggle-button {
+  margin-top: 8px;
+  width: 100%;
 }
 
 .total {

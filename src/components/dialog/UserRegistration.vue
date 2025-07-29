@@ -4,12 +4,13 @@
     @update:model-value="$emit('update:visible', $event)"
     title="Register"
     width="500"
+    style="border-radius: 10px;  border: 1px solid #2e2e2e; padding: 24px;"
+    :show-close="false"
   >
     <el-form label-position="top" :model="authStore">
       <el-form-item label="Email" prop="email" :error="emailError">
         <el-input
           v-model="form.email"
-          style="width: 100%"
           :prefix-icon="Message"
           @keyup.enter="handleRegister"
         />
@@ -17,7 +18,6 @@
       <el-form-item label="Username" prop="username" :error="usernameError">
         <el-input
           v-model="form.username"
-          style="width: 100%"
           :prefix-icon="UserFilled"
           @keyup.enter="handleRegister"
         />
@@ -25,7 +25,6 @@
       <el-form-item label="Password" prop="password" :error="passwordError">
         <el-input
           v-model="form.password"
-          style="width: 100%"
           type="password"
           :prefix-icon="Lock"
           @keyup.enter="handleRegister"
@@ -35,7 +34,7 @@
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button type="primary" @click="handleRegister" round>Register</el-button>
+        <el-button type="primary" @click="handleRegister">Register</el-button>
       </div>
     </template>
   </el-dialog>
@@ -54,7 +53,7 @@ import { ElMessage } from 'element-plus'
 import { reactive, ref } from 'vue'
 
 defineProps<{ visible: boolean }>()
-defineEmits(['update:visible'])
+const emit = defineEmits(['update:visible',])
 
 // form fields
 const form = reactive({
@@ -116,6 +115,7 @@ const handleRegister = () => {
       emailError.value = ''
       usernameError.value = ''
       passwordError.value = ''
+      emit('update:visible', false )
     } else {
       ElMessage.error(result.message)
     }
@@ -123,4 +123,26 @@ const handleRegister = () => {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+
+.el-input {
+  width: 100%;
+  height: 50px;
+}
+
+.el-button {
+  background-color: #e2e2e2;
+  color: #2e2e2e;
+  border-radius: 10px;
+  height: 50px;
+  width: 100%;
+  margin-bottom: 20px;
+  border: 1px solid #2e2e2e;
+}
+
+.el-button:hover {
+  background-color: #e2e2e2;
+  color: #2e2e2e;
+  border: 1px solid #2e2e2e;
+  box-shadow: 0 2px 8px rgba(46, 46, 46, 0.2);
+}</style>

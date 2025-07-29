@@ -4,12 +4,13 @@
     @update:model-value="$emit('update:visible', $event)"
     title="Login"
     width="500"
+    style="border-radius: 10px;  border: 1px solid #2e2e2e; padding: 24px;"
+    :show-close="false"
   >
     <el-form label-position="top">
       <el-form-item label="Username" prop="username" :error="usernameError">
         <el-input
           v-model="authStore.username"
-          style="width: 100%"
           :prefix-icon="User"
           @keyup.enter="handleLogin"
         />
@@ -17,21 +18,20 @@
       <el-form-item label="Password" prop="password" :error="passwordError">
         <el-input
           v-model="authStore.password"
-          style="width: 100%"
           type="password"
           :prefix-icon="Lock"
           @keyup.enter="handleLogin"
           show-password
         />
       </el-form-item>
+      <el-link v-if="!authStore.isLoggedIn" @click="forgotPassword" class="password" :underline="false">
+        <el-icon><QuestionFilled /></el-icon>
+        <span class="button-text">Forgot Password</span>
+      </el-link>
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button v-if="!authStore.isLoggedIn" link @click="forgotPassword" class="password">
-          <el-icon><QuestionFilled /></el-icon>
-          <span class="button-text">Forgot Password</span>
-        </el-button>
-        <el-button @click="handleLogin" round type="primary"> Login </el-button>
+        <el-button @click="handleLogin" style="width: 100%;"> Login </el-button>
       </div>
     </template>
   </el-dialog>
@@ -73,8 +73,47 @@ const handleLogin = () => {
 </script>
 
 <style scoped>
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
+.el-input {
+  width: 100%;
+  height: 50px;
 }
+
+.el-link {
+  text-decoration: none;
+  color: #2e2e2e;
+}
+
+.el-link:hover {
+  color: #999999;
+}
+
+.password {
+  display: flex;
+  justify-content: end;
+}
+
+.button-text {
+  color: #2e2e2e;
+}
+
+.button-text:hover {
+  color: #999999 ;
+}
+
+.el-button {
+  background-color: #e2e2e2;
+  color: #2e2e2e;
+  border-radius: 10px;
+  height: 50px;
+  margin-bottom: 20px;
+  border: 1px solid #2e2e2e;
+}
+
+.el-button:hover {
+  background-color: #e2e2e2;
+  color: #2e2e2e;
+  border: 1px solid #2e2e2e;
+  box-shadow: 0 2px 8px rgba(46, 46, 46, 0.2);
+}
+
 </style>

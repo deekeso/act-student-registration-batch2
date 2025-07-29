@@ -85,7 +85,9 @@
               <el-input v-model="form.landmark" @keypress="lettersNumbersOnly" maxlength="50" style="width: 100%" @input="form.landmark = form.landmark.toUpperCase()" />
             </el-form-item>
           </div>
-          <el-button type="primary" @click="onSubmit">Submit</el-button>
+          <div style="display: flex; justify-content: center;">
+            <el-button type="primary" @click="onSubmit">Submit</el-button>
+          </div>
         </div>
       </el-form>
     </div>
@@ -277,21 +279,22 @@ h3 {
   border-color: #1E90FF;
 }
 
-:deep(.el-button) {
-  background-color: #1E90FF;
-  color: #FFFFFF;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-weight: 500;
-  min-height: 44px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  align-self: flex-end;
+.el-button {
+  background-color: #e2e2e2;
+  color: #2e2e2e;
+  border-radius: 10px;
+  width: 350px;
+  height: 50px;
+  margin-bottom: 20px;
+  border: 1px solid #2e2e2e;
 }
 
-:deep(.el-button:hover) {
-  background-color: #007BFF;
-  transform: translateY(-2px);
+
+.el-button:hover {
+  background-color: #e2e2e2;
+  color: #2e2e2e;
+  border: 1px solid #2e2e2e;
+  box-shadow: 0 2px 8px rgba(46, 46, 46, 0.5);
 }
 
 @media (max-width: 768px) {

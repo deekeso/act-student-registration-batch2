@@ -10,7 +10,7 @@
   </main>
   <footer></footer>
   <UserLogin :visible="loginDialogVisible" @update:visible="loginDialogVisible = $event" />
-  <UserRegistration :visible="registerDialogVisible" />
+  <UserRegistration :visible="registerDialogVisible" @update:visible="registerDialogVisible = $event" />
 </template>
 
 <script setup lang="ts">

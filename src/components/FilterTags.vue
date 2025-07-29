@@ -4,7 +4,6 @@
     v-for="category in productsCategory"
     :key="category"
     :type="selectedCategory === category ? 'primary' : 'default'"
-    round
   >
     <RouterLink :to="`/products/category/${category}`" class="category-link">
       {{ category }}
@@ -36,6 +35,7 @@ const selectedCategory = computed(() => route.params.category as string || '')
   border: 1px solid #292929;
   padding: 18px;
   margin: 6px;
+  border-radius: 10px;
 }
 
 .category-link {
