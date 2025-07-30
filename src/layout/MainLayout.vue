@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header class="sticky-header">
     <NavigationBar
       @open-dialog="() => { console.log('Dialog should open!'); loginDialogVisible = true }"
       @open-register-dialog="registerDialogVisible = true"
@@ -24,4 +24,11 @@ const registerDialogVisible = ref(false)
 
 </script>
 
-<style scoped></style>
+<style scoped>
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 999; /* ensures it stays above other content */
+}
+
+</style>
