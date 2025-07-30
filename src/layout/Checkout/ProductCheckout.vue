@@ -37,8 +37,8 @@
             </div>
           </div>
           <!-- User Information Form -->
-          <div v-else>
-            <TextStyle variant="listing-info-description">Please fill in your personal information to proceed checkout.</TextStyle>
+          <div v-else class="no-info">
+            <span>Please fill in your personal information to proceed checkout.</span>
           </div>
           <el-icon @click="openDrawer" class="editpen-icon"><EditPen /></el-icon>
         </div>
@@ -239,6 +239,15 @@ function toggleShowMore() {
 
 .editpen-icon:hover {
   color: #D9D9D9;
+}
+
+.no-info {
+  color: #e53935;
+  border-radius: 10px;
+}
+
+.no-info > span {
+  font-weight: 600;
 }
 
 .scrollable-list {

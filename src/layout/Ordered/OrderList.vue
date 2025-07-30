@@ -1,6 +1,7 @@
 <template>
   <MainLayout>
     <div class="orders-container">
+      <div class="orders-content">
       <el-empty v-if="!ordersStore.orders.length" description="No orders">
         <ProductCartBtn type="continue" />
       </el-empty>
@@ -26,6 +27,7 @@
         </li>
       </ul>
       <OrderDrawer :order="selectedOrder" :visible="drawerVisible" @close="drawerVisible = false" @status-change="onStatusChange" />
+    </div>
     </div>
   </MainLayout>
 </template>
@@ -72,10 +74,10 @@ const filteredOrders = computed(() => {
 </script>
 
 <style scoped>
-.orders-container {
+.orders-content {
   width: 100%;
   max-width: 1200px;
-  margin: 36px auto;
+  margin: 16px auto;
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -84,7 +86,7 @@ const filteredOrders = computed(() => {
 }
 
 .el-tabs {
-  margin-bottom: 16px;
+  /* margin-bottom: 0px; */
 }
 
 ::v-deep(.el-tabs__item.is-active) {
@@ -127,7 +129,6 @@ ul::-webkit-scrollbar-thumb:hover {
 
 li {
   margin-bottom: 16px;
-  border: 1px solid #D9D9D9;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(46, 46, 46, 0.08);
   padding: 16px;
@@ -169,7 +170,6 @@ li:hover {
   padding-right: 10px;
   border-radius: 10px;
   border: 1px solid #66c47c;
-
 }
 
 .order-block {

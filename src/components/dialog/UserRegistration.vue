@@ -1,43 +1,45 @@
 <template>
-  <el-dialog
-    :model-value="visible"
-    @update:model-value="$emit('update:visible', $event)"
-    title="Register"
-    width="500"
-    style="border-radius: 10px;  border: 1px solid #2e2e2e; padding: 24px;"
-    :show-close="false"
-  >
-    <el-form label-position="top" :model="authStore">
-      <el-form-item label="Email" prop="email" :error="emailError">
-        <el-input
-          v-model="form.email"
-          :prefix-icon="Message"
-          @keyup.enter="handleRegister"
-        />
-      </el-form-item>
-      <el-form-item label="Username" prop="username" :error="usernameError">
-        <el-input
-          v-model="form.username"
-          :prefix-icon="UserFilled"
-          @keyup.enter="handleRegister"
-        />
-      </el-form-item>
-      <el-form-item label="Password" prop="password" :error="passwordError">
-        <el-input
-          v-model="form.password"
-          type="password"
-          :prefix-icon="Lock"
-          @keyup.enter="handleRegister"
-          show-password
-        />
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <div class="dialog-footer">
-        <el-button type="primary" @click="handleRegister">Register</el-button>
-      </div>
-    </template>
-  </el-dialog>
+  <div>
+    <el-dialog
+      :model-value="visible"
+      @update:model-value="$emit('update:visible', $event)"
+      title="Register"
+      width="500"
+      style="border-radius: 10px;  border: 1px solid #2e2e2e; padding: 24px;"
+      :show-close="false"
+    >
+      <el-form label-position="top" :model="authStore">
+        <el-form-item label="Email" prop="email" :error="emailError">
+          <el-input
+            v-model="form.email"
+            :prefix-icon="Message"
+            @keyup.enter="handleRegister"
+          />
+        </el-form-item>
+        <el-form-item label="Username" prop="username" :error="usernameError">
+          <el-input
+            v-model="form.username"
+            :prefix-icon="UserFilled"
+            @keyup.enter="handleRegister"
+          />
+        </el-form-item>
+        <el-form-item label="Password" prop="password" :error="passwordError">
+          <el-input
+            v-model="form.password"
+            type="password"
+            :prefix-icon="Lock"
+            @keyup.enter="handleRegister"
+            show-password
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="handleRegister">Register</el-button>
+        </div>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -145,4 +147,13 @@ const handleRegister = () => {
   color: #2e2e2e;
   border: 1px solid #2e2e2e;
   box-shadow: 0 2px 8px rgba(46, 46, 46, 0.2);
-}</style>
+}
+
+@media (max-width: 768px) {
+  :deep(.el-dialog) {
+    width:80% !important;
+  }
+}
+
+
+</style>

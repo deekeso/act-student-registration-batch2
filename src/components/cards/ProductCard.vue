@@ -141,7 +141,7 @@ function onQuantityChange(val: number) {
   margin-right: 16px;
 }
 
-@media  (max-width: 435px) {
+@media  (max-width: 540px) {
   .product-card {
     display: flex;
     flex-direction: column;
@@ -167,6 +167,11 @@ function onQuantityChange(val: number) {
   justify-content: start;
   margin: 16px 0;
   }
+}
 
+@media (max-width: 425px) {
+  .product-card {
+    width: 100%;
+  }
 }
 </style>

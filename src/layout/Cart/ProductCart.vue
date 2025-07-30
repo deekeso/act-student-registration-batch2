@@ -139,7 +139,6 @@ function toggleShowMore() {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px;
   display: flex;
   flex-direction: row;
   gap: 24px;

@@ -115,7 +115,7 @@ const toggleVisible = () => {
 }
 
 .banner {
-  margin-top: 4px;
+  margin-top: 6px;
   border: 1px solid #d9d9d9;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(46, 46, 46, 0.2);
@@ -146,7 +146,6 @@ const toggleVisible = () => {
   margin-bottom: 20px;
   border: 1px solid #2e2e2e;
 }
-
 
 .el-button:hover {
   background-color: #e2e2e2;
@@ -182,6 +181,12 @@ const toggleVisible = () => {
 
   .banner {
     display: none;
+  }
+}
+
+@media (max-width: 375px) {
+  .el-button {
+    width: 300px;
   }
 }
 </style>
