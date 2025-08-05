@@ -7,5 +7,7 @@ export interface User {
     street: string
     city: string
   }
-  createdAt: string // using dayjs
+  createdAt: string
 }
+
+export type NewUser = Omit<User, 'id'>

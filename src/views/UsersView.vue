@@ -1,7 +1,7 @@
 <template>
   <div class="user-view">
     <h1>All Users</h1>
-
+    <el-button @click="addCardVisible = true">Add</el-button>
     <div v-if="loading" class="loading">Loading users...</div>
     <div v-else-if="userStore.users.length === 0" class="no-users">No users found.</div>
     <div v-else class="user-list">
@@ -13,14 +13,37 @@
           <strong>Address:</strong>
           {{ user.address.street }}, {{ user.address.city }}
         </p>
+        <p v-if="user.createdAt!"><strong>Created at:</strong> {{ user.createdAt }}</p>
+        <div class="action-btn">
+          <el-button size="small" type="primary" @click="handleEditUser(user)">Edit</el-button>
+          <el-button size="small" type="danger" @click="handleDeleteUser(user.id!)"
+            >Delete</el-button
+          >
+        </div>
       </el-card>
     </div>
+    <AddCard
+      :visible="addCardVisible"
+      @update:visible="addCardVisible = $event"
+      @addUser="handleAddUser"
+    />
+    <EditCard
+      :visible="editCardVisible"
+      :user="selectedUser"
+      @update:visible="editCardVisible = $event"
+      @updateUser="handleUpdateUser"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/userStore'
+import AddCard from '@/components/ui/AddCard.vue'
+import type { NewUser } from '../types/user'
+import EditCard from '@/components/ui/EditCard.vue'
+import type { User } from '@/types/user'
+import { ElMessage } from 'element-plus'
 
 const userStore = useUserStore()
 const loading = ref(true)
@@ -29,6 +52,31 @@ onMounted(async () => {
   await userStore.fetchAllUsers()
   loading.value = false
 })
+
+const addCardVisible = ref(false)
+const editCardVisible = ref(false)
+const selectedUser = ref<User | null>(null)
+
+function handleEditUser(user: User) {
+  selectedUser.value = user
+  editCardVisible.value = true
+}
+
+const handleUpdateUser = async (user: User) => {
+  await userStore.editUser(user.id, user)
+  editCardVisible.value = false
+}
+
+async function handleDeleteUser(id: number) {
+  await userStore.removeUser(id)
+  ElMessage.success('User deleted successfully!')
+  console.log('Deleted user id:', id)
+}
+
+const handleAddUser = async (user: NewUser) => {
+  await userStore.addUser(user)
+  addCardVisible.value = false
+}
 </script>
 
 <style scoped>
@@ -89,6 +137,9 @@ onMounted(async () => {
 .user-card strong {
   color: #1f2937;
   font-weight: 500;
+}
+
+.action-btn {
 }
 
 /* Responsive adjustments */
