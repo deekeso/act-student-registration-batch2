@@ -19,9 +19,18 @@ export const useUserStore = defineStore('user', {
 
     async fetchUserById(id: number) {
       try {
-        this.selectedUser = await getUserById(id)
+        const user = await getUserById(id)
+        if (user) {
+          this.selectedUser = user
+        } else {
+          // fallback to store
+          this.selectedUser = this.users.find((u) => u.id === id) ?? null
+        }
       } catch (error) {
         console.error('Failed to fetch user', error)
+
+        // fallback to store
+        this.selectedUser = this.users.find((u) => u.id === id) ?? null
       }
     },
 
@@ -31,9 +40,23 @@ export const useUserStore = defineStore('user', {
     },
 
     async editUser(id: number, user: Partial<User>) {
-      const updatedUser = await updateUser(id, user)
-      const index = this.users.findIndex((u) => u.id === id)
-      if (index !== -1) this.users[index] = updatedUser
+      try {
+        const updatedUser = await updateUser(id, user)
+
+        const index = this.users.findIndex((u) => u.id === id)
+
+        if (index !== -1) {
+          this.users[index] = updatedUser ?? { ...this.users[index], ...user }
+        }
+      } catch (error) {
+        console.error('Update failed:', error)
+
+        // fallback
+        const index = this.users.findIndex((u) => u.id === id)
+        if (index !== -1) {
+          this.users[index] = { ...this.users[index], ...user }
+        }
+      }
     },
 
     async removeUser(id: number) {

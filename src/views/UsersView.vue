@@ -1,26 +1,87 @@
+<!-- UsersView.vue -->
 <template>
   <div class="user-view">
-    <h1>All Users</h1>
-    <el-button @click="addCardVisible = true">Add</el-button>
-    <div v-if="loading" class="loading">Loading users...</div>
-    <div v-else-if="userStore.users.length === 0" class="no-users">No users found.</div>
-    <div v-else class="user-list">
-      <el-card v-for="user in userStore.users" :key="user.id" class="user-card">
-        <h3>{{ user.name }}</h3>
-        <p><strong>Username:</strong> {{ user.username }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
+    <div class="user-view-header">
+      <h1>Users</h1>
+      <SearchBar :users="userStore.users" @select="handleSelect" />
+      <div class="user-header-actions">
+        <el-button @click="addCardVisible = true">
+          <el-icon><Plus /></el-icon>
+        </el-button>
+        <el-button @click="selectedUser = null">
+          <el-icon><Refresh /></el-icon>
+        </el-button>
+      </div>
+    </div>
+
+    <!-- VIEW OPTION -->
+    <div>
+      <el-tabs v-model="view" class="view-toggle">
+        <el-tab-pane label="Card View" name="card" />
+        <el-tab-pane label="Table View" name="table" />
+      </el-tabs>
+    </div>
+
+    <!-- LOADING -->
+    <el-skeleton v-if="loading" animated>
+      <template #template>
+        <div class="user-list-card">
+          <el-skeleton-item v-for="n in 10" :key="n" style="height: 180px; border-radius: 12px" />
+        </div>
+      </template>
+    </el-skeleton>
+
+    <!-- NO DATA -->
+    <div v-else-if="filteredUsers.length === 0" class="no-users">No users found.</div>
+
+    <!-- CARD VIEW -->
+    <div v-if="view === 'card' && !loading" class="user-list-card">
+      <el-card
+        v-for="user in filteredUsers"
+        :key="user.id"
+        class="user-card"
+        @click="handleCardClick(user.id)"
+      >
+        <h3>
+          {{ user.name }}
+          <el-button link @click.stop="handleEditUser(user)">
+            <el-icon color="#5e87f5"><EditPen /></el-icon>
+          </el-button>
+        </h3>
         <p>
-          <strong>Address:</strong>
+          <el-icon color="#3d4b91"><Avatar /></el-icon> {{ user.username }}
+        </p>
+        <p>
+          <el-icon color="#3d4b91"><Briefcase /></el-icon>{{ user.email }}
+        </p>
+        <p>
+          <el-icon color="#3d4b91"><HomeFilled /></el-icon>
           {{ user.address.street }}, {{ user.address.city }}
         </p>
-        <p v-if="user.createdAt!"><strong>Created at:</strong> {{ user.createdAt }}</p>
-        <div class="action-btn">
-          <el-button size="small" type="primary" @click="handleEditUser(user)">Edit</el-button>
-          <el-button size="small" type="danger" @click="handleDeleteUser(user.id!)"
-            >Delete</el-button
-          >
-        </div>
+        <p v-if="user.createdAt!">
+          <el-icon color="#3d4b91"><Checked /></el-icon> {{ user.createdAt }}
+        </p>
       </el-card>
+    </div>
+
+    <!-- TABLE VIEW -->
+    <div v-else-if="view === 'table' && filteredUsers.length !== 0">
+      <el-table :data="filteredUsers" style="width: 100%">
+        <el-table-column prop="name" label="Name" />
+        <el-table-column prop="email" label="Email" />
+        <el-table-column prop="username" label="Username" />
+        <el-table-column label="Address">
+          <template #default="{ row }"> {{ row.address.street }}, {{ row.address.city }} </template>
+        </el-table-column>
+        <el-table-column label="Actions" width="180">
+          <template #default="{ row }">
+            <el-button size="small" type="primary" @click="handleEditUser(row)">Edit</el-button>
+            <el-button size="small" type="danger" @click="handleDeleteUser(row.id)"
+              >Delete</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
     <AddCard
       :visible="addCardVisible"
@@ -37,19 +98,39 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/userStore'
-import AddCard from '@/components/ui/AddCard.vue'
-import type { NewUser } from '../types/user'
-import EditCard from '@/components/ui/EditCard.vue'
-import type { User } from '@/types/user'
+import type { NewUser, User } from '@/types/user'
+import EditCard from '@/components/ui/card/EditCard.vue'
+import AddCard from '@/components/ui/card/AddCard.vue'
 import { ElMessage } from 'element-plus'
+import {
+  Avatar,
+  Briefcase,
+  Checked,
+  EditPen,
+  HomeFilled,
+  Plus,
+  Refresh,
+} from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
+import SearchBar from '@/components/ui/SearchBar.vue'
 
 const userStore = useUserStore()
+const router = useRouter()
 const loading = ref(true)
+const view = ref<'card' | 'table'>('card')
+const filteredUsers = computed(() =>
+  selectedUser.value
+    ? userStore.users.filter((u) => u.id === selectedUser.value?.id)
+    : userStore.users,
+)
 
 onMounted(async () => {
   await userStore.fetchAllUsers()
+
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+
   loading.value = false
 })
 
@@ -77,6 +158,15 @@ const handleAddUser = async (user: NewUser) => {
   await userStore.addUser(user)
   addCardVisible.value = false
 }
+
+function handleCardClick(id: number) {
+  router.push(`/profile/${id}`)
+}
+
+function handleSelect(user: User) {
+  // router.push(`/profile/${user.id}`)
+  selectedUser.value = user
+}
 </script>
 
 <style scoped>
@@ -84,6 +174,20 @@ const handleAddUser = async (user: NewUser) => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+}
+
+.user-view-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.user-header-actions {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .loading {
@@ -104,7 +208,16 @@ const handleAddUser = async (user: NewUser) => {
   border-radius: 8px;
 }
 
-.user-list {
+:deep(.el-tabs__item.is-active),
+:deep(.el-tabs__item:hover) {
+  color: #5e87f5;
+}
+
+:deep(.el-tabs__active-bar) {
+  background-color: #5e87f5;
+}
+
+.user-list-card {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
@@ -124,6 +237,7 @@ const handleAddUser = async (user: NewUser) => {
 
 .user-card:hover {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
 }
 
 .user-card h3 {
@@ -137,9 +251,6 @@ const handleAddUser = async (user: NewUser) => {
 .user-card strong {
   color: #1f2937;
   font-weight: 500;
-}
-
-.action-btn {
 }
 
 /* Responsive adjustments */

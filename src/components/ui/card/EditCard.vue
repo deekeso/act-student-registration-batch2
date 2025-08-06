@@ -27,6 +27,7 @@
       </el-form-item>
 
       <el-button type="primary" @click="handleEditSubmit">Update</el-button>
+      <el-button type="danger" @click="handleDeleteUser(user?.id!)">Delete</el-button>
     </el-form>
   </el-dialog>
 </template>
@@ -37,6 +38,7 @@ import { ElMessage } from 'element-plus'
 import type { User } from '@/types/user'
 import { formValidation, type UserData } from '@/utils/formValidation'
 import type z from 'zod'
+import { useUserStore } from '@/stores/userStore'
 
 const props = defineProps<{
   visible: boolean
@@ -47,6 +49,8 @@ const emit = defineEmits<{
   (e: 'update:visible', value: boolean): void
   (e: 'updateUser', user: User): void
 }>()
+
+const userStore = useUserStore()
 
 // Reactive form
 const editUserForm = reactive<UserData>({
@@ -96,7 +100,14 @@ const handleEditSubmit = async () => {
 
     const updatedUser: User = {
       ...props.user,
-      ...editUserForm,
+      name: editUserForm.name,
+      username: editUserForm.username,
+      email: editUserForm.email,
+      address: {
+        ...props.user.address,
+        street: editUserForm.address.street,
+        city: editUserForm.address.city,
+      },
     }
 
     emit('updateUser', updatedUser)
@@ -108,6 +119,13 @@ const handleEditSubmit = async () => {
     console.error(error)
     ElMessage.error('Failed to update user.')
   }
+}
+
+async function handleDeleteUser(id: number) {
+  await userStore.removeUser(id)
+  ElMessage.success('User deleted successfully!')
+  console.log('Deleted user id:', id)
+  emit('update:visible', false)
 }
 </script>
 
