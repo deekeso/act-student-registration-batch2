@@ -61,7 +61,13 @@ export const useUserStore = defineStore('user', {
 
     async removeUser(id: number) {
       await deleteUser(id)
+      // Remove from users array
       this.users = this.users.filter((user) => user.id !== id)
+
+      // Clear selectedUser if it's the deleted user
+      if (this.selectedUser && this.selectedUser.id === id) {
+        this.selectedUser = null
+      }
     },
   },
 })

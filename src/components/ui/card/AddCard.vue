@@ -32,11 +32,11 @@
 </template>
 
 <script setup lang="ts">
+import type { NewUser } from '@/types/user'
 import { formValidation, type UserData } from '@/utils/formValidation'
 import { dayjs, ElMessage } from 'element-plus'
 import { reactive } from 'vue'
 import type z from 'zod'
-import type { NewUser } from '../../types/user'
 
 const addUserForm = reactive<UserData>({
   name: '',
