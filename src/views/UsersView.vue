@@ -1,4 +1,3 @@
-<!-- UsersView.vue -->
 <template>
   <div class="user-view">
     <div class="user-view-header">
@@ -82,9 +81,9 @@
               <el-button @click="handleEditUser(row)" link title="Edit user"
                 ><el-icon color="#677ae5" size="16px"><EditPen /></el-icon
               ></el-button>
-              <el-button @click="handleDeleteUser(row.id)" link title="Delete user"
+              <!-- <el-button @click="handleDeleteUser(row.id)" link title="Delete user"
                 ><el-icon color="red" size="16px"><Delete /></el-icon
-              ></el-button>
+              ></el-button> -->
             </div>
           </template>
         </el-table-column>
@@ -110,11 +109,11 @@ import { computed, onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/userStore'
 import type { NewUser, User } from '@/types/user'
 import AddCard from '@/components/ui/card/AddCard.vue'
-import { ElMessage } from 'element-plus'
-import { Avatar, Plus, Refresh, View, EditPen, Delete } from '@element-plus/icons-vue'
+import { Avatar, Plus, Refresh, View, EditPen } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 import SearchBar from '@/components/ui/SearchBar.vue'
 import EditCard from '@/components/ui/card/EditCard.vue'
+import { ElMessage } from 'element-plus'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -127,13 +126,16 @@ const filteredUsers = computed(() =>
 )
 
 onMounted(async () => {
-  console.log('onMounted: Mounting User List')
+  try {
+    await userStore.fetchAllUsers()
+    await new Promise((resolve) => setTimeout(resolve, 600))
+  } catch (error) {
+    console.log(error)
 
-  await userStore.fetchAllUsers()
-
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-
-  loading.value = false
+    ElMessage.error('Failed to load users. Please try again.')
+  } finally {
+    loading.value = false
+  }
 })
 
 const addCardVisible = ref(false)
@@ -150,11 +152,11 @@ const handleUpdateUser = async (user: User) => {
   editCardVisible.value = false
 }
 
-async function handleDeleteUser(id: number) {
-  await userStore.removeUser(id)
-  ElMessage.success('User deleted successfully!')
-  console.log('Deleted user id:', id)
-}
+// async function handleDeleteUser(id: number) {
+//   await userStore.removeUser(id)
+//   ElMessage.success('User deleted successfully!')
+//   console.log('Deleted user id:', id)
+// }
 
 const handleAddUser = async (user: NewUser) => {
   await userStore.addUser(user)

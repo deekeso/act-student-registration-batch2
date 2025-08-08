@@ -162,7 +162,7 @@ onMounted(async () => {
   if (!isNaN(id)) {
     try {
       await userStore.fetchUserById(id)
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 600))
     } catch (error) {
       console.error('onMoundted: Failed to fetch user:', error)
     } finally {
@@ -179,8 +179,6 @@ onBeforeUnmount(() => {
 
   // Clean up store state to prevent stale data
   userStore.selectedUser = null
-  selectedUser.value = null
-  userDeleted.value = false
 })
 
 // Watch for changes in selectedUser to handle deletion
