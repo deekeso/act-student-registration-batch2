@@ -3,6 +3,7 @@ import type { User } from '@/types/User'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
+import dayjs from 'dayjs'
 
 const route = useRoute()
 const user = ref<User | null>(null)
@@ -21,7 +22,13 @@ const fetchUser = async () => {
   }
 }
 
-onMounted(fetchUser)
+onMounted(async () => {
+  console.log('Profile page mounted')
+  await fetchUser()
+  if (user.value && !user.value.createdAt) {
+    user.value.createdAt = dayjs().format('YYYY-MM-DD HH:mm:ss')
+  }
+})
 </script>
 
 <template>

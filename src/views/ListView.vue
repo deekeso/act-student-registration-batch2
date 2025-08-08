@@ -6,6 +6,7 @@ import TableUser from '@/components/TableUser.vue'
 import AddUserDrawer from '@/components/AddUserDrawer.vue'
 import { ElLoading, ElMessage } from 'element-plus'
 import ActionCard from '@/components/ActionCard.vue'
+import dayjs from 'dayjs'
 
 const userStore = useUserStore()
 const toggleList = ref('grid')
@@ -27,11 +28,9 @@ const handleRefresh = async () => {
   ElMessage.success('Refresh Successful!')
 }
 
-onBeforeMount(() => {
-  console.log(' onBeforeMount triggered')
-})
+onBeforeMount(async () => {
+  console.log(' onBeforeMount triggered, fetching users')
 
-onMounted(async () => {
   const loadingInstance = ElLoading.service({
     lock: true,
     text: 'Loading users...',
@@ -44,6 +43,15 @@ onMounted(async () => {
   // Close loading
   loadingInstance.close()
   loading.value = false
+})
+
+onMounted(async () => {
+  console.log('onMount triggered, adding createdAt')
+
+  userStore.user = userStore.user.map((user) => ({
+    ...user,
+    createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+  }))
 })
 
 onBeforeUnmount(() => {

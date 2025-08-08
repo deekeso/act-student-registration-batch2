@@ -15,10 +15,7 @@ export const useUserStore = defineStore('users', {
         await new Promise((resolve) => setTimeout(resolve, 1500))
         const fetchedUsers = await fetchUser()
 
-        this.user = fetchedUsers.map((user: User) => ({
-          ...user,
-          createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-        }))
+        this.user = fetchedUsers
         console.log('Fetched user:', this.user)
       } catch (error) {
         console.error(error)
