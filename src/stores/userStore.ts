@@ -1,4 +1,4 @@
-import { addUser, editUser, fetchUser, removeUser } from '@/apis/userApi'
+import { addUserApi, editUserApi, fetchUserApi, removeUserApi } from '@/apis/userApi'
 import type { User } from '@/types/User'
 import { ElMessage } from 'element-plus'
 import dayjs from 'dayjs'
@@ -13,7 +13,7 @@ export const useUserStore = defineStore('users', {
     async getUsers() {
       try {
         await new Promise((resolve) => setTimeout(resolve, 1500))
-        const fetchedUsers = await fetchUser()
+        const fetchedUsers = await fetchUserApi()
 
         this.user = fetchedUsers
         console.log('Fetched user:', this.user)
@@ -31,7 +31,7 @@ export const useUserStore = defineStore('users', {
           id: newId,
           createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         }
-        await addUser(createdUser)
+        await addUserApi(createdUser)
         this.user.push(createdUser)
         ElMessage.success('User Added')
         console.log('User added to store. New user count:', this.user.length)
@@ -60,7 +60,7 @@ export const useUserStore = defineStore('users', {
           console.log('Local user updated:', this.user[userIndex])
         } else {
           //For existing user edit logic
-          const updatedUser = await editUser(id, newUserData)
+          const updatedUser = await editUserApi(id, newUserData)
           this.user[userIndex] = {
             ...existingUser,
             ...updatedUser,
@@ -77,7 +77,7 @@ export const useUserStore = defineStore('users', {
 
     async deleteUser(id: number) {
       try {
-        await removeUser(id)
+        await removeUserApi(id)
         this.user = this.user.filter((u) => u.id !== id)
         ElMessage.success('Deletion successful')
         console.log(`User with ID ${id} deleted.`)

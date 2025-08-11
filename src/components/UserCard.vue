@@ -98,9 +98,6 @@ const showEditDrawer = ref(false)
   font-size: 15px;
 }
 
-.user-details {
-  margin-bottom: 10px;
-}
 .router-link-style {
   text-decoration: none;
   color: inherit;

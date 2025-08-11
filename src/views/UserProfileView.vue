@@ -13,6 +13,7 @@ const userStore = useUserStore()
 const fetchUser = async () => {
   try {
     const id = Number(route.params.id)
+    await userStore.getUsers()
     await new Promise((resolve) => setTimeout(resolve, 1500))
     user.value = userStore.user.find((u) => u.id === id) || null
   } catch (error) {

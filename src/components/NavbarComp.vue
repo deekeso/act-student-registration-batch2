@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useUserStore } from '@/stores/userStore'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import type { User } from '@/types/User'
 import { useRouter } from 'vue-router'
 
@@ -8,6 +8,7 @@ const userStore = useUserStore()
 
 const searchText = ref('')
 const router = useRouter()
+const isMobile = ref(window.innerWidth <= 768)
 
 const querySearchAsync = (
   queryString: string,
@@ -43,12 +44,21 @@ const handleSelect = (selected: { value: string; user: User }) => {
     router.push(`/user/${encodeURIComponent(selected.user.id)}`)
   }
 }
+
+onMounted(() => {
+  const checkScreenSize = () => {
+    isMobile.value = window.innerWidth <= 768
+  }
+
+  checkScreenSize()
+  window.addEventListener('resize', checkScreenSize)
+})
 </script>
 
 <template>
   <nav class="navbar">
     <div class="navbar-content">
-      <router-link to="/" class="logo"> <span></span> PROFILE FINDER </router-link>
+      <router-link to="/" class="logo" v-if="!isMobile"> <span></span> PROFILE FINDER </router-link>
 
       <div class="search-wrapper">
         <el-autocomplete

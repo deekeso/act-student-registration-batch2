@@ -4,22 +4,22 @@ import dayjs from 'dayjs'
 
 const API_URL = 'https://jsonplaceholder.typicode.com'
 
-export const fetchUser = async () => {
+export const fetchUserApi = async () => {
   const response = await axios.get(`${API_URL}/users`)
   return response.data
 }
 
-export const addUser = async (newUser: Partial<User>) => {
+export const addUserApi = async (newUser: Partial<User>) => {
   const response = await axios.post(`${API_URL}/users`, newUser)
   return response.data
 }
 
-export const editUser = async (editUserId: number, updatedUser: Partial<User>) => {
+export const editUserApi = async (editUserId: number, updatedUser: Partial<User>) => {
   const response = await axios.put(`${API_URL}/users/${editUserId}`, updatedUser)
   return response.data
 }
 
-export const removeUser = async (deleteUserId: number) => {
+export const removeUserApi = async (deleteUserId: number) => {
   const response = await axios.delete(`${API_URL}/users/${deleteUserId}`)
   return response.data
 }

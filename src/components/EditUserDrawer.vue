@@ -1,11 +1,14 @@
 <script lang="ts" setup>
+import { userFormRule } from '@/rules/ruleForm'
 import { useUserStore } from '@/stores/userStore'
-import { ElLoading, ElMessage } from 'element-plus'
-import { reactive, watchEffect } from 'vue'
+import { ElMessage, type FormInstance } from 'element-plus'
+import { computed, reactive, ref, watchEffect } from 'vue'
 
 const userStore = useUserStore()
 const props = defineProps<{ visible: boolean; userId: number | null | undefined }>()
 const emits = defineEmits(['update:visible', 'success'])
+const formRef = ref<FormInstance>()
+const loading = ref(false)
 
 const form = reactive({
   name: '',
@@ -15,38 +18,37 @@ const form = reactive({
   city: '',
 })
 
+const clearForm = () => {
+  form.name = ''
+  form.username = ''
+  form.email = ''
+  form.street = ''
+  form.city = ''
+}
+
+const isFormComplete = computed(() => form.email && form.username && form.street && form.city)
+
 const handleSubmit = async () => {
+  if (!formRef.value) return
+
   try {
     if (!props.userId) {
       return ElMessage.error('No user selected!')
     }
+    await formRef.value.validate()
+    loading.value = true
 
-    const loadingInstance = ElLoading.service({
-      lock: true,
-      text: 'Editing....',
-      background: 'rgba(0, 0, 0, 0.7)',
-    })
-
+    await new Promise((resolve) => setTimeout(resolve, 1500))
     await userStore.updateUser(props.userId, form)
 
-    form.name = ''
-    form.email = ''
-    form.street = ''
-    form.city = ''
-
-    loadingInstance.close()
+    emits('success')
+    clearForm()
   } catch (error) {
-    console.error(error)
+    ElMessage.error('Invalid inputs. Please try again')
+    console.error('An error has occured: ', error)
   } finally {
-    emits('update:visible', false)
+    loading.value = false
   }
-}
-
-const clearForm = () => {
-  form.name = ''
-  form.email = ''
-  form.street = ''
-  form.city = ''
 }
 
 watchEffect(() => {
@@ -70,27 +72,37 @@ watchEffect(() => {
   <el-drawer
     :model-value="props.visible"
     @update:modelValue="(val: boolean) => emits('update:visible', val)"
+    destroy-on-close
   >
-    <el-form :model="form" label-width="auto" label-position="top" @submit.prevent="handleSubmit">
-      <el-form-item label="Name">
+    <el-form
+      :model="form"
+      label-width="auto"
+      label-position="top"
+      ref="formRef"
+      :rules="userFormRule"
+      @submit.prevent="handleSubmit"
+    >
+      <el-form-item label="Name" prop="name">
         <el-input v-model="form.name" placeholder="Enter your name" />
       </el-form-item>
-      <el-form-item label="Username">
+      <el-form-item label="Username" prop="username">
         <el-input v-model="form.username" placeholder="Enter your name" />
       </el-form-item>
 
-      <el-form-item label="Email">
+      <el-form-item label="Email" prop="email">
         <el-input v-model="form.email" placeholder="Enter your email"
       /></el-form-item>
-      <el-form-item label="Street"
+      <el-form-item label="Street" prop="street"
         ><el-input v-model="form.street" placeholder="Enter your street" />
       </el-form-item>
 
-      <el-form-item label="City">
+      <el-form-item label="City" prop="city">
         <el-input v-model="form.city" placeholder="Enter your city" />
       </el-form-item>
 
-      <el-button native-type="submit">Submit</el-button>
+      <el-button :disabled="!isFormComplete" :loading="loading" native-type="submit"
+        >Submit</el-button
+      >
       <el-button @click="clearForm">Clear</el-button>
     </el-form>
   </el-drawer>
