@@ -15,10 +15,11 @@
             </TextStyle>
           </div>
         </div>
+        <div> <span>Shipping Fee: ₱40</span></div>
         <span>
-          Total {{ ordersStore.orderTotalItem(order) }} item:
+          Total of {{ ordersStore.orderTotalItem(order) }} item:
             ₱{{
-            ordersStore.orderSubTotal(order)
+            ordersStore.allOrders(order)
           }}
         </span>
       </div>
@@ -41,10 +42,11 @@
             </TextStyle>
           </div>
         </div>
+        <div> <span>Shipping Fee: ₱40</span></div>
         <span>
-          Total {{ ordersStore.orderTotalItem(order) }} item:
+          Total of {{ ordersStore.orderTotalItem(order) }} item:
             ₱{{
-            ordersStore.orderSubTotal(order)
+            ordersStore.allOrders(order)
           }}
         </span>
       </div>

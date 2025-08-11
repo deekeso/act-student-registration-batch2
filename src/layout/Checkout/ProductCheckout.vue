@@ -55,9 +55,9 @@
                   :show-quantity="true"
                   @update:quantity="(q) => updateQuantity(item.product.id, q)"
                 >
-                  <template #actions="{ product }">
+                  <!-- <template #actions="{ product }">
                     <ProductCheckoutBtn type="remove" :product-id="product.id" />
-                  </template>
+                  </template> -->
                 </ProductCard>
               </li>
             </ul>

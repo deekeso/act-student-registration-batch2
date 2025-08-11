@@ -56,6 +56,8 @@ export const useOrdersStore = defineStore('orders', {
       order.items.reduce((total, item) => total + (item.product.price ?? 0) * item.quantity, 0),
     orderTotalItem: () => (order: Order) =>
       order.items.reduce((total, item) => total + item.quantity, 0),
+    allOrders: () => (order: Order) =>
+      order.items.reduce((total, item) => total + (item.product.price ?? 0) * item.quantity, 0) + 40 // fixed shipping fee
   },
   persist: true,
 })

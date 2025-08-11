@@ -9,6 +9,7 @@
 </template>
 
 <script setup lang="ts">
+import { ElMessage } from 'element-plus';
 import { computed } from 'vue'
 import { defineProps, defineEmits } from 'vue'
 
@@ -26,7 +27,12 @@ const active = computed({
 
 function next() {
   if (!props.order) return
-  active.value = active.value === 1 ? 2 : 1
+  if (active.value === 1) {
+    active.value = 2
+    ElMessage.success('Order status updated to Completed.')
+  } else {
+    ElMessage.info('Order is already completed.')
+  }
 }
 </script>
 
