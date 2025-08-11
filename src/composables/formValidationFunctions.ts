@@ -119,12 +119,24 @@ export function validateStreet(street: string): { valid: boolean; message: strin
   if (!street || street.length < 5) return { valid: false, message: 'Street must be at least 5 characters.' };
   if (street.length > 50) return { valid: false, message: 'Street must be less than 50 characters.' };
   if (!addressRegex.test(street)) return { valid: false, message: 'Street can only contain letters, numbers, spaces, and ñ/Ñ.' };
+  if (hasLeadingOrTrailingWhitespace(street)) {
+    return { valid: false, message: 'Street cannot have leading or trailing spaces.' };
+  }
+  if (hasConsecutiveSpaces(street)) {
+    return { valid: false, message: 'Street cannot have consecutive spaces.' };
+  }
   return { valid: true, message: '' };
 }
 export function validateBarangay(barangay: string): { valid: boolean; message: string } {
   if (!barangay || barangay.length < 5) return { valid: false, message: 'Barangay must be at least 5 characters.' };
   if (barangay.length > 50) return { valid: false, message: 'Barangay must be less than 50 characters.' };
   if (!addressRegex.test(barangay)) return { valid: false, message: 'Barangay can only contain letters, numbers, spaces, and ñ/Ñ.' };
+  if (hasLeadingOrTrailingWhitespace(barangay)) {
+    return { valid: false, message: 'Barangay cannot have leading or trailing spaces.' };
+  }
+  if (hasConsecutiveSpaces(barangay)) {
+    return { valid: false, message: 'Barangay cannot have consecutive spaces.' };
+  }
   return { valid: true, message: '' };
 }
 
@@ -134,6 +146,12 @@ export function validateCity(city: string): { valid: boolean; message: string } 
   if (!city || city.length < 5) return { valid: false, message: 'City must be at least 5 characters.' };
   if (city.length > 50) return { valid: false, message: 'City must be less than 50 characters.' };
   if (!cityRegex.test(city)) return { valid: false, message: 'City can only contain letters, spaces, and ñ/Ñ.' };
+  if (hasLeadingOrTrailingWhitespace(city)) {
+    return { valid: false, message: 'City cannot have leading or trailing spaces.' };
+  }
+  if (hasConsecutiveSpaces(city)) {
+    return { valid: false, message: 'City cannot have consecutive spaces.' };
+  }
   return { valid: true, message: '' };
 }
 
@@ -142,6 +160,12 @@ export function validateProvince(province: string): { valid: boolean; message: s
   if (!province || province.length < 5) return { valid: false, message: 'Province must be at least 5 characters.' };
   if (province.length > 50) return { valid: false, message: 'Province must be less than 50 characters.' };
   if (!cityRegex.test(province)) return { valid: false, message: 'Province can only contain letters, spaces, and ñ/Ñ.' };
+  if (hasLeadingOrTrailingWhitespace(province)) {
+    return { valid: false, message: 'Province cannot have leading or trailing spaces.' };
+  }
+  if (hasConsecutiveSpaces(province)) {
+    return { valid: false, message: 'Province cannot have consecutive spaces.' };
+  }
   return { valid: true, message: '' };
 }
 
@@ -158,5 +182,11 @@ export function validateZipCode(zipCode: string | number): { valid: boolean; mes
 export function validateLandmark(landmark: string): { valid: boolean; message: string } {
   if (!landmark || landmark.length < 5) return { valid: false, message: 'Landmark must be at least 5 characters.' };
   if (landmark.length > 50) return { valid: false, message: 'Landmark must be less than 50 characters.' };
+  if (hasLeadingOrTrailingWhitespace(landmark)) {
+    return { valid: false, message: 'Landmark cannot have leading or trailing spaces.' };
+  }
+  if (hasConsecutiveSpaces(landmark)) {
+    return { valid: false, message: 'Landmark cannot have consecutive spaces.' };
+  }
   return { valid: true, message: '' };
 }

@@ -2,7 +2,7 @@ import type { CartItem } from './CartItem'
 import type { Order } from './order'
 
 export interface User {
-  userId: number
+  userId?: number
   email?: string
   username?: string
   password?: string

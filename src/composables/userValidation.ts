@@ -1,4 +1,4 @@
-export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+export const emailRegex = /^[A-Za-z0-9]{6,}[^\s@]*@[^\s@]+\.[^\s@]+$/
 export const usernameRegex = /^.{6,}$/
 export const passwordRegex =
   /^(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/
@@ -40,7 +40,7 @@ export function validateEmailField(email: string) {
     return { valid: false, message: 'Email cannot have consecutive spaces' }
   }
   if (!validateEmail(email)) {
-    return { valid: false, message: 'Please enter a valid email address' }
+    return { valid: false, message: 'Please enter a valid email address, eg., user123@example.com' }
   }
   return { valid: true, message: '' }
 }

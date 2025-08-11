@@ -22,8 +22,8 @@
       <div v-if="showQuantity" class="quantity-wrap">
         <el-input-number
           v-model="quantityProxy"
-          :min="1"
           @change="onQuantityChange"
+          @input="handleInput"
         />
       </div>
       <!-- Slot for custom action buttons (e.g., Add to Cart, Remove, etc.) -->
@@ -38,6 +38,7 @@
 import { ref, watch } from 'vue'
 import type { Product } from '@/types/Product'
 import TextStyle from '../TextStyle.vue';
+import { ElMessage } from 'element-plus';
 
 const props = defineProps<{
   product: Product
@@ -50,14 +51,48 @@ const emit = defineEmits(['update:quantity'])
 
 const quantityProxy = ref(props.quantity ?? 1)
 
+// Watch for changes in the quantity prop and update the proxy value
 watch(
   () => props.quantity,
   (val) => {
-    if (val !== undefined) quantityProxy.value = val
+    console.log('props.quantity changed:', val)
+    if (val !== undefined && !isNaN(val) && val >= 1 && val <= 100) {
+      quantityProxy.value = val
+    } else {
+      console.log('Invalid quantity received:', val)
+      if (val !== undefined && !isNaN(val) && val > 100) {
+        console.log('Quantity exceeds maximum limit, resetting to 100.')
+        ElMessage.warning('Quantity is reset to 100, due to input is greater than 100.')
+        quantityProxy.value = 100
+      } else {
+        console.log('Invalid quantity, resetting to 1')
+        ElMessage.warning('Quantity is reset to 1, due to input is less than 1.')
+        quantityProxy.value = 1
+      }
+      emit('update:quantity', quantityProxy.value)
+    }
   }
 )
 
+// Handle input validation
+function handleInput(value: number | undefined) {
+  console.log('handleInput called with:', value)
+  if (value === undefined || isNaN(value) || value < 1) {
+    console.log('Invalid quantity, quantity must be at least 1.')
+    ElMessage.error('Invalid quantity, quantity must be at least 1.')
+    quantityProxy.value = 1
+    emit('update:quantity', 1)
+  } else if (value > 100) {
+    console.log('Quantity exceeds maximum limit.')
+    ElMessage.error('Quantity exceeds maximum limit of 100.')
+    quantityProxy.value = 100
+    emit('update:quantity', 100)
+  }
+}
+
+// Function to handle quantity change
 function onQuantityChange(val: number) {
+  console.log('onQuantityChange called with:', val)
   emit('update:quantity', val)
 }
 </script>

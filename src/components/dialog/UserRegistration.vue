@@ -51,11 +51,11 @@ import {
 import { useAuthStore } from '@/stores/userAuth'
 import type { User } from '@/types/user'
 import { Lock, Message, UserFilled } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import {ElLoading, ElMessage } from 'element-plus'
 import { reactive, ref } from 'vue'
 
 defineProps<{ visible: boolean }>()
-const emit = defineEmits(['update:visible',])
+const emit = defineEmits(['update:visible', 'register'])
 
 // form fields
 const form = reactive({
@@ -72,7 +72,7 @@ const passwordError = ref('')
 // user store actions
 const authStore = useAuthStore()
 
-const handleRegister = () => {
+async function handleRegister() {
   const emailCheck = validateEmailField(form.email)
   const usernameCheck = validateUsernameField(form.username)
   const passwordCheck = validatePasswordField(form.password)
@@ -84,7 +84,7 @@ const handleRegister = () => {
   passwordError.value = passwordCheck.valid ? '' : passwordCheck.message
 
   if (emailCheck.valid && usernameCheck.valid && passwordCheck.valid) {
-    const userData: User = {
+    const userData: Partial<User> = {
       email: form.email,
       username: form.username,
       password: form.password,
@@ -108,19 +108,38 @@ const handleRegister = () => {
       userOrders: [],
     }
 
-    const result = authStore.userRegistration(form.email, form.username, form.password, userData)
-    if (result.success) {
-      ElMessage.success(result.message)
-      form.email = ''
-      form.username = ''
-      form.password = ''
-      emailError.value = ''
-      usernameError.value = ''
-      passwordError.value = ''
-      emit('update:visible', false )
-    } else {
-      ElMessage.error(result.message)
+    console.log('Attempting registration with userData:', userData)
+    const loadingInstance = ElLoading.service({ fullscreen: true, text: 'Registering...' })
+    try {
+      const registerPromise = authStore.userRegistration(form.email, form.username, form.password, userData)
+      const timerPromise = new Promise(resolve => setTimeout(resolve, 500))
+      const result = await registerPromise
+      console.log('Registration result:', result)
+      await timerPromise
+
+      if (result.success) {
+        console.log('Registration successful')
+        ElMessage.success(result.message)
+        form.email = ''
+        form.username = ''
+        form.password = ''
+        emailError.value = ''
+        usernameError.value = ''
+        passwordError.value = ''
+        emit('update:visible', false)
+        emit('register', { email: form.email, username: form.username, password: form.password, userData })
+      } else {
+        console.log('Registration failed:', result.message)
+        ElMessage.error(result.message)
+      }
+    } catch (error) {
+      console.error('Error during registration:', error)
+      ElMessage.error('An error occurred during registration.')
+    } finally {
+      loadingInstance.close()
     }
+  } else {
+    console.log('Validation failed:', { emailError: emailError.value, usernameError: usernameError.value, passwordError: passwordError.value })
   }
 }
 </script>

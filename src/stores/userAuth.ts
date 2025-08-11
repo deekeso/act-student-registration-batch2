@@ -101,15 +101,25 @@ export const useAuthStore = defineStore('auth', {
       // save credentials
       localStorage.setItem('Users', JSON.stringify(users))
       localStorage.setItem('lastUserId', String(newUserId))
-      // localStorage.setItem('currentUser', username)
-      // localStorage.setItem('isLoggedIn', 'true')
 
-      // update store
-      this.email = email
-      this.username = username
-      this.password = password
-      this.userInfo = newUser
+      if (newUser! && newUser.userId === newUserId) {
+        localStorage.setItem('currentUser', username)
+        localStorage.setItem('isLoggedIn', 'true')
 
+         // update store
+        this.username = username
+        this.password = password
+        this.email = email
+        this.isLoggedIn = true
+
+        // load cart for the user
+        const cartStore = useCartStore()
+        cartStore.loadFromCartUser()
+
+        // load orders for the user
+        const ordersStore = useOrdersStore()
+        ordersStore.loadFromUserOrders()
+      }
       return { success: true, message: 'Registration successful.' }
     },
 

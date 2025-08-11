@@ -12,7 +12,7 @@
         <span class="button-text">Order</span>
       </el-button>
       <el-button v-if="authStore.isLoggedIn" @click="userProfile" link class="user">
-        <el-icon><User /></el-icon>
+        <!-- <el-icon><User /></el-icon> -->
         <span class="button-text">{{ currentUser }}</span>
       </el-button>
       <el-button v-if="!authStore.isLoggedIn" link @click="loginDialogVisible = true" class="login">
@@ -28,7 +28,7 @@
         <span class="button-text">Logout</span>
       </el-button>
     </div>
-    <UserLogin v-model:visible="loginDialogVisible" @login="handleLogin" />
+    <UserLogin v-model:visible="loginDialogVisible" @login="login" />
   </div>
 </template>
 
@@ -37,7 +37,7 @@ import { useRouter } from 'vue-router'
 import SearchBar from './SearchBar.vue'
 import UserLogin from './dialog/UserLogin.vue'
 import { useAuthStore } from '@/stores/userAuth'
-import { Document, Edit, Lock, ShoppingCart, SwitchButton, User } from '@element-plus/icons-vue'
+import { Document, Edit, Lock, ShoppingCart, SwitchButton } from '@element-plus/icons-vue'
 import { computed, onMounted, ref } from 'vue'
 import { ElLoading, ElMessage } from 'element-plus'
 
@@ -66,7 +66,7 @@ function userProfile() {
   router.push('/profile')
 }
 
-async function handleLogin({ username, password }: { username: string, password: string }) {
+async function login({ username, password }: { username: string, password: string }) {
   const loadingInstance = ElLoading.service({ fullscreen: true, text: 'Logging in...' })
   try {
     const loginPromise = authStore.userLogin(username, password)

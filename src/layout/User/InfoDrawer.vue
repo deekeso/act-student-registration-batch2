@@ -23,7 +23,7 @@
             />
           </el-form-item>
         </div>
-        <div class="personal-info">
+        <div class="personal-info" v-if="authStore.userInfo?.name?.firstName === ''">
           <h3>Personal Information</h3>
           <h3>Name</h3>
           <el-form-item label="Last Name" prop="lastName">
@@ -36,7 +36,7 @@
             <el-input v-model="form.middleName" @keypress="lettersOnly" maxlength="30" style="width: 100%" @input="form.middleName = form.middleName.toUpperCase()" />
           </el-form-item>
         </div>
-        <div class="birthday">
+        <div class="birthday" v-if="authStore.userInfo?.age === 0">
           <h3>Birthday</h3>
           <el-form-item label="Birthday" prop="birthDate">
             <el-date-picker
@@ -54,7 +54,6 @@
             <el-input
               v-model="form.age"
               id="age"
-              type="number"
               style="width: 100%"
               placeholder=""
               readonly
@@ -112,7 +111,7 @@
             />
           </el-form-item>
         </div>
-        <div class="personal-info">
+        <div class="personal-info" v-if="authStore.userInfo?.name?.firstName === ''">
           <h3>Personal Information</h3>
           <h3>Name</h3>
           <el-form-item label="Last Name" prop="lastName">
@@ -125,7 +124,7 @@
             <el-input v-model="form.middleName" @keypress="lettersOnly" maxlength="30" style="width: 100%" @input="form.middleName = form.middleName.toUpperCase()" />
           </el-form-item>
         </div>
-        <div class="birthday">
+        <div class="birthday" v-if="authStore.userInfo?.age === 0">
           <h3>Birthday</h3>
           <el-form-item label="Birthday" prop="birthDate">
             <el-date-picker
@@ -198,7 +197,7 @@ const authStore = useAuthStore()
 const form = reactive({
   username: '',
   email: '',
-  contactNumber: 0,
+  contactNumber:  0,
   lastName: '',
   firstName: '',
   middleName: '',
