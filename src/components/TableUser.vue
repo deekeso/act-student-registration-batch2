@@ -9,9 +9,9 @@ const showEditDrawer = ref(false)
 </script>
 
 <template>
-  <el-table :data="userStore.user" style="width: 80%; border: 1px black solid">
-    <el-table-column prop="name" label="Name" />
-    <el-table-column prop="username" label="Username" />
+  <el-table :data="userStore.user" style="width: 85%; border: 1px black solid">
+    <el-table-column prop="name" label="Name" show-overflow-tooltip />
+    <el-table-column prop="username" label="Username" show-overflow-tooltip />
     <el-table-column label="Actions">
       <template #default="{ row }">
         <el-button
