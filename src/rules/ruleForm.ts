@@ -1,8 +1,10 @@
 import type { FormRules } from 'element-plus'
 
-const emailRegex = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/
-const nameRegex = /^[A-Za-zÑñ\s'-]+$/
-const addressRegex = /^[A-Za-zÑñ0-9\s,.-]+$/
+const emailRegex =
+  /^(?!.*([!#$%^&*()_\-+=\[\]{};:'",<>/?\\|`~])\1{2,})(?!.*@.*@)[A-Za-z0-9]+(?:[._%+-][A-Za-z0-9]+)*@[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*\.[A-Za-z]{2,}$/
+
+const nameRegex = /^(?!.*([-'"()])\1)[A-Za-zÑñ\s'"()-]+$/
+const addressRegex = /^(?!.*([,.\-])\1)(?=.*[A-Za-zÑñ])[A-Za-zÑñ0-9\s,.\-]+$/
 
 const validateEmail = (fieldName: string) => {
   return (_rule: unknown, value: string, callback: (error?: Error) => void) => {

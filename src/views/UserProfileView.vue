@@ -127,10 +127,6 @@ onMounted(async () => {
   margin-bottom: 30px;
 }
 
-.header h2 {
-  font-size: 3rem;
-}
-
 .user-name {
   font-size: 32px;
   font-weight: 600;
@@ -166,6 +162,7 @@ onMounted(async () => {
   align-items: center;
   padding: 12px 0;
   border-bottom: 1px solid #f5f5f5;
+  flex-wrap: wrap;
 }
 
 .detail-label {
@@ -183,7 +180,60 @@ onMounted(async () => {
   margin-left: 20px;
 }
 
-/* :deep(.el-card__body) {
-  padding: 0;
-} */
+/* 📱 Mobile Responsive Styling */
+@media (max-width: 768px) {
+  .user-container {
+    width: 100%;
+    padding: 20px;
+    min-height: auto;
+  }
+
+  .user-name {
+    font-size: 26px;
+  }
+
+  .username {
+    font-size: 16px;
+  }
+
+  .detail-label {
+    font-size: 18px;
+  }
+
+  .detail-value {
+    font-size: 16px;
+    margin-left: 10px;
+    text-align: left;
+  }
+
+  .details-section {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-container {
+    padding: 15px;
+  }
+
+  .user-name {
+    font-size: 22px;
+  }
+
+  .username {
+    font-size: 14px;
+  }
+
+  .detail-label {
+    font-size: 16px;
+  }
+
+  .detail-value {
+    font-size: 14px;
+  }
+
+  .loading-text {
+    font-size: 18px;
+  }
+}
 </style>

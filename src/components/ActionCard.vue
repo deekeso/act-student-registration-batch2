@@ -3,6 +3,7 @@ import { computed, onUnmounted, ref } from 'vue'
 import AddUserDrawer from './AddUserDrawer.vue'
 import { useUserStore } from '@/stores/userStore'
 import EditUserDrawer from './EditUserDrawer.vue'
+import { ElMessage } from 'element-plus'
 
 const props = defineProps<{ visible: boolean }>()
 const emit = defineEmits(['update:visible'])
@@ -16,6 +17,16 @@ const showDialog = computed({
   get: () => props.visible,
   set: (val) => emit('update:visible', val),
 })
+
+const validateUserId = () => {
+  if (!userId.value) return false
+  const exists = userStore.user.some((u) => u.id === userId.value)
+  if (!exists) {
+    ElMessage.error(`User Id with ${userId.value} not found!`)
+    return false
+  }
+  return true
+}
 
 onUnmounted(() => {
   console.log('Dialog component destroyed')
@@ -39,13 +50,20 @@ onUnmounted(() => {
           :disabled="!userId"
           @click="
             () => {
+              if (!validateUserId) return
               showEditDrawer = true
-              console.log('userId value: ', userId)
+              console.log('userid found')
             }
           "
           >Edit</el-button
         >
-        <el-button @click="userStore.deleteUser(userId as number)" :disabled="!userId"
+        <el-button
+          @click="
+            () => {
+              if (!validateUserId()) return
+              userStore.deleteUser(userId as number)
+            }
+          "
           >Delete</el-button
         >
       </div>

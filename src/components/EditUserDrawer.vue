@@ -2,7 +2,7 @@
 import { userFormRule } from '@/rules/ruleForm'
 import { useUserStore } from '@/stores/userStore'
 import { ElMessage, type FormInstance } from 'element-plus'
-import { computed, reactive, ref, watchEffect } from 'vue'
+import { computed, onMounted, reactive, ref, watchEffect } from 'vue'
 
 const userStore = useUserStore()
 const props = defineProps<{ visible: boolean; userId: number | null | undefined }>()
@@ -27,7 +27,7 @@ const clearForm = () => {
 }
 
 const isFormComplete = computed(() => form.email && form.username && form.street && form.city)
-
+const isMobile = ref(window.innerWidth <= 768)
 const handleSubmit = async () => {
   if (!formRef.value) return
 
@@ -66,12 +66,22 @@ watchEffect(() => {
     form.city = user.address?.city || ''
   }
 })
+
+onMounted(() => {
+  const checkScreenSize = () => {
+    isMobile.value = window.innerWidth <= 768
+  }
+
+  checkScreenSize()
+  window.addEventListener('resize', checkScreenSize)
+})
 </script>
 
 <template>
   <el-drawer
     :model-value="props.visible"
     @update:modelValue="(val: boolean) => emits('update:visible', val)"
+    :size="isMobile ? '100%' : '30%'"
     destroy-on-close
   >
     <el-form

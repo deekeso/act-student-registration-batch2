@@ -2,13 +2,14 @@
 import { userFormRule } from '@/rules/ruleForm'
 import { useUserStore } from '@/stores/userStore'
 import { ElMessage, type FormInstance } from 'element-plus'
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 
 const userStore = useUserStore()
 const props = defineProps<{ visible: boolean }>()
 const formRef = ref<FormInstance>()
 const emits = defineEmits(['update:visible', 'success'])
 const loading = ref(false)
+const isMobile = ref(window.innerWidth <= 768)
 
 const form = reactive({
   name: '',
@@ -55,12 +56,22 @@ const clearForm = () => {
   form.street = ''
   form.city = ''
 }
+
+onMounted(() => {
+  const checkScreenSize = () => {
+    isMobile.value = window.innerWidth <= 768
+  }
+
+  checkScreenSize()
+  window.addEventListener('resize', checkScreenSize)
+})
 </script>
 
 <template>
   <el-drawer
     :model-value="props.visible"
     @update:modelValue="(val: boolean) => emits('update:visible', val)"
+    :size="isMobile ? '100%' : '30%'"
     destroy-on-close
   >
     <el-form

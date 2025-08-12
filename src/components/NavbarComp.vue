@@ -3,12 +3,14 @@ import { useUserStore } from '@/stores/userStore'
 import { onMounted, ref } from 'vue'
 import type { User } from '@/types/User'
 import { useRouter } from 'vue-router'
+import MobileMenuDrawer from './MobileMenuDrawer.vue'
 
 const userStore = useUserStore()
 
 const searchText = ref('')
 const router = useRouter()
 const isMobile = ref(window.innerWidth <= 768)
+const showMenuDrawer = ref(false)
 
 const querySearchAsync = (
   queryString: string,
@@ -59,6 +61,9 @@ onMounted(() => {
   <nav class="navbar">
     <div class="navbar-content">
       <router-link to="/" class="logo" v-if="!isMobile"> <span></span> PROFILE FINDER </router-link>
+      <el-button v-if="isMobile" class="menu-btn" @click="showMenuDrawer = true"
+        ><el-icon><Menu /></el-icon
+      ></el-button>
 
       <div class="search-wrapper">
         <el-autocomplete
@@ -83,6 +88,8 @@ onMounted(() => {
       </div>
     </div>
   </nav>
+
+  <MobileMenuDrawer v-model:visible="showMenuDrawer" />
 </template>
 
 <style scoped>
@@ -95,6 +102,7 @@ onMounted(() => {
 
 .navbar-content {
   max-width: 70%;
+  position: relative;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -125,5 +133,8 @@ onMounted(() => {
 
 .search-bar {
   width: 100%;
+}
+.menu-btn {
+  padding: 15px;
 }
 </style>
