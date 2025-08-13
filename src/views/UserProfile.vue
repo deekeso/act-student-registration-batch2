@@ -117,6 +117,26 @@
           </div>
         </el-card>
       </div>
+
+      <div v-if="commentStore.comments.length">
+        <h3 style="margin: 20px">Comments</h3>
+        <ul class="comment-list">
+          <li v-for="comment in commentStore.comments" :key="comment.id" class="comment-item">
+            <el-card class="comment-content">
+              <strong>{{ comment.name }}</strong> ({{ comment.email }}):
+              <p>{{ comment.body }}</p>
+            </el-card>
+            <ul v-if="comment.replies && comment.replies.length" class="reply-list">
+              <li v-for="reply in comment.replies" :key="reply.id" class="reply-item">
+                <el-card class="comment-content">
+                  <strong>{{ reply.name }}</strong> ({{ reply.email }}):
+                  <p>{{ reply.body }}</p>
+                </el-card>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <!-- Error/No User State -->
@@ -142,8 +162,10 @@ import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import { Avatar, ArrowLeft, Message, Location, UserFilled } from '@element-plus/icons-vue'
 import type { User } from '@/types/user'
+import { useCommentStore } from '@/stores/commentStore'
 
 const userStore = useUserStore()
+const commentStore = useCommentStore()
 const route = useRoute()
 const isLoading = ref(true)
 const userDeleted = ref(false)
@@ -162,6 +184,7 @@ onMounted(async () => {
   if (!isNaN(id)) {
     try {
       await userStore.fetchUserById(id)
+      await commentStore.fetchCommentsByPostId(id)
       await new Promise((resolve) => setTimeout(resolve, 600))
     } catch (error) {
       console.error('onMoundted: Failed to fetch user:', error)
@@ -407,6 +430,39 @@ watch(
 .website-link:hover {
   color: #4c6ef5;
   text-decoration: underline;
+}
+
+/* Comment Styles */
+.comment-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+}
+
+.comment-item {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.comment-content {
+  padding: 0.5rem;
+}
+
+.reply-list {
+  list-style: none;
+  padding: 0 0 0 2rem;
+  margin: 0.5rem 0 0 0;
+}
+
+.reply-item {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-left: 3px solid #5e87f5;
 }
 
 /* No User State */
