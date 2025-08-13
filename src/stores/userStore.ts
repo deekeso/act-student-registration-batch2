@@ -15,7 +15,8 @@ export const useUserStore = defineStore('users', {
         await new Promise((resolve) => setTimeout(resolve, 1500))
         const fetchedUsers = await fetchUserApi()
 
-        this.user = fetchedUsers
+        const localUsers = this.user.filter((u) => u.id! > 10)
+        this.user = [...fetchedUsers, ...localUsers]
         console.log('Fetched user:', this.user)
       } catch (error) {
         console.error(error)
@@ -32,7 +33,8 @@ export const useUserStore = defineStore('users', {
           createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         }
         await addUserApi(createdUser)
-        this.user.push(createdUser)
+
+        this.user = [...this.user, createdUser]
         ElMessage.success('User Added')
         console.log('User added to store. New user count:', this.user.length)
       } catch (error) {

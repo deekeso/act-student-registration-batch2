@@ -4,7 +4,7 @@ import { onBeforeMount, onBeforeUnmount, onMounted, ref } from 'vue'
 import UserCard from '@/components/UserCard.vue'
 import TableUser from '@/components/TableUser.vue'
 import AddUserDrawer from '@/components/AddUserDrawer.vue'
-import { ElLoading, ElMessage } from 'element-plus'
+import { ElLoading } from 'element-plus'
 import ActionCard from '@/components/ActionCard.vue'
 import dayjs from 'dayjs'
 
@@ -14,18 +14,8 @@ const showAddDrawer = ref(false)
 const loading = ref(true)
 const showActions = ref(false)
 
-const handleRefresh = async () => {
-  const loadingInstance = ElLoading.service({
-    lock: true,
-    text: 'Refreshing...',
-    background: 'rgba(0, 0, 0, 0.7)',
-  })
-
-  await userStore.getUsers()
-
-  loadingInstance.close()
-  loading.value = false
-  ElMessage.success('Refresh Successful!')
+const handleRefresh = () => {
+  location.reload()
 }
 
 onBeforeMount(async () => {
