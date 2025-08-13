@@ -43,7 +43,13 @@ onUnmounted(() => {
     destroy-on-close
   >
     <div class="container">
-      <el-input-number style="width: 100%" :min="0" v-model="userId" placeholder="Id" clearable />
+      <el-input-number
+        style="width: 100%"
+        :min="0"
+        v-model="userId"
+        placeholder="Select an Id to modify or delete"
+        clearable
+      />
       <div class="actions">
         <el-button @click="showAddDrawer = true">Add</el-button>
         <el-button

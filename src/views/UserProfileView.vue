@@ -4,6 +4,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import dayjs from 'dayjs'
+import CommentComp from '@/components/CommentComp.vue'
 
 const route = useRoute()
 const user = ref<User | null>(null)
@@ -76,6 +77,8 @@ onMounted(async () => {
         </div>
       </div>
     </el-card>
+
+    <CommentComp />
   </section>
 </template>
 
@@ -83,6 +86,7 @@ onMounted(async () => {
 #profile {
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
   min-height: 100vh;
   background-color: #f5f5f5;
