@@ -81,7 +81,7 @@ export const products: Product[] = [
     name: 'Wireless Mouse',
     description: 'Ergonomic design with 2.4GHz wireless connection.',
     price: 999,
-    oldPrice: 999,
+    oldPrice: 1999,
     discount: 0,
     stock: 300,
     image: '/src/assets/products/Wireless Mouse.jpg',

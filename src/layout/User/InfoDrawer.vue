@@ -197,7 +197,7 @@ const authStore = useAuthStore()
 const form = reactive({
   username: '',
   email: '',
-  contactNumber:  0,
+  contactNumber: '',
   lastName: '',
   firstName: '',
   middleName: '',
@@ -225,7 +225,7 @@ watch(
       if (user) {
         form.username = user.username || ''
         form.email = user.email || ''
-        form.contactNumber = user.contactNumber || 0
+        form.contactNumber = user.contactNumber || ''
         form.lastName = user.name?.lastName || ''
         form.firstName = user.name?.firstName || ''
         form.middleName = user.name?.middleName || ''

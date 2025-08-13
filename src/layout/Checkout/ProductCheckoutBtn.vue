@@ -1,14 +1,24 @@
 <template>
+  <!-- place order btn -->
   <el-button
     v-if="type === 'place-order'"
     @click="handleOrder"
     :disabled="!checkoutStore.isPaid"
-    round
     >Place Order Now</el-button
   >
-  <el-button v-else-if="type === 'payment'"  @click="handlePayment" round
-    >Cash on Delivery</el-button
+
+  <!-- payment method btn circle-->
+  <el-radio
+   v-else-if="type === 'payment'"
+    v-model="selectedPayment"
+    label="cod"
+    @change="handlePayment"
+    border
   >
+  Cash on Delivery
+  </el-radio>
+
+  <!-- remove btn -->
   <el-icon v-else-if="type === 'remove'" @click="removeFromCheckout(productId!)" class="delete-icon"
     ><Delete
   /></el-icon>
@@ -19,6 +29,7 @@ import { useCheckoutStore } from '@/stores/checkout'
 import { Delete } from '@element-plus/icons-vue'
 import { ElLoading, ElMessage } from 'element-plus'
 import type { LoadingInstance } from 'element-plus/es/components/loading/src/loading.mjs';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 defineProps<{
@@ -28,6 +39,8 @@ defineProps<{
 
 const checkoutStore = useCheckoutStore()
 const router = useRouter()
+
+const selectedPayment = ref('')
 
 async function handleOrder() {
   console.log('Starting handleOrder')
@@ -59,9 +72,40 @@ function removeFromCheckout(id: number) {
 </script>
 
 <style scoped>
+.el-button {
+  background-color: #e2e2e2;
+  color: #2e2e2e;
+  border-radius: 10px;
+  height: 50px;
+  margin: 10px auto;
+  border: 1px solid #2e2e2e;
+  width: 100%;
+}
+
 .delete-icon {
   font-size: 20px;
   color: red;
   cursor: pointer;
+}
+
+.el-radio.is-bordered {
+  padding: 30px;
+  width: 100%;
+  border: 2px solid #f5f5f5;
+  border-radius: 10px;
+  margin: 10px auto;
+}
+
+.el-radio.is-bordered.is-checked {
+  border: 2px solid #000;
+}
+
+:deep(.el-radio__input.is-checked+.el-radio__label) {
+  color: #333;
+}
+
+:deep(.el-radio__input.is-checked .el-radio__inner) {
+  background-color: #797a7e;
+  border-color: #797a7e;
 }
 </style>

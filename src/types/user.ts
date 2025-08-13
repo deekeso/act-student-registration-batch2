@@ -6,7 +6,7 @@ export interface User {
   email?: string
   username?: string
   password?: string
-  contactNumber?: number
+  contactNumber?: string
   age?: number
   birthDate?: string
   name?: {
@@ -20,7 +20,7 @@ export interface User {
     city: string
     province: string
     zipCode: number
-    landmark?: string
+    landmark: string
   }
   userCart?: CartItem[]
   userOrders?: Order[]

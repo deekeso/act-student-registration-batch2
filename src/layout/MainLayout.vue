@@ -28,7 +28,7 @@ const registerDialogVisible = ref(false)
 .sticky-header {
   position: sticky;
   top: 0;
-  z-index: 999; /* ensures it stays above other content */
+  z-index: 999;
 }
 
 </style>

@@ -254,6 +254,7 @@ li {
   justify-content: space-between;
   align-items: center;
   margin-top: 16px;
+  margin-bottom: 12px;
   padding-top: 12px;
   border-top: 1px solid #2e2e2e52;
   font-weight: 600;

@@ -30,12 +30,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { validateEmailField, validateUsernameField, validatePasswordField, validateConfirmPasswordField } from '@/composables/userValidation'
 import { useAuthStore } from '@/stores/userAuth';
 import { ElMessage } from 'element-plus';
 
-defineProps<{ visible: boolean }>()
+const props = defineProps<{ visible: boolean }>()
 const emit = defineEmits(['update:visible', 'submit'])
 
 const username = ref('')
@@ -85,9 +85,33 @@ function handleSubmit() {
     }
   }
 }
+
+// clear input fields and errors when dialog is closed
+watch(
+  () => props.visible,
+  (newVal) => {
+    if (!newVal) {
+      // Clear input fields
+      username.value = ''
+      email.value = ''
+      newPassword.value = ''
+      confirmPassword.value = ''
+
+      // Clear errors
+      usernameError.value = ''
+      emailError.value = ''
+      passwordError.value = ''
+      confirmPasswordError.value = ''
+    }
+  }
+)
 </script>
 
 <style scoped>
+:deep(.el-form-item__error) {
+  position: relative;
+  margin: 2px 0 0 0;
+}
 .el-input {
   width: 100%;
   height: 50px;

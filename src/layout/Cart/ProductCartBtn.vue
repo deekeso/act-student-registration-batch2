@@ -1,6 +1,6 @@
 <template>
   <el-button v-if="type === 'continue'" size="small" @click="goHome" class="continue-btn">Continue Shopping</el-button>
-  <el-button v-else-if="type === 'checkout'" size="small" @click="handleCheckout"
+  <el-button v-else-if="type === 'checkout'" size="small" @click="handleCheckout" class="checkout-btn"
     >Checkout</el-button
   >
   <el-icon
@@ -15,8 +15,7 @@
     v-else-if="type === 'checkoutSelect'"
     @click="handleCheckoutSelect"
     :disabled="!selectedItems || selectedItems.length === 0"
-    round
-    claass="checkout-btn"
+    class="checkout-btn"
     >Checkout</el-button
   >
 </template>
@@ -72,12 +71,17 @@ function handleCheckoutSelect() {
   cursor: pointer;
 }
 
-/* .checkout-btn {
-} */
+.checkout-btn {
+  background-color: #e2e2e2;
+  color: #2e2e2e;
+  border-radius: 10px;
+  height: 50px;
+  margin: 20px auto;
+  border: 1px solid #2e2e2e;
+}
 
 .el-button, .el-button.is-round {
   width: 100%;
-  margin-top: 10px;
 }
 
 .continue-btn {

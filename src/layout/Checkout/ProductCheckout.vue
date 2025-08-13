@@ -67,6 +67,24 @@
 
       <!-- Summary -->
       <div class="to-checkout" v-if="checkoutItems.length > 0">
+        <div v-if="
+              authStore.userInfo?.name?.lastName &&
+              authStore.userInfo?.name?.firstName &&
+              authStore.userInfo?.address?.street &&
+              authStore.userInfo?.address?.city &&
+              authStore.userInfo?.address?.zipCode &&
+              authStore.userInfo?.email &&
+              authStore.userInfo?.contactNumber
+            "
+          >
+            <TextStyle variant="section-header">Payment</TextStyle>
+            <div
+
+              class=""
+            >
+            <ProductCheckoutBtn type="payment" />
+          </div>
+        </div>
         <TextStyle variant="section-header">Summary</TextStyle>
         <div class="items">
           <div class="items-header">
@@ -116,7 +134,6 @@
             "
             class="button-group"
           >
-            <ProductCheckoutBtn type="payment" />
             <ProductCheckoutBtn type="place-order" />
           </div>
         </div>
@@ -213,7 +230,7 @@ function toggleShowMore() {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-}
+  }
 
 .user-info {
   display: flex;
@@ -330,7 +347,7 @@ li {
 }
 
 .total {
-  border-top: 1px solid #2E2E2E; /* Solid separator for total */
+  border-top: 1px solid #2E2E2E;
   padding-top: 12px;
   font-weight: 600;
 }
@@ -351,6 +368,15 @@ li {
   .cart-container {
     flex-direction: column;
     padding: 16px;
+  }
+
+  .user-info-name,
+  .user-info-email,
+  .user-info-contact,
+  .user-info-address {
+    flex-direction: column;
+    align-items: flex-start;
+    word-break: break-word;
   }
 }
 </style>

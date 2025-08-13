@@ -45,10 +45,10 @@
 import { validatePasswordField, validateUsernameField } from '@/composables/userValidation'
 import { useAuthStore } from '@/stores/userAuth'
 import { Lock, QuestionFilled, User } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import UserPassword from './UserPassword.vue';
 
-defineProps<{ visible: boolean }>()
+const props = defineProps<{ visible: boolean }>()
 const emit = defineEmits(['update:visible', 'login'])
 
 const usernameError = ref('')
@@ -73,6 +73,22 @@ const handleLogin = () => {
     emit('login', { username: authStore.username, password: authStore.password })
   }
 }
+
+// clear input fields and errors when dialog is closed
+watch(
+  () => props.visible,
+  (newVal) => {
+    if (!newVal) {
+      // Clear input fields
+      authStore.username = ''
+      authStore.password = ''
+
+      // Clear errors
+      usernameError.value = ''
+      passwordError.value = ''
+    }
+  }
+)
 </script>
 
 <style scoped>

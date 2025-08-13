@@ -75,7 +75,7 @@ export function validatePasswordField(password: string) {
     return {
       valid: false,
       message:
-        'Password must be at least 8 characters, include 1 uppercase letter, 1 symbol, and a combination of letters and numbers.',
+        'Password must be 8+ chars, with 1 uppercase, 1 symbol, and letters/numbers.',
     }
   }
   return { valid: true, message: '' }

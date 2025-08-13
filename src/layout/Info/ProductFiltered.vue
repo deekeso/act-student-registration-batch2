@@ -61,7 +61,7 @@ const filteredProducts = computed(() => {
 
 .filter-tags {
   align-items: center;
-  margin: 4px;
+  margin: 20px auto;
 }
 
 .product-grid {

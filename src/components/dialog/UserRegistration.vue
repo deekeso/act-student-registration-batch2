@@ -52,10 +52,12 @@ import { useAuthStore } from '@/stores/userAuth'
 import type { User } from '@/types/user'
 import { Lock, Message, UserFilled } from '@element-plus/icons-vue'
 import {ElLoading, ElMessage } from 'element-plus'
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
-defineProps<{ visible: boolean }>()
+const props = defineProps<{ visible: boolean }>()
 const emit = defineEmits(['update:visible', 'register'])
+const router = useRouter()
 
 // form fields
 const form = reactive({
@@ -88,7 +90,7 @@ async function handleRegister() {
       email: form.email,
       username: form.username,
       password: form.password,
-      contactNumber: 0,
+      contactNumber: '',
       age: 0,
       name: {
         firstName: '',
@@ -137,14 +139,37 @@ async function handleRegister() {
       ElMessage.error('An error occurred during registration.')
     } finally {
       loadingInstance.close()
+      router.push('/profile')
     }
   } else {
     console.log('Validation failed:', { emailError: emailError.value, usernameError: usernameError.value, passwordError: passwordError.value })
   }
 }
+
+// Clear input fields and errors when dialog is closed
+watch(
+  () => props.visible,
+  (newVal) => {
+    if (!newVal) {
+      // Clear input fields
+      form.email = ''
+      form.username = ''
+      form.password = ''
+
+      // Clear errors
+      emailError.value = ''
+      usernameError.value = ''
+      passwordError.value = ''
+    }
+  }
+)
 </script>
 
 <style scoped>
+:deep(.el-form-item__error) {
+  position: relative;
+  margin: 2px 0 0 0;
+}
 
 .el-input {
   width: 100%;
