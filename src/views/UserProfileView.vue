@@ -8,19 +8,19 @@ import CommentComp from '@/components/CommentComp.vue'
 
 const route = useRoute()
 const user = ref<User | null>(null)
-const loading = ref(true)
+const loading = ref(false)
 const userStore = useUserStore()
 
 const fetchUser = async () => {
   try {
+    loading.value = true
     const id = Number(route.params.id)
     await userStore.getUsers()
     await new Promise((resolve) => setTimeout(resolve, 1500))
+    loading.value = false
     user.value = userStore.user.find((u) => u.id === id) || null
   } catch (error) {
     console.error(error)
-  } finally {
-    loading.value = false
   }
 }
 
