@@ -38,7 +38,14 @@
 
       <div class="form-options">
         <el-checkbox v-model="rememberMe" class="remember-me"> Remember me </el-checkbox>
-        <el-link href="#" class="forgot-password" underline="never"> Forgot Password? </el-link>
+        <el-link 
+          href="#" 
+          class="forgot-password" 
+          underline="never" 
+          @click="showForgotPassword"
+        > 
+          Forgot Password? 
+        </el-link>
       </div>
 
       <el-button
@@ -52,6 +59,12 @@
         <span v-else>Signing in...</span>
       </el-button>
     </el-form>
+
+    <!-- Forgot Password Dialog Component -->
+    <ForgotPasswordDialog
+      v-model="forgotPasswordVisible"
+      @success="handleForgotPasswordSuccess"
+    />
 
     <div class="social-login">
       <el-divider class="custom-divider">
@@ -111,14 +124,16 @@ import { loginSchema } from '@/libs/z'
 import z from 'zod'
 import { useRouter } from 'vue-router'
 import { formRules } from '@/utils/validators'
+import ForgotPasswordDialog from '@/components/form/forgotPassword/forgotPasswordDialog.vue'
 
 const router = useRouter()
 const userStore = useUserAuthStore()
 
-//state
+// State
 const rememberMe = ref(false)
+const forgotPasswordVisible = ref(false)
 
-//props
+// Props
 const props = defineProps({
   loginDialogVisible: {
     type: Boolean,
@@ -128,10 +143,7 @@ const props = defineProps({
 // Emits
 const emit = defineEmits(['register-clicked', 'success'])
 
-const handleShowRegister = () => {
-  emit('register-clicked')
-}
-
+// Form data
 const form = reactive<LoginRequest>({
   email: '',
   password: '',
@@ -139,10 +151,12 @@ const form = reactive<LoginRequest>({
 
 const loginForm = ref<FormInstance>()
 
+// Validation rules
 const rules = reactive({
   ...formRules,
 })
 
+// Methods
 const handleSubmit = async () => {
   if (!loginForm.value) return
 
@@ -184,6 +198,19 @@ const handleSubmit = async () => {
   }
 }
 
+const handleShowRegister = () => {
+  emit('register-clicked')
+}
+
+const showForgotPassword = () => {
+  forgotPasswordVisible.value = true
+}
+
+const handleForgotPasswordSuccess = (email: string) => {
+  console.log('Password reset email sent to:', email)
+  // You can add additional logic here if needed
+}
+
 const handleGoogleLogin = () => {
   ElMessage.info('Google login feature coming soon!')
 }
@@ -192,10 +219,12 @@ const handleFacebookLogin = () => {
   ElMessage.info('Facebook login feature coming soon!')
 }
 
+// Initialize auth
 userStore.initializeAuth()
 </script>
 
 <style scoped>
+/* All your existing styles remain the same */
 .close-button-container {
   position: absolute;
   top: 12px;
@@ -339,7 +368,7 @@ userStore.initializeAuth()
 }
 
 :deep(.custom-divider .el-divider__text) {
-  background: black;
+  background: white;
   color: #999;
   font-size: 14px;
   font-weight: 500;

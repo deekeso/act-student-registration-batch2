@@ -207,6 +207,7 @@ const handleSubmit = async () => {
   try {
     if (!registerForm.value) return
     
+    // First validate the form
     const valid = await registerForm.value.validate()
     if (!valid) return
 

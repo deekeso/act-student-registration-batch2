@@ -133,6 +133,7 @@ export const useUserAuthStore = defineStore('userAuth', () => {
       loading.value = false
     }
   }
+  
 
   function logout() {
     isAuthenticated.value = false
