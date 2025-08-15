@@ -123,29 +123,81 @@ const formData = reactive<Omit<Address, 'id'>>({
   isDefault: false,
 })
 
+// Custom validators
+const validateNoNumbers = (rule: any, value: string, callback: any) => {
+  if (!value) return callback()
+  if (/\d/.test(value)) {
+    return callback(new Error('Should not contain numbers'))
+  }
+  if (/^\s*$/.test(value)) {
+    return callback(new Error('Cannot be just whitespace'))
+  }
+  callback()
+}
+
+const validateHouseNumber = (rule: any, value: string, callback: any) => {
+  if (!value) return callback(new Error('House number is required'))
+  if (value.length < 2) {
+    return callback(new Error('Minimum 2 characters required'))
+  }
+  if (!/^[a-zA-Z0-9\s#\-.,]+$/.test(value)) {
+    return callback(new Error('Only alphanumeric characters and #-., are allowed'))
+  }
+  callback()
+}
+
 // Form validation rules
 const rules: FormRules = {
   houseNumber: [
     { required: true, message: 'House number is required', trigger: 'blur' },
-    { min: 1, max: 100, message: 'Length should be 1 to 100 characters', trigger: 'blur' },
+    { validator: validateHouseNumber, trigger: 'blur' },
+    { max: 100, message: 'Maximum 100 characters allowed', trigger: 'blur' },
   ],
   street: [
     { required: true, message: 'Street address is required', trigger: 'blur' },
-    { min: 5, max: 200, message: 'Length should be 5 to 200 characters', trigger: 'blur' },
+    { 
+      min: 5, 
+      max: 200, 
+      message: 'Street address must be between 5 and 200 characters', 
+      trigger: 'blur' 
+    },
+    {
+      pattern: /^[a-zA-Z0-9\s\-.,/#()]+$/,
+      message: 'Only letters, numbers, spaces, and -.,/#() are allowed',
+      trigger: 'blur'
+    }
   ],
   city: [
     { required: true, message: 'City is required', trigger: 'blur' },
-    { min: 2, max: 50, message: 'Length should be 2 to 50 characters', trigger: 'blur' },
+    { min: 2, max: 50, message: 'City must be between 2 and 50 characters', trigger: 'blur' },
+    { validator: validateNoNumbers, trigger: 'blur' },
+    {
+      pattern: /^[a-zA-Z\s\-()]+$/,
+      message: 'Only letters, spaces, hyphens, and parentheses are allowed',
+      trigger: 'blur'
+    }
   ],
   state: [
     { required: true, message: 'State/Province is required', trigger: 'blur' },
-    { min: 2, max: 50, message: 'Length should be 2 to 50 characters', trigger: 'blur' },
+    { min: 2, max: 50, message: 'State/Province must be between 2 and 50 characters', trigger: 'blur' },
+    { validator: validateNoNumbers, trigger: 'blur' },
+    {
+      pattern: /^[a-zA-Z\s\-()]+$/,
+      message: 'Only letters, spaces, hyphens, and parentheses are allowed',
+      trigger: 'blur'
+    }
   ],
   zipCode: [
     { required: true, message: 'ZIP code is required', trigger: 'blur' },
-    { pattern: /^\d{4,10}$/, message: 'ZIP code should contain 4-10 digits', trigger: 'blur' },
+    { 
+      pattern: /^\d{4,10}$/, 
+      message: 'ZIP code must be 4-10 digits', 
+      trigger: 'blur' 
+    }
   ],
-  country: [{ required: true, message: 'Country is required', trigger: 'change' }],
+  country: [
+    { required: true, message: 'Country is required', trigger: 'change' }
+  ]
 }
 
 // Watch for dialog visibility changes
