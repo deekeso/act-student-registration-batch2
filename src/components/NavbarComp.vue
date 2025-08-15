@@ -2,13 +2,11 @@
 import { useUserStore } from '@/stores/userStore'
 import { onMounted, ref } from 'vue'
 import type { User } from '@/types/User'
-import { useRouter } from 'vue-router'
 import MobileMenuDrawer from './MobileMenuDrawer.vue'
 
 const userStore = useUserStore()
 
 const searchText = ref('')
-const router = useRouter()
 const isMobile = ref(window.innerWidth <= 768)
 const showMenuDrawer = ref(false)
 
@@ -43,7 +41,8 @@ const querySearchAsync = (
 const handleSelect = (selected: { value: string; user: User }) => {
   //guard
   if (selected.user.id !== undefined) {
-    router.push(`/user/${encodeURIComponent(selected.user.id)}`)
+    searchText.value = ''
+    window.location.href = `/user/${encodeURIComponent(selected.user.id)}`
   }
 }
 
