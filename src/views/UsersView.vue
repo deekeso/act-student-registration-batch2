@@ -7,7 +7,7 @@
         <el-button @click="addCardVisible = true" title="Add user">
           <el-icon><Plus /></el-icon>
         </el-button>
-        <el-button @click="selectedUser = null" title="Reset list">
+        <el-button @click="handleResetList" title="Reset list">
           <el-icon><Refresh /></el-icon>
         </el-button>
       </div>
@@ -113,12 +113,13 @@ import { Avatar, Plus, Refresh, View, EditPen } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 import SearchBar from '@/components/ui/SearchBar.vue'
 import EditCard from '@/components/ui/card/EditCard.vue'
-import { ElMessage } from 'element-plus'
+import { ElLoading, ElMessage } from 'element-plus'
 
 const userStore = useUserStore()
 const router = useRouter()
 const loading = ref(true)
 const view = ref<'card' | 'table'>('card')
+
 const filteredUsers = computed(() =>
   selectedUser.value
     ? userStore.users.filter((u) => u.id === selectedUser.value?.id)
@@ -148,8 +149,21 @@ function handleEditUser(user: User) {
 }
 
 const handleUpdateUser = async (user: User) => {
-  await userStore.editUser(user.id, user)
-  editCardVisible.value = false
+  const loadingInstance = ElLoading.service({
+    text: 'Updating user...',
+    background: 'rgba(0, 0, 0, 0.7)',
+    spinner: 'el-icon-loading',
+    lock: true,
+  })
+  try {
+    await userStore.editUser(user.id, user)
+    editCardVisible.value = false
+  } catch (error) {
+    console.error(error)
+    ElMessage.error('Failed to update user. Please try again.')
+  } finally {
+    loadingInstance.close()
+  }
 }
 
 // async function handleDeleteUser(id: number) {
@@ -159,8 +173,21 @@ const handleUpdateUser = async (user: User) => {
 // }
 
 const handleAddUser = async (user: NewUser) => {
-  await userStore.addUser(user)
-  addCardVisible.value = false
+  const loadingInstance = ElLoading.service({
+    text: 'Adding user...',
+    background: 'rgba(0, 0, 0, 0.7)',
+    spinner: 'el-icon-loading',
+    lock: true,
+  })
+  try {
+    await userStore.addUser(user)
+    addCardVisible.value = false
+  } catch (error) {
+    console.error(error)
+    ElMessage.error('Failed to add user. Please try again.')
+  } finally {
+    loadingInstance.close()
+  }
 }
 
 function handleViewUser(id: number) {
@@ -169,6 +196,26 @@ function handleViewUser(id: number) {
 
 function handleSelect(user: User) {
   selectedUser.value = user
+}
+
+function handleResetList() {
+  const loadingInstance = ElLoading.service({
+    text: 'Updating list...',
+    background: 'rgba(0, 0, 0, 0.7)',
+    spinner: 'el-icon-loading',
+    lock: true,
+  })
+  try {
+    selectedUser.value = null
+    ElMessage.success('Users updated!')
+  } catch (error) {
+    console.error(error)
+    ElMessage.error('Failed to reset list. Please try again.')
+  } finally {
+    setTimeout(() => {
+      loadingInstance.close()
+    }, 800)
+  }
 }
 </script>
 

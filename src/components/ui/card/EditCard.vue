@@ -92,7 +92,7 @@
 
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElLoading, ElMessage, ElMessageBox } from 'element-plus'
 import type { User } from '@/types/user'
 import { formValidation, type UserData } from '@/utils/formValidation'
 import type z from 'zod'
@@ -231,6 +231,12 @@ const handleCancel = async () => {
 }
 
 async function handleDeleteUser(id: number) {
+  const loadingInstance = ElLoading.service({
+    text: 'Deleting user...',
+    background: 'rgba(0, 0, 0, 0.7)',
+    spinner: 'el-icon-loading',
+    lock: true,
+  })
   try {
     await ElMessageBox.confirm(
       'Are you sure you want to delete this user? This action cannot be undone.',
@@ -251,6 +257,8 @@ async function handleDeleteUser(id: number) {
       type: 'info',
       message: 'Delete cancelled.',
     })
+  } finally {
+    loadingInstance.close()
   }
 }
 </script>

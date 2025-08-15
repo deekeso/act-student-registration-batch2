@@ -157,7 +157,7 @@ const handleAddSubmit = async () => {
     addUserForm.address.city = ''
   } catch (error) {
     console.error(error)
-    ElMessage.error('Failed to add student.')
+    ElMessage.error('Failed to add user.')
   }
 }
 
