@@ -52,7 +52,6 @@ onBeforeUnmount(() => {
 
 <template>
   <section id="list">
-    <!-- Actions Header -->
     <div class="actions-container">
       <div class="actions-left">
         <h2 class="page-title">Users</h2>
