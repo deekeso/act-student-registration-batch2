@@ -9,10 +9,11 @@ const showEditDrawer = ref(false)
 </script>
 
 <template>
-  <el-table :data="userStore.user" style="width: 85%; border: 1px black solid">
-    <el-table-column prop="name" label="Name" show-overflow-tooltip />
-    <el-table-column prop="username" label="Username" show-overflow-tooltip />
-    <el-table-column label="Actions">
+  <el-table :data="userStore.user" style="width: 60%; border: 1px black solid" height="530">
+    <el-table-column prop="id" label="Id" width="150" />
+    <el-table-column prop="name" label="Name" show-overflow-tooltip width="350" />
+    <el-table-column prop="username" label="Username" show-overflow-tooltip width="500" />
+    <el-table-column label="Actions" width="300">
       <template #default="{ row }">
         <el-button
           @click="
@@ -27,7 +28,7 @@ const showEditDrawer = ref(false)
         <el-button @click="userStore.deleteUser(row.id)">Delete</el-button>
       </template>
     </el-table-column>
-    <el-table-column label="View">
+    <el-table-column label="View" fixed="right">
       <template #default="{ row }">
         <router-link class="link-style" :to="`/user/${row.id}`">Details</router-link>
       </template>

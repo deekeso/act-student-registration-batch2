@@ -20,6 +20,8 @@ const showDialog = computed({
 
 const validateUserId = () => {
   if (!userId.value) return false
+  console.log(userId)
+
   const exists = userStore.user.some((u) => u.id === userId.value)
   if (!exists) {
     ElMessage.error(`User Id with ${userId.value} not found!`)
@@ -56,7 +58,7 @@ onUnmounted(() => {
           :disabled="!userId"
           @click="
             () => {
-              if (!validateUserId) return
+              if (!validateUserId()) return
               showEditDrawer = true
               console.log('userid found')
             }
