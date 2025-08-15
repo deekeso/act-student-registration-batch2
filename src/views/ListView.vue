@@ -9,10 +9,11 @@ import ActionCard from '@/components/ActionCard.vue'
 import dayjs from 'dayjs'
 
 const userStore = useUserStore()
-const toggleList = ref('grid')
 const showAddDrawer = ref(false)
 const loading = ref(true)
 const showActions = ref(false)
+const view = ref('Grid')
+const viewOptions = ['Grid', 'Table']
 
 const handleRefresh = () => {
   location.reload()
@@ -51,26 +52,38 @@ onBeforeUnmount(() => {
 
 <template>
   <section id="list">
-    <div class="actions">
-      <el-button class="actions-btns" @click="handleRefresh"
-        ><el-icon><RefreshRight /></el-icon
-      ></el-button>
-      <el-button class="actions-btns" @click="showActions = true"
-        ><el-icon><Operation /></el-icon
-      ></el-button>
-      <el-button class="actions-btns" @click="toggleList = 'grid'"
-        ><el-icon><Grid /></el-icon
-      ></el-button>
-      <el-button class="actions-btns" @click="toggleList = 'table'"
-        ><el-icon><List /></el-icon
-      ></el-button>
+    <!-- Actions Header -->
+    <div class="actions-container">
+      <div class="actions-left">
+        <h2 class="page-title">Users</h2>
+      </div>
+
+      <div class="actions-right">
+        <div class="action-buttons">
+          <el-button class="action-btn refresh-btn" @click="handleRefresh" plain>
+            <el-icon><RefreshRight /></el-icon>
+            Refresh
+          </el-button>
+
+          <el-button class="action-btn manage-btn" @click="showActions = true">
+            <el-icon><Operation /></el-icon>
+            Manage
+          </el-button>
+        </div>
+
+        <div class="view-toggle">
+          <el-segmented v-model="view" :options="viewOptions" size="default" />
+        </div>
+      </div>
     </div>
 
-    <div v-if="toggleList === 'grid'" class="grid-view">
-      <UserCard v-if="!loading" />
-    </div>
-    <div v-if="toggleList === 'table'" class="table-view">
-      <TableUser v-if="!loading" />
+    <div class="content-area">
+      <div v-if="view === 'Grid'" class="grid-view">
+        <UserCard v-if="!loading" />
+      </div>
+      <div v-if="view === 'Table'" class="table-view">
+        <TableUser v-if="!loading" />
+      </div>
     </div>
   </section>
 
@@ -80,31 +93,130 @@ onBeforeUnmount(() => {
 
 <style scoped>
 #list {
-  min-height: 100%;
+  min-height: 100vh;
+  background: #f8fafc;
+  padding: 20px;
+}
+
+.actions-container {
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.actions-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.user-count {
+  background: #f3f4f6;
+  color: #6b7280;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.actions-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  height: 40px;
+  padding: 0 16px;
+  font-weight: 500;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.view-toggle {
+  padding: 15px;
+  border-left: 1px solid #e5e7eb;
+}
+
+.content-area {
+  border-radius: 12px;
+  min-height: 500px;
+  overflow: hidden;
 }
 
 .grid-view {
+  padding: 24px;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 16px;
   justify-content: center;
-  margin: 0 auto;
-  width: 80%;
 }
 
 .table-view {
+  padding: 0;
   display: flex;
   justify-content: center;
 }
 
-.actions {
-  width: 80%;
-  margin: 25px 0;
-  text-align: right;
-}
+@media (max-width: 768px) {
+  #list {
+    padding: 12px;
+  }
 
-.actions-btns {
-  font-size: 20px;
-  height: 50px;
+  .actions-container {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .actions-left {
+    justify-content: center;
+  }
+
+  .actions-right {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .action-buttons {
+    justify-content: center;
+  }
+
+  .view-toggle {
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 12px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
+
+  .grid-view {
+    padding: 16px;
+  }
 }
 </style>

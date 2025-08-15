@@ -4,6 +4,7 @@ import AddUserDrawer from './AddUserDrawer.vue'
 import { useUserStore } from '@/stores/userStore'
 import EditUserDrawer from './EditUserDrawer.vue'
 import { ElMessage } from 'element-plus'
+import { Delete, Edit } from '@element-plus/icons-vue'
 
 const props = defineProps<{ visible: boolean }>()
 const emit = defineEmits(['update:visible'])
@@ -53,27 +54,34 @@ onUnmounted(() => {
         clearable
       />
       <div class="actions">
+        <span>
+          <el-button
+            class="act-btn"
+            :disabled="!userId"
+            :icon="Edit"
+            @click="
+              () => {
+                if (!validateUserId()) return
+                showEditDrawer = true
+                console.log('userid found')
+              }
+            "
+            >Edit</el-button
+          >
+          <el-button
+            class="act-btn"
+            :disabled="!userId"
+            :icon="Delete"
+            @click="
+              () => {
+                if (!validateUserId()) return
+                userStore.deleteUser(userId as number)
+              }
+            "
+            >Delete</el-button
+          >
+        </span>
         <el-button @click="showAddDrawer = true">Add</el-button>
-        <el-button
-          :disabled="!userId"
-          @click="
-            () => {
-              if (!validateUserId()) return
-              showEditDrawer = true
-              console.log('userid found')
-            }
-          "
-          >Edit</el-button
-        >
-        <el-button
-          @click="
-            () => {
-              if (!validateUserId()) return
-              userStore.deleteUser(userId as number)
-            }
-          "
-          >Delete</el-button
-        >
       </div>
     </div>
   </el-dialog>
@@ -88,7 +96,7 @@ onUnmounted(() => {
 
 <style scoped>
 :deep(.el-button) {
-  margin-left: 0 !important;
+  /* margin-left: 0 !important; */
   width: 100%;
 }
 
@@ -98,8 +106,13 @@ onUnmounted(() => {
 
 .actions {
   display: flex;
-  flex-direction: row;
-  gap: 10px;
+  flex-direction: column;
+  gap: 15px;
   margin-top: 10px;
+  align-items: center;
+}
+
+.act-btn {
+  width: 170px;
 }
 </style>
