@@ -71,6 +71,7 @@ onBeforeUnmount(() => {
         </div>
 
         <div class="view-toggle">
+          <p>List View</p>
           <el-segmented v-model="view" :options="viewOptions" size="default" />
         </div>
       </div>
@@ -152,6 +153,9 @@ onBeforeUnmount(() => {
 }
 
 .view-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 15px;
   border-left: 1px solid #e5e7eb;
 }

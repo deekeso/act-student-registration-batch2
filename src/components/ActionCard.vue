@@ -39,7 +39,7 @@ onUnmounted(() => {
 <template>
   <el-dialog
     v-model="showDialog"
-    title="Actions"
+    title="Manage The User List"
     style="width: 400px"
     draggable
     align-center
