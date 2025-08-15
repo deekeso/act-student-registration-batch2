@@ -8,19 +8,19 @@
     :show-close="false"
   >
     <el-form label-position="top">
-  <el-form-item label="Username" :error="usernameError">
-    <el-input v-model="username" style="width: 100%" placeholder="Enter your username" @keyup.enter="handleSubmit" />
-  </el-form-item>
-  <el-form-item label="Email" :error="emailError">
-    <el-input v-model="email" style="width: 100%" type="email" placeholder="Enter your email" @keyup.enter="handleSubmit"/>
-  </el-form-item>
-  <el-form-item label="New Password" :error="passwordError">
-    <el-input v-model="newPassword" style="width: 100%" type="password" placeholder="Enter new password" show-password @keyup.enter="handleSubmit"/>
-  </el-form-item>
-  <el-form-item label="Confirm Password" :error="confirmPasswordError">
-    <el-input v-model="confirmPassword" style="width: 100%" type="password" placeholder="Confirm new password" show-password @keyup.enter="handleSubmit"/>
-  </el-form-item>
-</el-form>
+      <el-form-item label="Username" :error="usernameError">
+        <el-input v-model="username" style="width: 100%" placeholder="Enter your username" @keyup.enter="handleSubmit" />
+      </el-form-item>
+      <el-form-item label="Email" :error="emailError">
+        <el-input v-model="email" style="width: 100%" type="email" placeholder="Enter your email" @keyup.enter="handleSubmit"/>
+      </el-form-item>
+      <el-form-item label="New Password" :error="passwordError">
+        <el-input v-model="newPassword" style="width: 100%" type="password" placeholder="Enter new password" show-password @keyup.enter="handleSubmit"/>
+      </el-form-item>
+      <el-form-item label="Confirm Password" :error="confirmPasswordError">
+        <el-input v-model="confirmPassword" style="width: 100%" type="password" placeholder="Confirm new password" show-password @keyup.enter="handleSubmit"/>
+      </el-form-item>
+    </el-form>
     <template #footer>
       <div class="dialog-footer">
         <el-button type="primary" @click="handleSubmit">Submit</el-button>

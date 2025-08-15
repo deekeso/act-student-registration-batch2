@@ -139,7 +139,7 @@ async function handleRegister() {
       ElMessage.error('An error occurred during registration.')
     } finally {
       loadingInstance.close()
-      router.push('/profile')
+      router.push({name: 'UserProfile', query: { from: 'register' }})
     }
   } else {
     console.log('Validation failed:', { emailError: emailError.value, usernameError: usernameError.value, passwordError: passwordError.value })

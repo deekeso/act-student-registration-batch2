@@ -12,14 +12,19 @@
         <span class="button-text">Order</span>
       </el-button>
       <el-button v-if="authStore.isLoggedIn" @click="userProfile" link class="user">
-        <!-- <el-icon><User /></el-icon> -->
-        <span class="button-text">{{ currentUser }}</span>
+        <el-icon><User /></el-icon>
+        <span class="button-text">Profile</span>
       </el-button>
       <el-button v-if="!authStore.isLoggedIn" link @click="loginDialogVisible = true" class="login">
         <el-icon><Lock /></el-icon>
         <span class="button-text">Login</span>
       </el-button>
-      <el-button v-if="!authStore.isLoggedIn" link @click="$emit('open-register-dialog')" class="signup">
+      <el-button
+        v-if="!authStore.isLoggedIn"
+        link
+        @click="$emit('open-register-dialog')"
+        class="signup"
+      >
         <el-icon><Edit /></el-icon>
         <span class="button-text">Sign up</span>
       </el-button>
@@ -37,17 +42,16 @@ import { useRouter } from 'vue-router'
 import SearchBar from './SearchBar.vue'
 import UserLogin from './dialog/UserLogin.vue'
 import { useAuthStore } from '@/stores/userAuth'
-import { Document, Edit, Lock, ShoppingCart, SwitchButton } from '@element-plus/icons-vue'
-import { computed, onMounted, ref } from 'vue'
+import { Document, Edit, Lock, ShoppingCart, SwitchButton, User } from '@element-plus/icons-vue'
+import { onMounted, ref } from 'vue'
 import { ElLoading, ElMessage } from 'element-plus'
 
 const router = useRouter()
 const authStore = useAuthStore()
-const currentUser = computed(() => authStore.username)
 const loginDialogVisible = ref(false)
 
-onMounted(() => {
-  authStore.loadUserInfo()
+onMounted(async () => {
+  await authStore.loadUserInfo()
 })
 
 function home() {
@@ -66,11 +70,11 @@ function userProfile() {
   router.push('/profile')
 }
 
-async function login({ username, password }: { username: string, password: string }) {
+async function login({ username, password }: { username: string; password: string }) {
   const loadingInstance = ElLoading.service({ fullscreen: true, text: 'Logging in...' })
   try {
     const loginPromise = authStore.userLogin(username, password)
-    const timerPromise = new Promise(resolve => setTimeout(resolve, 1000))
+    const timerPromise = new Promise((resolve) => setTimeout(resolve, 1000))
     const result = await loginPromise
     await timerPromise
 
@@ -92,7 +96,7 @@ async function logout() {
     await authStore.userLogout()
     await authStore.loadUserInfo()
     router.push('/')
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
   } finally {
     loadingInstance.close()
   }
@@ -103,7 +107,7 @@ async function logout() {
 .navbar-outer {
   display: flex;
   justify-content: center;
-  background-color: #2E2E2E;
+  background-color: #2e2e2e;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -120,7 +124,7 @@ async function logout() {
 .navbar h1 {
   font-size: 32px;
   font-weight: 700;
-  color: #D9D9D9;
+  color: #d9d9d9;
   position: relative;
   cursor: pointer;
 }
@@ -134,7 +138,13 @@ async function logout() {
 }
 
 /* Line hover effect for h1 and buttons */
-.navbar-title, .cart, .order, .user, .login, .signup, .logout {
+.navbar-title,
+.cart,
+.order,
+.user,
+.login,
+.signup,
+.logout {
   transition: all 0.3s ease;
 }
 
@@ -144,14 +154,14 @@ async function logout() {
 .user:hover::after,
 .login:hover::after,
 .signup:hover::after,
-.logout:hover::after  {
+.logout:hover::after {
   content: '';
   position: absolute;
   bottom: -2px;
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #D9D9D9;
+  background-color: #d9d9d9;
   transform: scaleX(1);
   transform-origin: bottom right;
   transition: transform 0.3s ease;
@@ -170,14 +180,15 @@ async function logout() {
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #D9D9D9;
+  background-color: #d9d9d9;
   transform: scaleX(0);
   transform-origin: bottom right;
   transition: transform 0.3s ease;
 }
 
-.button-text, .el-icon {
-  color: #D9D9D9;
+.button-text,
+.el-icon {
+  color: #d9d9d9;
 }
 
 @media (max-width: 575px) {

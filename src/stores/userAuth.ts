@@ -145,10 +145,14 @@ export const useAuthStore = defineStore('auth', {
 
     loadUserInfo() {
       const currentUser = localStorage.getItem('currentUser')
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
       const users = JSON.parse(localStorage.getItem('Users') || '[]')
       const user = users.find((u: User) => u.username === currentUser) || null
+
       this.userInfo = user
-      if (user) {
+      this.isLoggedIn = isLoggedIn
+
+      if (user && isLoggedIn) {
         this.username = user.username
         this.email = user.email
         this.password = ''
