@@ -154,7 +154,6 @@ watch(
   (newVal) => {
     visible.value = newVal
     if (newVal) {
-      // Reset form and populate data if editing
       resetForm()
       if (props.address) {
         isEditing.value = true
@@ -185,7 +184,6 @@ const resetForm = () => {
     formRef.value.clearValidate()
   }
 
-  // Reset to default values
   Object.assign(formData, {
     houseNumber: '',
     street: '',
@@ -204,7 +202,6 @@ const handleSubmit = async () => {
   try {
     const valid = await formRef.value.validate()
     if (valid) {
-      // Create a copy of form data to emit
       const addressData = { ...formData }
       emit('submit', addressData)
     }

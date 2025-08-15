@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/Home/HomeView.vue'
 import WishlistProducts from '@/views/Wishlist/WishlistProducts.vue'
 import { useUserAuthStore } from '@/stores/userAuth'
-import ErrorPage from '../views/ErrorPage.vue'
+import NotAvailable from '@/views/NotAvailable.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,9 +57,21 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
+          path: '/about',
+          name: 'about',
+          component: NotAvailable,
+          meta: { title: 'About - Coming Soon' }
+        },
+        {
+          path: '/contact',
+          name: 'contact',
+          component: NotAvailable,
+          meta: { title: 'Contact - Coming Soon' }
+        },
+        {
           path: '/:pathMatch(.*)*',
           name: 'not-found',
-          component: ErrorPage,
+          component: NotAvailable,
         },
         {
           path: 'profile',

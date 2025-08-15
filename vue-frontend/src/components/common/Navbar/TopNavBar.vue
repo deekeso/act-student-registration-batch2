@@ -3,13 +3,13 @@
     <!-- Desktop Navigation -->
     <el-row class="nav-links desktop-nav">
       <el-col :span="2">
-        <el-link type="default" @click="$emit('logo-click')">Home</el-link>
+        <router-link to="/" class="router-link">Home</router-link>
       </el-col>
       <el-col :span="2">
-        <el-link type="default" @click="$emit('logo-click')">About</el-link>
+        <router-link to="/about" class="router-link">About</router-link>
       </el-col>
       <el-col :span="2">
-        <el-link type="default" @click="$emit('logo-click')">Contact</el-link>
+        <router-link to="/contact" class="router-link">Contact</router-link>
       </el-col>
       <template v-if="isAuthenticated">
         <el-col :span="2">
@@ -44,15 +44,15 @@
         <el-button class="mobile-menu-trigger" :icon="Menu" circle />
         <template #dropdown>
           <el-dropdown-menu class="mobile-menu">
-            <el-dropdown-item @click="$emit('logo-click')">
+            <el-dropdown-item to="/">
               <el-icon><House /></el-icon>
               Home
             </el-dropdown-item>
-            <el-dropdown-item @click="$emit('logo-click')">
+            <el-dropdown-item to="/about">
               <el-icon><InfoFilled /></el-icon>
               About
             </el-dropdown-item>
-            <el-dropdown-item @click="$emit('logo-click')">
+            <el-dropdown-item to="/contact">
               <el-icon><Phone /></el-icon>
               Contact
             </el-dropdown-item>
@@ -184,7 +184,7 @@ defineEmits(['logo-click', 'logout', 'profile', 'login', 'register', 'wishlist',
 
 
 
-:deep(.el-link) {
+:deep(.router-link) {
   color: var(--link-color);
   font-size: 14px;
   font-weight: 500;
@@ -192,7 +192,7 @@ defineEmits(['logo-click', 'logout', 'profile', 'login', 'register', 'wishlist',
   text-decoration: none;
 }
 
-:deep(.el-link:hover) {
+:deep(.router-link:hover) {
   color: var(--link-hover-color);
 }
 

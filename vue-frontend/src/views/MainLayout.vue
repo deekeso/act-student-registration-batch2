@@ -19,6 +19,7 @@ import AppFooter from '@/components/common/AppFooter.vue'
 <style scoped>
 .el-main {
   background: #fff;
+  padding: 0;
 }
 
 .fade-enter-active,
