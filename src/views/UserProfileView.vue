@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import type { User } from '@/types/User'
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import dayjs from 'dayjs'
 import CommentComp from '@/components/CommentComp.vue'
 
 const route = useRoute()
+const router = useRouter()
 const user = ref<User | null>(null)
 const loading = ref(false)
 const userStore = useUserStore()
@@ -38,9 +39,9 @@ onMounted(async () => {
     <el-card v-loading="loading" class="profile-card">
       <div class="user-container">
         <div v-if="loading" class="loading-state">
-          <h1 class="loading-text">Loading...</h1>
+          <h1>LOADING...</h1>
         </div>
-        <div v-if="!loading" class="user-content">
+        <div v-if="!loading && user" class="user-content">
           <div class="header">
             <h2 class="user-name">{{ user?.name }}</h2>
             <p class="username">{{ `@${user?.username}` }}</p>
@@ -75,10 +76,16 @@ onMounted(async () => {
             </div>
           </div>
         </div>
+
+        <div v-if="!user && !loading" class="user-not-found">
+          <h2>USER NOT FOUND</h2>
+          <p>GO BACK TO MENU</p>
+          <el-button class="user-not-found-btn" @click="router.push('/')"> Go back</el-button>
+        </div>
       </div>
     </el-card>
 
-    <CommentComp />
+    <CommentComp v-if="user" />
   </section>
 </template>
 
@@ -111,19 +118,33 @@ onMounted(async () => {
   background-color: white;
 }
 
-.loading-text {
-  font-size: 24px;
-  color: #666;
-  font-weight: 300;
-  letter-spacing: 1px;
-  margin: 0;
-}
-
 .user-content {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.user-not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  gap: 10px;
+}
+
+.user-not-found-btn {
+  padding: 20px;
+}
+
+.user-not-found h2 {
+  letter-spacing: 5px;
+  font-size: 2rem;
+}
+
+.user-not-found p {
+  letter-spacing: 3px;
+  font-size: 1rem;
 }
 
 .header {
@@ -182,6 +203,15 @@ onMounted(async () => {
   text-align: right;
   flex: 1;
   margin-left: 20px;
+}
+
+.loading-state {
+  align-items: center;
+  margin: auto;
+}
+.loading-state h1 {
+  font-weight: bold;
+  letter-spacing: 5px;
 }
 
 /* 📱 Mobile Responsive Styling */
