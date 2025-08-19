@@ -107,7 +107,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/userStore'
-import type { NewUser, User } from '@/types/user'
+import type { User } from '@/types/user'
 import AddCard from '@/components/ui/card/AddCard.vue'
 import { Avatar, Plus, Refresh, View, EditPen } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
@@ -172,22 +172,17 @@ const handleUpdateUser = async (user: User) => {
 //   console.log('Deleted user id:', id)
 // }
 
-const handleAddUser = async (user: NewUser) => {
+const handleAddUser = async () => {
   const loadingInstance = ElLoading.service({
     text: 'Adding user...',
     background: 'rgba(0, 0, 0, 0.7)',
     spinner: 'el-icon-loading',
     lock: true,
   })
-  try {
-    await userStore.addUser(user)
-    addCardVisible.value = false
-  } catch (error) {
-    console.error(error)
-    ElMessage.error('Failed to add user. Please try again.')
-  } finally {
+
+  setTimeout(() => {
     loadingInstance.close()
-  }
+  }, 800)
 }
 
 function handleViewUser(id: number) {

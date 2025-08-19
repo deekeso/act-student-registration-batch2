@@ -94,8 +94,6 @@
 import { reactive, ref, watch } from 'vue'
 import { ElLoading, ElMessage, ElMessageBox } from 'element-plus'
 import type { User } from '@/types/user'
-import { formValidation, type UserData } from '@/utils/formValidation'
-import type z from 'zod'
 import { Delete } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/userStore'
 
@@ -113,7 +111,18 @@ const initialUserCopy = ref<User | null>(null)
 const userStore = useUserStore()
 
 // Reactive form
-const editUserForm = reactive<UserData>({
+const editUserForm = reactive({
+  name: '',
+  username: '',
+  email: '',
+  address: {
+    street: '',
+    city: '',
+  },
+})
+
+// Error handling (same style as addUser)
+const errors = reactive({
   name: '',
   username: '',
   email: '',
@@ -128,7 +137,6 @@ watch(
   () => props.user,
   (user) => {
     if (user) {
-      // Deep copy for reset
       initialUserCopy.value = JSON.parse(JSON.stringify(user))
 
       editUserForm.name = user.name
@@ -137,65 +145,63 @@ watch(
       editUserForm.address.street = user.address.street
       editUserForm.address.city = user.address.city
     }
-    console.log('Edit user:', props.user)
   },
   { immediate: true },
 )
 
-const errors = reactive<{
-  name?: string
-  username?: string
-  email?: string
-  address?: {
-    street?: string
-    city?: string
-  }
-}>({})
-
 const handleEditSubmit = async () => {
-  const result = formValidation.safeParse(editUserForm)
-
-  Object.keys(errors).forEach((key) => delete errors[key as keyof UserData])
-
-  if (!result.success) {
-    const zodError = result.error as z.ZodError<UserData>
-    zodError.issues.forEach((issue) => {
-      if (issue.path.length > 1) {
-        const [parent, child] = issue.path
-        if (parent === 'address') {
-          if (!errors.address) errors.address = {}
-          errors.address[child as 'street' | 'city'] = issue.message
-        }
-      } else {
-        const field = issue.path[0] as keyof UserData
-        errors[field] = issue.message
-      }
-    })
-    return
-  }
+  // Clear old errors
+  errors.name = ''
+  errors.username = ''
+  errors.email = ''
+  errors.address.street = ''
+  errors.address.city = ''
 
   try {
     if (!props.user) return
 
-    const updatedUser: User = {
-      ...props.user,
+    const updatedUserData = {
       name: editUserForm.name,
       username: editUserForm.username,
       email: editUserForm.email,
       address: {
-        ...props.user.address,
         street: editUserForm.address.street,
         city: editUserForm.address.city,
       },
     }
 
-    emit('updateUser', updatedUser)
-    ElMessage.success('User updated successfully!')
-    console.log('Updated user:', updatedUser)
+    // Call userStore validation + update
+    const result = await userStore.editUser(props.user.id, updatedUserData)
 
+    if (!result.success) {
+      // Map errors to fields
+      result.errors.forEach(({ field, message }) => {
+        if (field === 'name') errors.name = message
+        else if (field === 'username') errors.username = message
+        else if (field === 'email') errors.email = message
+        else if (field === 'street') errors.address.street = message
+        else if (field === 'city') errors.address.city = message
+      })
+
+      ElMessage.error(
+        result.errors.length === 1
+          ? result.errors[0].message
+          : 'Please fix the errors in the form.',
+      )
+      return
+    }
+
+    // If success → emit & close
+    const finalUser: User = {
+      ...props.user,
+      ...updatedUserData,
+    }
+
+    emit('updateUser', finalUser)
+    ElMessage.success('User updated successfully!')
     emit('update:visible', false)
   } catch (error) {
-    console.error(error)
+    console.error('Update error:', error)
     ElMessage.error('Failed to update user.')
   }
 }
@@ -220,6 +226,13 @@ const handleCancel = async () => {
       type: 'info',
       message: 'Changes discarded. Closing form.',
     })
+
+    //  clear errors
+    errors.name = ''
+    errors.username = ''
+    errors.email = ''
+    errors.address.street = ''
+    errors.address.city = ''
 
     emit('update:visible', false)
   } catch {
@@ -251,7 +264,6 @@ async function handleDeleteUser(id: number) {
     await userStore.removeUser(id)
     emit('update:visible', false)
     ElMessage.success('User deleted successfully!')
-    console.log('Deleted user id:', id)
   } catch {
     ElMessage({
       type: 'info',

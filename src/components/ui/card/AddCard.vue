@@ -8,7 +8,7 @@
     width="500px"
     align-center
   >
-    <el-form label-position="top" class="add-user-form">
+    <el-form label-position="top" class="add-user-form" :model="addUserForm">
       <div class="form-grid">
         <el-form-item label="Name" prop="name" :error="errors.name" class="form-item">
           <el-input
@@ -77,13 +77,24 @@
 </template>
 
 <script setup lang="ts">
+import { useUserStore } from '@/stores/userStore'
 import type { NewUser } from '@/types/user'
-import { formValidation, type UserData } from '@/utils/formValidation'
 import { dayjs, ElMessage, ElMessageBox } from 'element-plus'
 import { reactive } from 'vue'
-import type z from 'zod'
 
-const addUserForm = reactive<UserData>({
+const userStore = useUserStore()
+
+const addUserForm = reactive({
+  name: '',
+  username: '',
+  email: '',
+  address: {
+    street: '',
+    city: '',
+  },
+})
+
+const errors = reactive({
   name: '',
   username: '',
   email: '',
@@ -102,61 +113,64 @@ const emit = defineEmits<{
   (e: 'addUser', user: NewUser): void
 }>()
 
-const errors = reactive<{
-  name?: string
-  username?: string
-  email?: string
-  address?: {
-    street?: string
-    city?: string
-  }
-}>({})
-
 const handleAddSubmit = async () => {
-  const result = formValidation.safeParse(addUserForm)
-
-  Object.keys(errors).forEach((key) => delete errors[key as keyof typeof errors])
-
-  if (!result.success) {
-    const zodError = result.error as z.ZodError<UserData>
-    zodError.issues.forEach((issue) => {
-      if (issue.path.length > 1) {
-        const [parent, child] = issue.path
-        if (parent === 'address') {
-          if (!errors.address) errors.address = {}
-          errors.address[child as 'street' | 'city'] = issue.message
-        }
-      } else {
-        const field = issue.path[0] as keyof UserData
-        errors[field] = issue.message
-      }
-    })
-
-    ElMessage.warning('Please correct the form errors before submitting.')
-    return
-  }
+  // Clear previous errors
+  errors.name = ''
+  errors.username = ''
+  errors.email = ''
+  errors.address.street = ''
+  errors.address.city = ''
 
   try {
     const newUser = {
       ...addUserForm,
-      createdAt: dayjs().format('YYYY-MM-DD'),
+      createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     }
 
-    emit('addUser', newUser)
+    // Call the store's addUser action with validation
+    const result = await userStore.addUser(
+      newUser,
+      addUserForm.name,
+      addUserForm.username,
+      addUserForm.email,
+      addUserForm.address,
+    )
 
+    // Check if the store action was successful
+    if (!result?.success) {
+      // Map all error messages to their respective fields
+      result?.errors.forEach(({ field, message }) => {
+        if (field === 'name') errors.name = message
+        else if (field === 'username') errors.username = message
+        else if (field === 'email') errors.email = message
+        else if (field === 'street') errors.address.street = message
+        else if (field === 'city') errors.address.city = message
+      })
+
+      // Display a general error message summarizing the issues
+      ElMessage.error(
+        result?.errors.length === 1
+          ? result.errors[0].message
+          : 'Please fix the errors in the form.',
+      )
+      return
+    }
+
+    // If successful, emit the addUser event and show success message
+    emit('addUser', newUser)
     ElMessage.success('User added successfully!')
     console.log('New user:', newUser)
 
-    emit('update:visible', false)
-
-    // clear form
+    // Clear form
     addUserForm.name = ''
     addUserForm.username = ''
     addUserForm.email = ''
     addUserForm.address.street = ''
     addUserForm.address.city = ''
+
+    emit('update:visible', false)
   } catch (error) {
-    console.error(error)
+    console.error('Error adding user:', error)
     ElMessage.error('Failed to add user.')
   }
 }
@@ -182,9 +196,14 @@ const handleCancel = async () => {
     addUserForm.address.street = ''
     addUserForm.address.city = ''
 
+    errors.name = ''
+    errors.username = ''
+    errors.email = ''
+    errors.address.street = ''
+    errors.address.city = ''
+
     emit('update:visible', false)
   } catch {
-    // User clicked "Stay" (cancel)
     ElMessage({
       type: 'info',
       message: 'Stayed on the form.',
