@@ -8,7 +8,7 @@
   --quaternary: #2d2c5e;
   --accent: #1d0e2c;
   --text-color: #2c3e50;
-  --bg-color: #f5f7fa;
+  --bg-color: white;
 }
 
 * {
@@ -31,10 +31,6 @@ a {
 
 a:hover {
   color: var(--secondary);
-}
-
-button {
-  font-family: 'Lato', sans-serif;
 }
 
 .el-button--primary {
