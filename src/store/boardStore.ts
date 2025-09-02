@@ -239,6 +239,56 @@ export const useBoardsStore = defineStore('boards', {
       board.members = board.members!.filter((m) => m.userId !== userId)
       this.saveToStorage()
     },
+
+    moveTaskCard(
+      boardId: number,
+      fromListId: number,
+      toListId: number,
+      cardId: number,
+      newIndex: number,
+    ) {
+      const board = this.getBoard(boardId)
+      if (!board) return
+
+      const fromList = board.taskList.find((l) => l.listId === fromListId)
+      const toList = board.taskList.find((l) => l.listId === toListId)
+      if (!fromList || !toList || !fromList.taskCard) return
+
+      const idx = fromList.taskCard.findIndex((c) => c.cardId === cardId)
+      if (idx === -1) return
+
+      const [card] = fromList.taskCard.splice(idx, 1)
+      if (!toList.taskCard) toList.taskCard = []
+      toList.taskCard.splice(newIndex, 0, card)
+
+      this.saveToStorage()
+    },
+
+    reorderTaskCards(boardId: number, listId: number, oldIndex: number, newIndex: number) {
+      const board = this.getBoard(boardId)
+      if (!board) return
+
+      const list = board.taskList.find((l) => l.listId === listId)
+      if (!list || !list.taskCard) return
+
+      const [card] = list.taskCard.splice(oldIndex, 1)
+      list.taskCard.splice(newIndex, 0, card)
+
+      this.saveToStorage()
+    },
+
+    reorderTaskLists(boardId: number, oldIndex: number, newIndex: number) {
+      const board = this.getBoard(boardId)
+      if (!board) return
+
+      const [list] = board.taskList.splice(oldIndex, 1)
+      board.taskList.splice(newIndex, 0, list)
+
+      // reassign listOrder for persistence
+      board.taskList.forEach((l, i) => (l.listOrder = i))
+
+      this.saveToStorage()
+    },
   },
 
   getters: {

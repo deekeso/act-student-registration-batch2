@@ -3,10 +3,12 @@ import { useUserStore } from './authStore'
 import { useWorkspacesStore } from './workStore'
 import { useBoardsStore } from './boardStore'
 import type { TaskCard } from '@/types/taskCard'
+import type { TaskList } from '@/types/taskList'
 
 export const useTaskListsStore = defineStore('taskLists', {
   state: () => ({
     // Task lists are stored within boards, so no separate localStorage
+    lists: [] as TaskList[],
   }),
 
   actions: {

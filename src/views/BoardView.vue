@@ -93,9 +93,13 @@
 
       <!-- Kanban Board -->
       <div class="kanban-board">
-        <div class="task-lists-container">
-          <!-- Task Lists -->
-          <div v-for="taskList in filteredTaskLists" :key="taskList.listId" class="task-list">
+        <div class="task-lists-container" ref="listsContainer">
+          <div
+            v-for="taskList in filteredTaskLists"
+            :key="taskList.listId"
+            class="task-list"
+            :data-list-id="taskList.listId"
+          >
             <div class="list-header">
               <el-input
                 v-model="taskList.listName"
@@ -126,13 +130,23 @@
             </div>
 
             <!-- Task Cards -->
-            <div class="task-cards">
+            <div
+              class="task-cards"
+              :ref="(el) => setDraggableRef(el as HTMLElement | null, taskList)"
+              :data-list-id="taskList.listId"
+            >
               <div
+                v-for="card in taskList.taskCard"
+                :key="card.cardId"
+                class="task-card"
+                :data-card-id="card.cardId"
+              >
+                <!-- <div
                 v-for="card in getFilteredCards(taskList)"
                 :key="card.cardId"
                 class="task-card"
                 :class="{ completed: card.status === 'complete' }"
-              >
+              > -->
                 <div class="card-header">
                   <div class="card-status" :class="card.status">
                     <div class="status-dot"></div>
@@ -236,6 +250,7 @@ import { useTaskCardsStore } from '@/store/cardStore'
 import { useTaskListsStore } from '@/store/listStore'
 import type { TaskList } from '@/types/taskList'
 import type { TaskCard } from '@/types/taskCard'
+import { useDraggable } from 'vue-draggable-plus'
 
 const route = useRoute()
 const router = useRouter()
@@ -285,6 +300,50 @@ const filteredTaskLists = computed(() => {
   // Show all lists, but the cards within them will be filtered by getFilteredCards
   return taskLists.value
 })
+
+const listsContainer = ref<HTMLElement | null>(null)
+
+useDraggable(
+  listsContainer,
+  computed(() => board.value?.taskList ?? []),
+  {
+    animation: 150,
+    ghostClass: 'ghost-list',
+    handle: '.list-header',
+    onUpdate: async (evt) => {
+      const oldIndex = evt.oldIndex ?? 0
+      const newIndex = evt.newIndex ?? 0
+      await boardsStore.reorderTaskLists(boardId.value, oldIndex, newIndex)
+    },
+  },
+)
+
+const setDraggableRef = (el: HTMLElement | null, taskList: TaskList) => {
+  if (!el) return
+
+  useDraggable(el, ref(taskList.taskCard ?? []), {
+    animation: 150,
+    group: 'cards', // allow cross-list drag
+    ghostClass: 'ghost',
+
+    onAdd: async (evt) => {
+      const cardId = Number(evt.item.dataset.cardId)
+      const fromListId = Number((evt.from as HTMLElement).dataset.listId)
+      const toListId = taskList.listId
+      const newIndex = evt.newIndex ?? 0
+
+      await boardsStore.moveTaskCard(boardId.value, fromListId, toListId, cardId, newIndex)
+    },
+
+    onUpdate: async (evt) => {
+      const listId = taskList.listId
+      const oldIndex = evt.oldIndex ?? 0
+      const newIndex = evt.newIndex ?? 0
+
+      await boardsStore.reorderTaskCards(boardId.value, listId, oldIndex, newIndex)
+    },
+  })
+}
 
 const goToWorkspace = () => {
   router.back()
@@ -779,6 +838,7 @@ const deleteTaskCard = async (listId: number, cardId: number) => {
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 12px;
 }
 
 .list-title-input {

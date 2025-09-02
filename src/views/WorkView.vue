@@ -105,15 +105,6 @@
           </div>
           <h3>No workspaces yet</h3>
           <p>Create your first workspace to get started</p>
-          <el-button
-            type="primary"
-            @click="handleCreateWorkspace"
-            size="large"
-            class="empty-action-btn"
-          >
-            <el-icon><Plus /></el-icon>
-            Create Your First Workspace
-          </el-button>
         </div>
       </div>
     </div>
