@@ -19,6 +19,20 @@
         </div>
 
         <div class="header-actions">
+          <!-- Filter Controls -->
+          <div class="filter-controls">
+            <el-select
+              v-model="statusFilter"
+              placeholder="Filter by status"
+              class="status-filter"
+              size="default"
+            >
+              <el-option label="All tasks" value="all" />
+              <el-option label="Incomplete" value="incomplete" />
+              <el-option label="Complete" value="complete" />
+            </el-select>
+          </div>
+
           <el-button v-if="userRole === 'owner'" @click="toggleMembersPanel" class="members-btn">
             Manage Members
           </el-button>
@@ -81,7 +95,7 @@
       <div class="kanban-board">
         <div class="task-lists-container">
           <!-- Task Lists -->
-          <div v-for="taskList in taskLists" :key="taskList.listId" class="task-list">
+          <div v-for="taskList in filteredTaskLists" :key="taskList.listId" class="task-list">
             <div class="list-header">
               <el-input
                 v-model="taskList.listName"
@@ -91,7 +105,12 @@
                 class="list-title-input"
               />
               <div class="list-actions">
-                <span class="task-count">{{ taskList.taskCard?.length || 0 }}</span>
+                <span class="task-count">
+                  {{ getFilteredCards(taskList).length }}
+                  <span v-if="statusFilter !== 'all'" class="total-count">
+                    / {{ taskList.taskCard?.length || 0 }}
+                  </span>
+                </span>
                 <el-dropdown v-if="userRole !== 'viewer'">
                   <el-button circle size="small" />
                   <template #dropdown>
@@ -109,7 +128,7 @@
             <!-- Task Cards -->
             <div class="task-cards">
               <div
-                v-for="card in taskList.taskCard"
+                v-for="card in getFilteredCards(taskList)"
                 :key="card.cardId"
                 class="task-card"
                 :class="{ completed: card.status === 'complete' }"
@@ -119,7 +138,7 @@
                     <div class="status-dot"></div>
                   </div>
                   <el-dropdown v-if="userRole !== 'viewer'">
-                    <el-button size="small" text />
+                    <el-button size="small" circle />
                     <template #dropdown>
                       <el-dropdown-menu>
                         <el-dropdown-item @click="deleteTaskCard(taskList.listId, card.cardId)">
@@ -175,6 +194,14 @@
                 <el-icon><Plus /></el-icon>
                 <span>Add a card</span>
               </div>
+
+              <!-- No cards message when filtered -->
+              <div
+                v-if="getFilteredCards(taskList).length === 0 && taskList.taskCard?.length !== 0"
+                class="no-filtered-cards"
+              >
+                <p>No {{ statusFilter }} tasks in this list</p>
+              </div>
             </div>
           </div>
 
@@ -207,6 +234,8 @@ import { useWorkspacesStore } from '@/store/workStore'
 import { useBoardsStore } from '@/store/boardStore'
 import { useTaskCardsStore } from '@/store/cardStore'
 import { useTaskListsStore } from '@/store/listStore'
+import type { TaskList } from '@/types/taskList'
+import type { TaskCard } from '@/types/taskCard'
 
 const route = useRoute()
 const router = useRouter()
@@ -217,6 +246,8 @@ const taskListStore = useTaskListsStore()
 const taskCardStore = useTaskCardsStore()
 
 const showMembersPanel = ref(false)
+const statusFilter = ref<'all' | 'complete' | 'incomplete'>('all')
+
 const toggleMembersPanel = () => {
   showMembersPanel.value = !showMembersPanel.value
 }
@@ -233,6 +264,27 @@ const boardName = ref(board.value?.boardName || '')
 const taskLists = computed(() =>
   (board.value?.taskList ?? []).slice().sort((a, b) => (a.listOrder ?? 0) - (b.listOrder ?? 0)),
 )
+
+// Filter function for individual task lists
+const getFilteredCards = (taskList: TaskList): TaskCard[] => {
+  if (!taskList.taskCard) return []
+
+  if (statusFilter.value === 'all') {
+    return taskList.taskCard
+  }
+
+  return taskList.taskCard.filter((card) => card.status === statusFilter.value)
+}
+
+// Computed property for filtered task lists (only show lists that have cards matching the filter)
+const filteredTaskLists = computed(() => {
+  if (statusFilter.value === 'all') {
+    return taskLists.value
+  }
+
+  // Show all lists, but the cards within them will be filtered by getFilteredCards
+  return taskLists.value
+})
 
 const goToWorkspace = () => {
   router.back()
