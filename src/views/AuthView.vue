@@ -133,13 +133,12 @@ const login = loginRules
 const handleRegister = async () => {
   if (!registerFormRef.value) return
   try {
-    await registerFormRef.value.validate(async (valid) => {
-      if (valid) {
-        await userStore.register(form.username, form.password, form.email || undefined)
-        ElMessage.success('Registration successful')
-        router.push(`/workspace/${userStore.currentUser!.userId}`)
-      }
-    })
+    const valid = await registerFormRef.value.validate()
+    if (valid) {
+      await userStore.register(form.username, form.password, form.email || undefined)
+      ElMessage.success('Registration successful')
+      router.push(`/workspace/${userStore.currentUser!.userId}`)
+    }
   } catch (error) {
     console.log(error)
   }
@@ -148,13 +147,12 @@ const handleRegister = async () => {
 const handleLogin = async () => {
   if (!loginFormRef.value) return
   try {
-    await loginFormRef.value.validate(async (valid) => {
-      if (valid) {
-        await userStore.login(form.username, form.password)
-        ElMessage.success('Login successful')
-        router.push(`/workspace/${userStore.currentUser!.userId}`)
-      }
-    })
+    const valid = await loginFormRef.value.validate()
+    if (valid) {
+      await userStore.login(form.username, form.password)
+      ElMessage.success('Login successful')
+      router.push(`/workspace/${userStore.currentUser!.userId}`)
+    }
   } catch (error) {
     console.log(error)
   }
@@ -439,8 +437,10 @@ const toggleForm = () => {
 :deep(.el-form-item__error) {
   color: #f56c6c;
   font-size: 0.8rem;
-  margin-top: 4px;
   font-weight: 500;
+  padding: 8px 0 0 8px;
+  position: relative;
+  overflow: visible;
 }
 
 /* Success state */

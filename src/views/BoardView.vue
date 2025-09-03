@@ -11,6 +11,7 @@
             placeholder="Board name"
             class="board-name-input"
             size="large"
+            clearable
           />
           <div class="board-meta">
             <span class="role-badge" :class="userRole">{{ userRole }}</span>
@@ -21,12 +22,7 @@
         <div class="header-actions">
           <!-- Filter Controls -->
           <div class="filter-controls">
-            <el-select
-              v-model="statusFilter"
-              placeholder="Filter by status"
-              class="status-filter"
-              size="default"
-            >
+            <el-select v-model="statusFilter" class="status-filter" size="default">
               <el-option label="All tasks" value="all" />
               <el-option label="Incomplete" value="incomplete" />
               <el-option label="Complete" value="complete" />
@@ -34,7 +30,7 @@
           </div>
 
           <el-button v-if="userRole === 'owner'" @click="toggleMembersPanel" class="members-btn">
-            Manage Members
+            <el-icon><UserFilled /></el-icon>
           </el-button>
           <el-button @click="goToWorkspace" class="back-btn"> Back </el-button>
         </div>
@@ -62,7 +58,7 @@
       <div v-if="userRole === 'owner'" class="members-panel" :class="{ active: showMembersPanel }">
         <div class="members-panel-header">
           <h3>Board Members</h3>
-          <el-button @click="toggleMembersPanel" circle size="small" />
+          <el-button @click="toggleMembersPanel" circle size="small" :icon="Close" />
         </div>
         <div class="members-panel-content">
           <div class="members-list">
@@ -82,6 +78,7 @@
                 type="danger"
                 size="small"
                 circle
+                :icon="Delete"
               />
             </div>
           </div>
@@ -116,7 +113,7 @@
                   </span>
                 </span>
                 <el-dropdown v-if="userRole !== 'viewer'">
-                  <el-button circle size="small" />
+                  <el-button size="small" text :icon="More" />
                   <template #dropdown>
                     <el-dropdown-menu>
                       <el-dropdown-item @click="deleteTaskList(taskList.listId)">
@@ -136,9 +133,10 @@
               :data-list-id="taskList.listId"
             >
               <div
-                v-for="card in taskList.taskCard"
+                v-for="card in getFilteredCards(taskList)"
                 :key="card.cardId"
                 class="task-card"
+                :class="{ completed: card.status === 'complete' }"
                 :data-card-id="card.cardId"
               >
                 <!-- <div
@@ -152,7 +150,7 @@
                     <div class="status-dot"></div>
                   </div>
                   <el-dropdown v-if="userRole !== 'viewer'">
-                    <el-button size="small" circle />
+                    <el-button size="small" :icon="More" text />
                     <template #dropdown>
                       <el-dropdown-menu>
                         <el-dropdown-item @click="deleteTaskCard(taskList.listId, card.cardId)">
@@ -242,7 +240,7 @@
 import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowLeft, Delete, Plus, Warning } from '@element-plus/icons-vue'
+import { ArrowLeft, Close, Delete, More, Plus, UserFilled, Warning } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store/authStore'
 import { useWorkspacesStore } from '@/store/workStore'
 import { useBoardsStore } from '@/store/boardStore'
@@ -287,7 +285,6 @@ const getFilteredCards = (taskList: TaskList): TaskCard[] => {
   if (statusFilter.value === 'all') {
     return taskList.taskCard
   }
-
   return taskList.taskCard.filter((card) => card.status === statusFilter.value)
 }
 
@@ -346,7 +343,12 @@ const setDraggableRef = (el: HTMLElement | null, taskList: TaskList) => {
 }
 
 const goToWorkspace = () => {
-  router.back()
+  const currentUserId = userStore.currentUser?.userId
+  if (currentUserId) {
+    router.push(`/workspace/${currentUserId}`)
+  } else {
+    router.push('/') // fallback (AuthView)
+  }
 }
 
 const getUsername = (userId: number) => {
@@ -400,6 +402,11 @@ const removeMember = async (userId: number) => {
 const updateBoardName = async () => {
   try {
     await boardsStore.updateBoardName(boardId.value, boardName.value)
+
+    if (workspaceId.value) {
+      await workspacesStore.updateWorkspaceName(workspaceId.value, boardName.value)
+    }
+
     ElMessage.success('Board name updated')
   } catch (error) {
     console.log(error)
@@ -643,6 +650,21 @@ const deleteTaskCard = async (listId: number, cardId: number) => {
   border-color: var(--primary);
   color: var(--primary);
   transform: translateY(-2px);
+}
+
+/* status filter */
+.status-filter {
+  min-width: 120px;
+}
+
+.status-filter .el-input__inner {
+  text-align: left;
+}
+
+.filter-label {
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+  margin-right: 4px;
 }
 
 /* Members Panel */

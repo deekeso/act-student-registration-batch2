@@ -233,7 +233,10 @@ export const useBoardsStore = defineStore('boards', {
       if (userRole !== 'owner') {
         throw new Error('Only owners can remove board members')
       }
-      if (board.members!.find((m) => m.userId === userId)?.role === 'owner') {
+      if (
+        board.members!.find((m) => m.userId === userId)?.role === 'owner' &&
+        userRole === 'owner'
+      ) {
         throw new Error('Cannot remove the owner')
       }
       board.members = board.members!.filter((m) => m.userId !== userId)

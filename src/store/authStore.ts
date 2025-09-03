@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import type { User } from '@/types/authUser'
+import { ElMessage } from 'element-plus'
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -58,8 +59,8 @@ export const useUserStore = defineStore('user', {
     },
 
     register(username: string, password: string, email?: string) {
-      if (this.users.some((u) => u.username === username)) {
-        throw new Error('Username already exists')
+      if (this.users.some((u) => u.username === username || u.email === email)) {
+        throw (new Error('User already exists'), ElMessage.error('User already exists'))
       }
       const userId = this.users.length + 1
       const newUser: User = { userId, username, password, email }
@@ -71,7 +72,10 @@ export const useUserStore = defineStore('user', {
     login(username: string, password: string) {
       const user = this.users.find((u) => u.username === username && u.password === password)
       if (!user) {
-        throw new Error('Invalid username or password')
+        throw (
+          new Error('Invalid username or password'),
+          ElMessage.error('Invalid username or password')
+        )
       }
       this.currentUser = user
       this.saveToStorage()
@@ -80,6 +84,7 @@ export const useUserStore = defineStore('user', {
     logout() {
       this.currentUser = null
       this.saveToStorage()
+      ElMessage.success('Logout successful')
     },
   },
 

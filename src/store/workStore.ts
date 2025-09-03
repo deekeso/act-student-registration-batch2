@@ -105,6 +105,14 @@ export const useWorkspacesStore = defineStore('workspaces', {
       workspace.members!.push({ userId: user.userId, role })
       this.saveToStorage()
     },
+
+    async updateWorkspaceName(workspaceId: number, newName: string) {
+      const workspace = this.workspaces.find((w) => w.workspaceId === workspaceId)
+      if (workspace) {
+        workspace.name = newName
+        this.saveToStorage()
+      }
+    },
   },
 
   getters: {

@@ -1,30 +1,47 @@
+import {
+  validateEmailField,
+  validatePasswordField,
+  validateUsernameField,
+} from '@/composables/userValidation'
 import type { FormRules } from 'element-plus'
 
 export const registerRules: FormRules = {
   email: [
     {
-      required: true,
-      type: 'email',
-      message: 'Please enter a valid email address',
+      validator: (rule, value, callback) => {
+        const { valid, message } = validateEmailField(value)
+        if (valid) {
+          callback()
+        } else {
+          callback(new Error(message))
+        }
+      },
       trigger: ['blur', 'change'],
     },
   ],
   username: [
     {
-      required: true,
-      message: 'Username is required',
+      validator: (rule, value, callback) => {
+        const { valid, message } = validateUsernameField(value)
+        if (valid) {
+          callback()
+        } else {
+          callback(new Error(message))
+        }
+      },
       trigger: ['blur', 'change'],
     },
   ],
   password: [
     {
-      required: true,
-      message: 'Password is required',
-      trigger: ['blur', 'change'],
-    },
-    {
-      min: 6,
-      message: 'Password must be at least 6 characters',
+      validator: (rule, value, callback) => {
+        const { valid, message } = validatePasswordField(value)
+        if (valid) {
+          callback()
+        } else {
+          callback(new Error(message))
+        }
+      },
       trigger: ['blur', 'change'],
     },
   ],
@@ -33,15 +50,27 @@ export const registerRules: FormRules = {
 export const loginRules: FormRules = {
   username: [
     {
-      required: true,
-      message: 'Username is required',
+      validator: (rule, value, callback) => {
+        const { valid, message } = validateUsernameField(value)
+        if (valid) {
+          callback()
+        } else {
+          callback(new Error(message))
+        }
+      },
       trigger: ['blur', 'change'],
     },
   ],
   password: [
     {
-      required: true,
-      message: 'Password is required',
+      validator: (rule, value, callback) => {
+        const { valid, message } = validatePasswordField(value)
+        if (valid) {
+          callback()
+        } else {
+          callback(new Error(message))
+        }
+      },
       trigger: ['blur', 'change'],
     },
   ],
