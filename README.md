@@ -1,75 +1,50 @@
-# Nuxt Minimal Starter
+# Trello Clone
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A simpler clone of Trello
 
-## Setup
+### Built With
 
-Make sure to install dependencies:
+- Nuxt 4
+- TypeScript
+- Tailwind
+- Nuxt UI v3
+- Pinia
 
-```bash
-# npm
+### Getting Started
+
+To get a local copy up and running of the application, follow these simple steps:
+
+#### Prerequisites
+
+##### npm
+
+```sh
+npm install npm@latest -g
+```
+
+##### Installation
+
+1. Clone the repo
+
+```sh
+git clone https://github.com/Oloap008/Trello-Clone.git
+```
+
+2. Install NPM packages
+
+```sh
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+3. Change git remote url to avoid accidental pushes to base project
 
-Start the development server on `http://localhost:3000`:
+```sh
+git remote set-url origin github_username/repo_name
+git remote -v
+```
 
-```bash
-# npm
+4. Compile and Hot-Reload for Development with JSON Server
+
+```sh
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
